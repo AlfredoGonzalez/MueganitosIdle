@@ -36,6 +36,39 @@ flowchart TD
 `🏠 Dulcería · 🗺️ Feria · 📖 Recetario · 📒 Álbum · 🛒 Tienda`
 El botón central (**Feria**) es el más grande y "late" cuando hay una feria nueva disponible.
 
+## Mocks visuales (v0)
+Referencia de estilo y distribución, **no arte final**: están hechos con formas simples para que la
+artista los reinterprete. Las imágenes están en [`docs/mocks/`](../mocks/).
+
+<!-- galeria-mocks -->
+<p>
+<img src="../mocks/01-splash.png" width="200" alt="Splash">
+<img src="../mocks/02-sotano.png" width="200" alt="El sótano">
+<img src="../mocks/03-nombre.png" width="200" alt="¿Cómo te llamo?">
+</p>
+<p>
+<img src="../mocks/04-letrero.png" width="200" alt="Tu dulcería: nombre, color y símbolo">
+<img src="../mocks/05-dulceria.png" width="200" alt="La dulcería (hub idle)">
+<img src="../mocks/06-feria.png" width="200" alt="Día de Feria">
+</p>
+<p>
+<img src="../mocks/07-cartas.png" width="200" alt="Cartas de Lotería">
+<img src="../mocks/08-resultados.png" width="200" alt="Resultados del día">
+<img src="../mocks/09-mapa.png" width="200" alt="Mapa de la región">
+</p>
+
+| # | Pantalla | Qué muestra |
+|:-:|---|---|
+| 1 | Splash | Logo, Pegui con su familia, "Calentando el cazo…". Paleta cálida en lugar del espacio azul de NOVA |
+| 2 | El sótano | Las burbujas del mock "Sistema iniciado…", ahora saliendo del cazo de cobre del abuelo |
+| 3 | ¿Cómo te llamo? | Nombre con validación y selector opcional (nieto / nieta / prefiero no decir) |
+| 4 | Tu dulcería | Nombre, color y símbolo con vista previa del letrero |
+| 5 | La dulcería | Puestos con nivel, barra al hito y compra; boost de anuncio activo; Feria al centro |
+| 6 | Día de Feria | Charola con física, línea de desborde, cliente con pedido, siguiente caída, combo |
+| 7 | Cartas de Lotería | Tres cartas con número, ilustración y rareza; cambio de cartas con anuncio opcional |
+| 8 | Resultados del día | Listones, puntaje, pesitos, piloncillo y datos del día |
+| 9 | Mapa de la región | Camino de ferias, feria actual, jefe DulciMax y pagaré de la plaza |
+
 ## Wireframes
 
 ### Dulcería (hub)
