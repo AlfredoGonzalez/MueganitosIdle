@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { apodo, leerPerfil, limpiarNombre, nombreAleatorio, nombreValido, personalizar } from '../src/core/perfil';
+import es from '../content/textos/es.json';
+import { LARGO_DULCERIA, apodo, leerPerfil, limpiarNombre, nombreAleatorio, nombreValido, personalizar } from '../src/core/perfil';
 
 describe('perfil del jugador', () => {
   it('limpia y valida nombres', () => {
@@ -28,5 +29,9 @@ describe('perfil del jugador', () => {
     expect(leerPerfil(null, 'Los Pegaditos')).toMatchObject({ nombre: '', trato: 'neutro', dulceria: 'Los Pegaditos', color: 'rosa' });
     const p = leerPerfil({ nombre: 'Beto', trato: 'nieto', dulceria: 'X', color: 'morado', simbolo: 'sol' }, 'Los Pegaditos');
     expect(p).toEqual({ nombre: 'Beto', trato: 'nieto', dulceria: 'Los Pegaditos', color: 'rosa', simbolo: 'sol' });
+  });
+
+  it('todos los nombres de «Aleatorio» se pueden usar', () => {
+    for (const n of es['presentacion.nombresDulceria']) expect(nombreValido(n, LARGO_DULCERIA), n).toBe(true);
   });
 });

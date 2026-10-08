@@ -15,7 +15,7 @@ export interface Perfil {
 }
 
 export const LARGO_NOMBRE = { min: 2, max: 16 };
-export const LARGO_DULCERIA = { min: 3, max: 22 };
+export const LARGO_DULCERIA = { min: 3, max: 28 };
 
 /** Quita espacios de más y caracteres raros (deja letras, números, espacios y signos comunes). */
 export function limpiarNombre(texto: string): string {
