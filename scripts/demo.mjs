@@ -18,6 +18,7 @@ for (const archivo of readdirSync(carpeta)) {
     html = html.replace(new RegExp(`<link[^>]*href="\\./assets/${archivo}"[^>]*>`), () => `<style>${contenido}</style>`);
   }
 }
-if (/\.\/assets\//.test(html)) throw new Error('Quedó una referencia externa en la demo');
+// Las claves de import.meta.glob ("../../assets/…") se quedan como texto; solo cuentan las URLs "./assets/…".
+if (/(?<!\.)\.\/assets\//.test(html)) throw new Error('Quedó una referencia externa en la demo');
 writeFileSync(join(dir, 'mueganitos-demo.html'), html);
 console.log(`Demo lista: ${join(dir, 'mueganitos-demo.html')} (${(html.length / 1024 / 1024).toFixed(2)} MB)`);
