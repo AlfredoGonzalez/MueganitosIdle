@@ -32,5 +32,18 @@
   "feria.mejorCombo": "Mejor combo",
   "feria.tierMaximo": "Mueganito más grande",
   "feria.otra": "Otra feria",
-  "feria.inicio": "Al inicio"
+  "feria.inicio": "Al inicio",
+  "tier.1": "Migajita",
+  "tier.2": "Mueganito",
+  "tier.3": "Parejita",
+  "tier.4": "Trío Pegadito",
+  "tier.5": "Racimito",
+  "tier.6": "Muégano Familiar",
+  "tier.7": "Torrecita",
+  "tier.8": "Muégano de Fiesta",
+  "tier.9": "Muégano Gigante",
+  "tier.10": "¡Megamuégano!",
+  "feria.quiero": "¡Quiero!",
+  "feria.gracias": "¡Gracias!",
+  "feria.pedidos": "Pedidos cumplidos"
 }

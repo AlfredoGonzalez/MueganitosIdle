@@ -2,8 +2,9 @@ import Phaser from 'phaser';
 import cfg from '../../content/feria.json';
 import datosCartas from '../../content/cartas.json';
 import {
-  actualizarDesborde, duracionesHoras, enSolFinal, enfriamientoMs, modificadores, ofrecerCartas,
-  piloncilloPorPuntos, puntosPorMerge, siguienteCadena, tierDeCaida, TIER_MAXIMO,
+  actualizarDesborde, clienteQueQuiere, duracionesHoras, enSolFinal, enfriamientoMs, esperaSiguienteCliente,
+  modificadores, ofrecerCartas, piloncilloPorPedido, piloncilloPorPuntos, puntosPorMerge, puntosPorPedido,
+  siguienteCadena, tierDePedido, tierDeCaida, TIER_MAXIMO,
   type Carta, type Modificadores,
 } from '../core/feria';
 import type { Textos } from '../core/textos';
@@ -12,7 +13,7 @@ import { cartaLoteria, ALTO_CARTA, ANCHO_CARTA } from '../ui/cartaLoteria';
 import { confeti, estrella, textoFlotante } from '../ui/efectos';
 import { Mueganito } from '../ui/mueganito';
 import { papelPicado } from '../ui/papelPicado';
-import { ATLAS, FRAME_OJOS, FRAME_OJOS_CERRADOS, frameCuerpo } from '../ui/provisionales';
+import { ATLAS, ATLAS_CLIENTES, CLIENTES, FRAME_OJOS, FRAME_OJOS_CERRADOS, frameCuerpo } from '../ui/provisionales';
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
 
 const MAZO = datosCartas.cartas as Carta[];
@@ -27,6 +28,16 @@ interface Pieza {
   nacio: number;
   pop: { v: number };
   pegando: boolean;
+}
+
+/** Un cliente esperando su pedido arriba de la charola. */
+interface Pedido {
+  tier: number;
+  esperaSeg: number;
+  vista: Phaser.GameObjects.Container;
+  avatar: Phaser.GameObjects.Image;
+  barra: Phaser.GameObjects.Graphics;
+  entregando: boolean;
 }
 
 type Estado = 'jugando' | 'cartas' | 'pausa' | 'fin';
@@ -53,6 +64,11 @@ export class Feria extends Phaser.Scene {
   private xSoltar = 0;
   private segundosArriba = 0;
   private autoCaidaSeg = 0;
+  private pedidos: (Pedido | null)[] = [];
+  private siguienteClienteSeg = 0;
+  private pedidosCumplidos = 0;
+  private piloncilloPedidos = 0;
+  private yClientes = 0;
 
   // Geometría
   private izq = 0;
@@ -118,6 +134,10 @@ export class Feria extends Phaser.Scene {
     this.pendienteSoltar = false;
     this.segundosArriba = 0;
     this.autoCaidaSeg = 0;
+    this.pedidos = Array.from({ length: cfg.pedidos.maxClientes }, () => null);
+    this.siguienteClienteSeg = cfg.pedidos.primerClienteSeg;
+    this.pedidosCumplidos = 0;
+    this.piloncilloPedidos = 0;
     this.capa = undefined;
   }
 
@@ -136,10 +156,11 @@ export class Feria extends Phaser.Scene {
     const { ancho, pared } = cfg.charola;
 
     this.fondo = H - abajo - 190;
-    const disponible = this.fondo - (arriba + 520);
+    const disponible = this.fondo - (arriba + 690); // deja lugar a HUD y clientes
     const alto = Phaser.Math.Clamp(disponible, 900, cfg.charola.alto);
     this.lineaY = this.fondo - alto;
     this.soltarY = this.lineaY - 150;
+    this.yClientes = Math.max(arriba + 400, this.soltarY - 150);
     this.izq = (W - ancho) / 2;
     this.der = this.izq + ancho;
     this.xSoltar = W / 2;
@@ -373,19 +394,27 @@ export class Feria extends Phaser.Scene {
         continue;
       }
 
-      const nuevo = this.crearPieza(tier + 1, x, y);
-      this.matter.body.setVelocity(nuevo.cuerpo, vel);
-      nuevo.pop.v = 0.7;
-      this.tweens.add({ targets: nuevo.pop, v: 1, duration: 260, ease: 'Back.easeOut' });
-
+      const tam = this.tamTier(tier + 1);
+      this.tierMaximo = Math.max(this.tierMaximo, tier + 1);
       const ganados = puntosPorMerge(tier + 1, this.cadena, sol, cfg, this.mod);
       this.puntos += ganados;
-      confeti(this, x, y, 10 + tier * 3, nuevo.tam * 0.9);
-      textoFlotante(this, x, y - nuevo.tam / 2, `+${ganados.toLocaleString('es-MX')}`, { tam: 40 + tier * 3 });
+      confeti(this, x, y, 10 + tier * 3, tam * 0.9);
+      textoFlotante(this, x, y - tam / 2, `+${ganados.toLocaleString('es-MX')}`, { tam: 40 + tier * 3 });
       if (this.cadena >= 2) {
-        textoFlotante(this, x, y - nuevo.tam / 2 - 70, `${this.tx.t('feria.combo')} ×${this.cadena}!`, {
+        textoFlotante(this, x, y - tam / 2 - 70, `${this.tx.t('feria.combo')} ×${this.cadena}!`, {
           tam: 64, color: CSS.rosa, titulo: true,
         });
+      }
+
+      // ¿Algún cliente quiere justo este mueganito? Sale de la charola hacia él.
+      const cliente = clienteQueQuiere(this.pedidos.map((p) => (p && !p.entregando ? p : null)), tier + 1);
+      if (cliente >= 0) {
+        this.entregar(cliente, tier + 1, x, y, sol);
+      } else {
+        const nuevo = this.crearPieza(tier + 1, x, y);
+        this.matter.body.setVelocity(nuevo.cuerpo, vel);
+        nuevo.pop.v = 0.7;
+        this.tweens.add({ targets: nuevo.pop, v: 1, duration: 260, ease: 'Back.easeOut' });
       }
       if (tier + 1 >= 7) this.cameras.main.shake(160, 0.004 + tier * 0.0008);
       navigator.vibrate?.(tier >= 6 ? 25 : 8);
@@ -422,6 +451,8 @@ export class Feria extends Phaser.Scene {
       }
     }
 
+    this.actualizarClientes(dt);
+
     // Desborde: algo casi quieto por encima de la línea durante 2 s (lo que va cayendo no cuenta)
     let arriba = false;
     for (const p of this.piezas.values()) {
@@ -446,6 +477,96 @@ export class Feria extends Phaser.Scene {
       this.mostrarCartas();
     }
     this.actualizarHud();
+  }
+
+  // ───────────────────────── Clientes ─────────────────────────
+
+  private xCliente(i: number) {
+    const n = this.pedidos.length;
+    const W = this.scale.width;
+    return n === 1 ? W / 2 : 310 + (i * (W - 620 + 40)) / (n - 1);
+  }
+
+  private actualizarClientes(dt: number) {
+    // Llegadas
+    this.siguienteClienteSeg -= dt;
+    const libre = this.pedidos.indexOf(null);
+    if (this.siguienteClienteSeg <= 0 && libre >= 0) {
+      this.llegaCliente(libre);
+      this.siguienteClienteSeg = esperaSiguienteCliente(cfg.pedidos, Math.random);
+    }
+    // Paciencia
+    this.pedidos.forEach((p, i) => {
+      if (!p || p.entregando) return;
+      p.esperaSeg += dt;
+      const resto = 1 - p.esperaSeg / cfg.pedidos.pacienciaSeg;
+      this.dibujarPaciencia(p.barra, resto);
+      if (resto <= 0) this.seVaCliente(i, false);
+    });
+  }
+
+  private llegaCliente(i: number) {
+    const tier = tierDePedido(this.hora, cfg.pedidos, Math.random);
+    const quien = CLIENTES[Math.floor(Math.random() * CLIENTES.length)];
+    const avatar = this.add.image(-130, 0, ATLAS_CLIENTES, quien).setDisplaySize(124, 124);
+    const g = this.add.graphics();
+    g.fillStyle(COLOR.tinta, 1).fillRoundedRect(-58, -54 + 6, 252, 108, 30);
+    g.fillStyle(COLOR.cremaClara, 1).fillRoundedRect(-58, -54, 252, 108, 30);
+    g.fillTriangle(-58, -12, -78, 0, -58, 12);
+    g.lineStyle(5, COLOR.tinta, 1).strokeRoundedRect(-58, -54, 252, 108, 30);
+    const dulce = new Mueganito(this, -6, 34, tier, 70);
+    const nombre = this.add.text(42, 0, this.tx.t(`tier.${tier}`), {
+      fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '27px', color: CSS.tinta, wordWrap: { width: 140 }, lineSpacing: -6,
+    }).setOrigin(0, 0.5);
+    const barra = this.add.graphics();
+    const vista = this.add.container(this.xCliente(i), this.yClientes + 30, [avatar, g, dulce, nombre, barra]).setDepth(15).setAlpha(0);
+    this.tweens.add({ targets: vista, y: this.yClientes, alpha: 1, duration: 320, ease: 'Back.easeOut' });
+    this.pedidos[i] = { tier, esperaSeg: 0, vista, avatar, barra, entregando: false };
+  }
+
+  private dibujarPaciencia(g: Phaser.GameObjects.Graphics, resto: number) {
+    const color = resto > 0.5 ? COLOR.nopal : resto > 0.25 ? COLOR.cempasuchil : 0xe53935;
+    g.clear();
+    g.fillStyle(COLOR.tinta, 0.35).fillRoundedRect(-48, 64, 232, 14, 7);
+    g.fillStyle(color, 1).fillRoundedRect(-48, 64, Math.max(14, 232 * Math.max(0, resto)), 14, 7);
+  }
+
+  private seVaCliente(i: number, contento: boolean) {
+    const p = this.pedidos[i];
+    if (!p) return;
+    this.pedidos[i] = null;
+    this.tweens.add({
+      targets: p.vista, y: p.vista.y - (contento ? 60 : -30), alpha: 0, delay: contento ? 450 : 0, duration: 380,
+      onComplete: () => p.vista.destroy(),
+    });
+  }
+
+  /** El mueganito recién pegado vuela hacia el cliente que lo pidió. */
+  private entregar(i: number, tier: number, x: number, y: number, sol: boolean) {
+    const p = this.pedidos[i];
+    if (!p) return;
+    p.entregando = true; // ya no se impacienta ni recibe otro mientras llega
+    const tam = this.tamTier(tier);
+    const volando = new Mueganito(this, x, y + tam / 2, tier, tam).setDepth(40);
+    const destinoX = p.vista.x + p.avatar.x;
+    const destinoY = p.vista.y + 40;
+    this.tweens.add({
+      targets: volando, x: destinoX, y: destinoY, scale: 70 / tam, duration: 480, ease: 'Cubic.easeIn',
+      onComplete: () => {
+        volando.destroy();
+        const puntos = puntosPorPedido(tier, sol, cfg.pedidos, this.mod);
+        this.puntos += puntos;
+        this.pedidosCumplidos++;
+        this.piloncilloPedidos += piloncilloPorPedido(tier);
+        confeti(this, destinoX, destinoY - 40, 24, 160);
+        textoFlotante(this, destinoX, destinoY - 110, this.tx.t('feria.gracias'), { tam: 52, color: CSS.nopal, titulo: true });
+        textoFlotante(this, p.vista.x + 70, destinoY - 40, `+${puntos.toLocaleString('es-MX')}`, { tam: 44 });
+        this.tweens.add({ targets: p.avatar, y: p.avatar.y - 30, duration: 120, yoyo: true, repeat: 1 });
+        const idx = this.pedidos.indexOf(p);
+        if (idx >= 0) this.seVaCliente(idx, true);
+        navigator.vibrate?.(20);
+      },
+    });
   }
 
   /** Copia posición y giro de cada cuerpo de física a sus imágenes (cuerpo + ojos). */
@@ -554,7 +675,7 @@ export class Feria extends Phaser.Scene {
     const capa = this.velo(0.6);
     const panel = this.add.graphics();
     const pw = 900;
-    const ph = 1180;
+    const ph = 1300;
     const px = W / 2 - pw / 2;
     const py = H / 2 - ph / 2 - 40;
     panel.fillStyle(COLOR.tinta, 1).fillRoundedRect(px, py + 16, pw, ph, 48);
@@ -580,7 +701,8 @@ export class Feria extends Phaser.Scene {
     }).setOrigin(0.5)]);
 
     const filas: [string, string][] = [
-      [this.tx.t('feria.piloncillo'), `+${piloncilloPorPuntos(this.puntos)}`],
+      [this.tx.t('feria.piloncillo'), `+${piloncilloPorPuntos(this.puntos) + this.piloncilloPedidos}`],
+      [this.tx.t('feria.pedidos'), `${this.pedidosCumplidos}`],
       [this.tx.t('feria.mejorCombo'), `×${Math.max(1, this.mejorCadena)}`],
       [this.tx.t('feria.tierMaximo'), ''],
     ];

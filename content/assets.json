@@ -105,6 +105,41 @@
       "ancho": 120,
       "alto": 60,
       "uso": "Ojos cerrados (parpadeo)"
+    },
+    {
+      "clave": "cliente_donchuy",
+      "archivo": "personajes/cliente_donchuy.png",
+      "ancho": 256,
+      "alto": 256,
+      "uso": "Cliente de la feria: Don Chuy (ex panadero, harina en la cara). Busto dentro de un círculo."
+    },
+    {
+      "clave": "cliente_lupita",
+      "archivo": "personajes/cliente_lupita.png",
+      "ancho": 256,
+      "alto": 256,
+      "uso": "Cliente de la feria: Lupita (adolescente, toma fotos). Busto dentro de un círculo."
+    },
+    {
+      "clave": "cliente_tono",
+      "archivo": "personajes/cliente_tono.png",
+      "ancho": 256,
+      "alto": 256,
+      "uso": "Cliente de la feria: Toño el globero. Busto dentro de un círculo."
+    },
+    {
+      "clave": "cliente_doniacleo",
+      "archivo": "personajes/cliente_doniacleo.png",
+      "ancho": 256,
+      "alto": 256,
+      "uso": "Cliente de la feria: Doña Cleo (la chismosa oficial). Busto dentro de un círculo."
+    },
+    {
+      "clave": "cliente_profememo",
+      "archivo": "personajes/cliente_profememo.png",
+      "ancho": 256,
+      "alto": 256,
+      "uso": "Cliente de la feria: Profe Memo (maestro jubilado, lentes). Busto dentro de un círculo."
     }
   ]
 }

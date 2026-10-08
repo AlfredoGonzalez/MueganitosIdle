@@ -140,3 +140,49 @@ export function ofrecerCartas(mazo: Carta[], probRareza: Record<Rareza, number>,
   }
   return elegidas;
 }
+
+// ───────────────────────── Pedidos de clientes ─────────────────────────
+
+export interface ConfigPedidos {
+  maxClientes: number;
+  pacienciaSeg: number;
+  llegadaSeg: number[];
+  primerClienteSeg: number;
+  rangoPorHora: number[][];
+  multiplicadorPuntos: number;
+}
+
+/** Tier que pide un cliente: sube con las horas del día (rango de content/feria.json). */
+export function tierDePedido(hora: number, cfg: Pick<ConfigPedidos, 'rangoPorHora'>, azar: Azar): number {
+  const rango = cfg.rangoPorHora[Math.min(hora, cfg.rangoPorHora.length - 1)];
+  const [min, max] = [rango[0], rango[1]];
+  return Math.min(TIER_MAXIMO, min + Math.floor(azar() * (max - min + 1)));
+}
+
+/** Índice del cliente que espera ese tier (el que lleva más tiempo esperando), o -1. */
+export function clienteQueQuiere(pedidos: ({ tier: number; esperaSeg: number } | null)[], tier: number): number {
+  let mejor = -1;
+  pedidos.forEach((p, i) => {
+    if (p && p.tier === tier && (mejor < 0 || p.esperaSeg > (pedidos[mejor]?.esperaSeg ?? 0))) mejor = i;
+  });
+  return mejor;
+}
+
+/** Puntos extra al entregar un pedido (×3 el valor, con La Canela y El Sol). */
+export function puntosPorPedido(tier: number, enSol: boolean, cfg: Pick<ConfigPedidos, 'multiplicadorPuntos'>, mod: Pick<Modificadores, 'bonoPuntosTier4'>): number {
+  let p = valorTier(tier) * cfg.multiplicadorPuntos;
+  if (tier >= 4) p *= 1 + mod.bonoPuntosTier4;
+  if (enSol) p *= 2;
+  return Math.round(p);
+}
+
+/** Piloncillo extra por pedido: 1 por los chicos, más por los grandes. */
+export function piloncilloPorPedido(tier: number): number {
+  return Math.max(1, 1 + Math.floor((tier - 3) / 2));
+}
+
+/** Segundos hasta que llega el siguiente cliente. */
+export function esperaSiguienteCliente(cfg: Pick<ConfigPedidos, 'llegadaSeg'>, azar: Azar): number {
+  const [min, max] = cfg.llegadaSeg;
+  return min + azar() * (max - min);
+}

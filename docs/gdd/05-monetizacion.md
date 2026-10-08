@@ -21,6 +21,7 @@
 | **Cofre extra** | Abre un cofre adicional del día | 3 al día |
 | **La marchanta** (evento aleatorio en la plaza) | 5–10 de cajeta | 5 al día |
 | **Ayuda de Pegui** (al atorarse en una feria del mapa) | Empiezas la feria con 1 carta rara | 2 al día |
+| **Recargar energía** *(pendiente, ver [03 · Ideas pendientes](03-mecanicas.md#energía-para-entrar-a-la-feria))* | +30 de energía | 3–5 al día |
 
 - **Tope global:** ~20 anuncios al día por jugador (proteger la experiencia y el eCPM).
 - **Ritmo esperado:** 3–6 anuncios por jugador activo al día.

@@ -84,8 +84,10 @@ El corazón del juego. Se entra desde el **mapa de la región** (cada nodo es un
 ### Clientes y pedidos
 - 1–3 clientes en el borde de la charola con burbuja: *"¡Quiero una Torrecita!"*.
 - Al **crear** ese tier, el dulce **salta hacia el cliente** y sale de la charola (libera espacio).
-- Pago: ×3 los puntos del tier + chance de piloncillo extra. Clientes especiales (Profe Memo, Lupita)
-  dan bonos únicos.
+- Pago: ×3 los puntos del tier + piloncillo extra (1 por los chicos, más por los grandes). Clientes
+  especiales (Profe Memo, Lupita) darán bonos únicos más adelante.
+- **Prototipo:** 2 clientes a la vez, paciencia de 32 s (barra verde → naranja → roja), el tier pedido
+  sube con las horas (3–5 en la hora 1 hasta 5–8 en la hora 4). Todo en `content/feria.json` → `pedidos`.
 
 ### Horas y cartas de Lotería
 - Un Día de Feria tiene **4 horas de 40 s** (160 s base; ampliable).
@@ -185,3 +187,21 @@ con páginas que se van llenando (las páginas del abuelo desbloquean ramas nuev
 | **Eventos de temporada** | Día de Muertos (calaveritas de azúcar), Fiestas Patrias, Posadas, Candelaria, Día del Niño: familia temporal, cartas y cosméticos exclusivos. |
 | **Feria Relámpago** (post-lanzamiento) | Feria semanal con semilla fija y tabla de puntajes entre amigos. |
 | **Notificaciones** (opt-in) | "¡Tu dulcería llenó la caja!" al llegar al tope offline; máximo 1–2 al día. |
+
+---
+
+## 7. Ideas pendientes (anotadas para después)
+
+### Energía para entrar a la feria
+*Propuesta del equipo, aún no implementada.*
+
+- El jugador tiene **100 de energía** (tope). Entrar a un Día de Feria cuesta **10–15**.
+- La energía se **recarga sola con el tiempo** y se puede recargar **viendo un anuncio** (ver
+  [05 · Monetización](05-monetizacion.md#anuncios-recompensados)).
+- Puntos a decidir al implementarla:
+  - Ritmo de recarga (referencia: 1 punto cada 3 min ≈ una feria cada 30–45 min de espera).
+  - Cuánto da un anuncio (referencia: +30, máximo 3–5 al día) y si la cajeta también recarga.
+  - Si las primeras ferias de la región (tutorial) y repetir ferias ya ganadas cuestan menos o nada.
+  - Cuidado con el pilar *"Respeta el tiempo del jugador"*: si la energía corta la sesión demasiado
+    pronto, baja la retención. Conviene medirlo en el soft launch (sesiones por día, % que se queda sin
+    energía, anuncios vistos para recargar).

@@ -100,3 +100,34 @@ describe('cartas de Lotería', () => {
     expect(ofrecerCartas(cartas.slice(0, 2), datosCartas.probabilidadRareza, 3, Math.random)).toHaveLength(2);
   });
 });
+
+import { clienteQueQuiere, esperaSiguienteCliente, piloncilloPorPedido, puntosPorPedido, tierDePedido } from '../src/core/feria';
+
+describe('pedidos de clientes', () => {
+  const ped = feria.pedidos;
+  it('el tier pedido sube con las horas', () => {
+    expect(tierDePedido(0, ped, () => 0)).toBe(3);
+    expect(tierDePedido(0, ped, () => 0.999)).toBe(5);
+    expect(tierDePedido(3, ped, () => 0.999)).toBe(8);
+    expect(tierDePedido(9, ped, () => 0)).toBe(5);
+  });
+  it('entrega al cliente que más ha esperado ese tier', () => {
+    const pedidos = [{ tier: 5, esperaSeg: 3 }, null, { tier: 5, esperaSeg: 10 }, { tier: 4, esperaSeg: 20 }];
+    expect(clienteQueQuiere(pedidos, 5)).toBe(2);
+    expect(clienteQueQuiere(pedidos, 4)).toBe(3);
+    expect(clienteQueQuiere(pedidos, 7)).toBe(-1);
+  });
+  it('paga ×3 con La Canela y El Sol', () => {
+    const sin = modificadores([]);
+    expect(puntosPorPedido(3, false, ped, sin)).toBe(27);
+    expect(puntosPorPedido(4, false, ped, modificadores([carta('la_canela')]))).toBe(105);
+    expect(puntosPorPedido(3, true, ped, sin)).toBe(54);
+  });
+  it('piloncillo por pedido crece con el tier', () => {
+    expect([3, 4, 5, 7, 9].map(piloncilloPorPedido)).toEqual([1, 1, 2, 3, 4]);
+  });
+  it('el siguiente cliente llega dentro del rango', () => {
+    expect(esperaSiguienteCliente(ped, () => 0)).toBe(3);
+    expect(esperaSiguienteCliente(ped, () => 1)).toBe(7);
+  });
+});

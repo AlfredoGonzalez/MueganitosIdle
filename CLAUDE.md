@@ -39,8 +39,9 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
 
 ## Estado
 - Hecho: pantalla de carga, sótano provisional y prototipo de la Feria (soltar, pegar, combos, desborde,
-  4 horas con 6 cartas de Lotería, resultados).
-- Siguiente: playtest; luego pedidos de clientes, la dulcería idle y el guardado.
+  4 horas con 6 cartas de Lotería, pedidos de clientes, resultados).
+- Siguiente: la dulcería idle y el guardado. Pendiente anotado: energía para entrar a la feria
+  (`docs/gdd/03-mecanicas.md`, sección 7).
 
 ## Publicación
 - GitHub Pages: `.github/workflows/pages.yml` publica `dist/` en cada push a `main` o a la rama de trabajo.

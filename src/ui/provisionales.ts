@@ -242,9 +242,96 @@ export function construirAtlasMueganitos(escena: Phaser.Scene) {
   tex.refresh();
 }
 
+/** Clientes de la feria (vecinos del pueblo). Mismo orden que CLIENTES. */
+export const ATLAS_CLIENTES = 'clientes';
+export const CLIENTES = ['donchuy', 'lupita', 'tono', 'doniacleo', 'profememo'] as const;
+
+interface Cara { fondo: string; piel: string; pelo: string; ropa: string; extra: 'gorro' | 'mono' | 'gorra' | 'rizos' | 'lentes' }
+const CARAS: Record<(typeof CLIENTES)[number], Cara> = {
+  donchuy: { fondo: '#FFE0B0', piel: '#C68A5E', pelo: '#3A2214', ropa: '#FFFFFF', extra: 'gorro' },
+  lupita: { fondo: '#FFD3E6', piel: '#B97A52', pelo: '#2A160A', ropa: '#FFA400', extra: 'mono' },
+  tono: { fondo: '#CFE9F3', piel: '#D9A27A', pelo: '#5A2C10', ropa: '#1F4E9E', extra: 'gorra' },
+  doniacleo: { fondo: '#E7DDF7', piel: '#E0B08A', pelo: '#C9C2BA', ropa: '#E4007C', extra: 'rizos' },
+  profememo: { fondo: '#DDEFD3', piel: '#B9825A', pelo: '#E8E2DA', ropa: '#4E9A2E', extra: 'lentes' },
+};
+
+function cara(c: Cara): Dibujo {
+  return (ctx, w) => {
+    const r = w / 2;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(r, r, r - 4, 0, Math.PI * 2);
+    ctx.fillStyle = c.fondo;
+    ctx.fill();
+    ctx.clip();
+    // Ropa
+    ctx.fillStyle = c.ropa;
+    ctx.beginPath();
+    ctx.ellipse(r, w * 1.02, w * 0.42, w * 0.3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Pelo de atrás
+    ctx.fillStyle = c.pelo;
+    if (c.extra === 'rizos') {
+      for (const [x, y] of [[0.3, 0.32], [0.5, 0.24], [0.7, 0.32], [0.26, 0.5], [0.74, 0.5]]) {
+        ctx.beginPath(); ctx.arc(w * x, w * y, w * 0.13, 0, Math.PI * 2); ctx.fill();
+      }
+    } else {
+      ctx.beginPath(); ctx.ellipse(r, w * 0.42, w * 0.27, w * 0.25, 0, Math.PI, 0); ctx.fill();
+      if (c.extra === 'mono') { ctx.fillRect(w * 0.24, w * 0.42, w * 0.1, w * 0.3); ctx.fillRect(w * 0.66, w * 0.42, w * 0.1, w * 0.3); }
+    }
+    // Cara
+    ctx.fillStyle = c.piel;
+    ctx.beginPath(); ctx.ellipse(r, w * 0.52, w * 0.22, w * 0.25, 0, 0, Math.PI * 2); ctx.fill();
+    // Ojos, chapitas y sonrisa
+    ctx.fillStyle = '#2A160A';
+    for (const x of [0.42, 0.58]) { ctx.beginPath(); ctx.ellipse(w * x, w * 0.5, w * 0.025, w * 0.035, 0, 0, Math.PI * 2); ctx.fill(); }
+    ctx.fillStyle = 'rgba(240,90,130,0.45)';
+    for (const x of [0.36, 0.64]) { ctx.beginPath(); ctx.arc(w * x, w * 0.58, w * 0.04, 0, Math.PI * 2); ctx.fill(); }
+    ctx.strokeStyle = '#2A160A'; ctx.lineWidth = w * 0.02; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(r, w * 0.58, w * 0.06, Math.PI * 0.15, Math.PI * 0.85); ctx.stroke();
+    // Detalle de cada vecino
+    if (c.extra === 'gorro') {
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath(); ctx.ellipse(r, w * 0.22, w * 0.2, w * 0.12, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillRect(w * 0.32, w * 0.24, w * 0.36, w * 0.1);
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath(); ctx.arc(w * 0.4, w * 0.62, w * 0.03, 0, Math.PI * 2); ctx.fill();
+    } else if (c.extra === 'mono') {
+      ctx.fillStyle = '#E4007C';
+      ctx.beginPath(); ctx.arc(w * 0.68, w * 0.28, w * 0.07, 0, Math.PI * 2); ctx.fill();
+    } else if (c.extra === 'gorra') {
+      ctx.fillStyle = '#E4007C';
+      ctx.beginPath(); ctx.ellipse(r, w * 0.32, w * 0.24, w * 0.12, 0, Math.PI, 0); ctx.fill();
+      ctx.fillRect(r, w * 0.3, w * 0.3, w * 0.05);
+    } else if (c.extra === 'lentes') {
+      ctx.strokeStyle = '#3A2214'; ctx.lineWidth = w * 0.018;
+      for (const x of [0.42, 0.58]) { ctx.strokeRect(w * (x - 0.06), w * 0.46, w * 0.12, w * 0.08); }
+    }
+    ctx.restore();
+    ctx.strokeStyle = '#3A2214';
+    ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.arc(r, r, r - 4, 0, Math.PI * 2); ctx.stroke();
+  };
+}
+
+export function construirAtlasClientes(escena: Phaser.Scene) {
+  const lado = 256;
+  let tex = escena.textures.exists(ATLAS_CLIENTES) ? (escena.textures.get(ATLAS_CLIENTES) as Phaser.Textures.CanvasTexture) : null;
+  const nuevo = !tex;
+  if (!tex) tex = escena.textures.createCanvas(ATLAS_CLIENTES, lado * CLIENTES.length, lado);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  CLIENTES.forEach((nombre, i) => {
+    pintarCelda(escena, ctx, i * lado, 0, lado, lado, `cliente_${nombre}`, cara(CARAS[nombre]));
+    if (nuevo) tex!.add(nombre, 0, i * lado, 0, lado, lado);
+  });
+  tex.refresh();
+}
+
 /** Genera el atlas y los provisionales que falten. `alto` es la altura del lienzo del juego. */
 export function generarProvisionales(escena: Phaser.Scene, alto: number) {
   construirAtlasMueganitos(escena);
+  construirAtlasClientes(escena);
   crear(escena, 'fondo_splash', 1080, alto, fondoSplash(alto));
   crear(escena, 'papel_picado_bandera', 150, 132, bandera);
   crear(escena, 'barra_relleno', 760, 46, barraRelleno);

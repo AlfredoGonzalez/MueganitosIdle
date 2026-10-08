@@ -45,5 +45,34 @@
     "friccion": 0.5,
     "friccionAire": 0.012,
     "densidad": 0.002
+  },
+  "pedidos": {
+    "_nota": "Clientes con pedido: al crear el tier pedido, el dulce sale de la charola hacia el cliente.",
+    "maxClientes": 2,
+    "pacienciaSeg": 32,
+    "llegadaSeg": [
+      3,
+      7
+    ],
+    "primerClienteSeg": 4,
+    "rangoPorHora": [
+      [
+        3,
+        5
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        5,
+        8
+      ]
+    ],
+    "multiplicadorPuntos": 3
   }
 }
