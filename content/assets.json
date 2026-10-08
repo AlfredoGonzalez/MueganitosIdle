@@ -9,6 +9,13 @@
       "uso": "Fondo de la pantalla de carga"
     },
     {
+      "clave": "fondo_plaza",
+      "archivo": "fondos/fondo_plaza.png",
+      "ancho": 1080,
+      "alto": 2400,
+      "uso": "Fondo de la dulcería: la plaza del pueblo (casas arriba, empedrado, fuente al centro)"
+    },
+    {
       "clave": "logo_mueganitos",
       "archivo": "ui/logo_mueganitos.png",
       "ancho": 1024,
@@ -182,6 +189,13 @@
       "ancho": 480,
       "alto": 300,
       "uso": "Puesto de la dulcería: Taller de cajeta"
+    },
+    {
+      "clave": "cliente_tiarosy",
+      "archivo": "personajes/cliente_tiarosy.png",
+      "ancho": 256,
+      "alto": 256,
+      "uso": "Tía Rosy (prima de Celaya, ayudante del Taller de cajeta). Busto dentro de un círculo."
     }
   ]
 }

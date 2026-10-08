@@ -14,7 +14,8 @@ Lista viva de pendientes e ideas. Lo hecho se marca con ✅ y la fecha.
   en qué gastar (pagaré de la plaza, puestos más caros). Ideas: bajar `factorPesitosFeria` (0.05) o el
   mínimo de 1 pesito por punto al inicio; subir `razon` de los puestos; charola un poco más chica o caídas
   más rápidas para que el desborde sea un riesgo real. Medirlo con la simulación (`docs/gdd/anexos`).
-- ⬜ **Rediseñar la vista de la dulcería** (no gustó la cuadrícula de tarjetas): elegir dirección visual.
+- ✅ (2026-10-08) **Rediseñar la vista de la dulcería:** ahora es una *plaza viva* (casas, empedrado, fuente,
+  puestos como edificios, mueganitos paseando, monedas flotantes) con panel inferior para comprar.
 - ⬜ **Energía para entrar a la feria:** 100 de energía, 10–15 por feria, recarga con el tiempo y con
   anuncios. Detalle y dudas en [03 · Mecánicas §7](gdd/03-mecanicas.md#7-ideas-pendientes-anotadas-para-después).
 

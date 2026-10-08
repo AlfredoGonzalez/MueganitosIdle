@@ -114,5 +114,8 @@
   "recetario.completa": "Receta completa",
   "recetario.faltaPiloncillo": "Te falta piloncillo: ¡ve a la feria!",
   "feria.cambiar": "Cambiar cartas",
-  "feria.regalo": "¡Carta de regalo!"
+  "feria.regalo": "¡Carta de regalo!",
+  "dulceria.vende": "Vende",
+  "dulceria.cerrado": "Cerrado",
+  "dulceria.siguienteHito": "Siguiente hito"
 }

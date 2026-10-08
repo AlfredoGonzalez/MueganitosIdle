@@ -72,6 +72,10 @@ artista los reinterprete. Las imágenes están en [`docs/mocks/`](../mocks/).
 ## Wireframes
 
 ### Dulcería (hub)
+> **Implementado como "plaza viva":** la plaza del pueblo con los puestos como edificios; tocar un puesto
+> hace una venta rápida y abre un panel inferior para comprar niveles (×1/×10/×100/Máx) y contratar al
+> ayudante. El wireframe de abajo es la versión anterior (cuadrícula).
+
 ```
 ┌──────────────────────────────┐
 │ 🪙 1.4 M  (+3.2 K/s)   🍯 120 │  ← HUD: pesitos, ingreso, cajeta

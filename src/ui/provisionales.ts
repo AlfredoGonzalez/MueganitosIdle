@@ -298,7 +298,7 @@ export function construirAtlasMueganitos(escena: Phaser.Scene) {
 
 /** Clientes de la feria (vecinos del pueblo). Mismo orden que CLIENTES. */
 export const ATLAS_CLIENTES = 'clientes';
-export const CLIENTES = ['donchuy', 'lupita', 'tono', 'doniacleo', 'profememo'] as const;
+export const CLIENTES = ['donchuy', 'lupita', 'tono', 'doniacleo', 'profememo', 'tiarosy'] as const;
 
 interface Cara { fondo: string; piel: string; pelo: string; ropa: string; extra: 'gorro' | 'mono' | 'gorra' | 'rizos' | 'lentes' }
 const CARAS: Record<(typeof CLIENTES)[number], Cara> = {
@@ -307,6 +307,7 @@ const CARAS: Record<(typeof CLIENTES)[number], Cara> = {
   tono: { fondo: '#CFE9F3', piel: '#D9A27A', pelo: '#5A2C10', ropa: '#1F4E9E', extra: 'gorra' },
   doniacleo: { fondo: '#E7DDF7', piel: '#E0B08A', pelo: '#C9C2BA', ropa: '#E4007C', extra: 'rizos' },
   profememo: { fondo: '#DDEFD3', piel: '#B9825A', pelo: '#E8E2DA', ropa: '#4E9A2E', extra: 'lentes' },
+  tiarosy: { fondo: '#FFE7A8', piel: '#C98E62', pelo: '#5A2C10', ropa: '#C8812A', extra: 'mono' },
 };
 
 function cara(c: Cara): Dibujo {
@@ -479,12 +480,78 @@ export function construirAtlasPuestos(escena: Phaser.Scene) {
   tex.refresh();
 }
 
+/** Fondo de la dulcería: plaza de pueblo (cielo, casas de colores, empedrado, fuente y árboles). */
+function fondoPlaza(alto: number, arriba: number): Dibujo {
+  return (ctx, w) => {
+    const horizonte = arriba + 470;
+    const cielo = ctx.createLinearGradient(0, 0, 0, horizonte);
+    cielo.addColorStop(0, '#FFC98A');
+    cielo.addColorStop(1, '#FFE7C2');
+    ctx.fillStyle = cielo;
+    ctx.fillRect(0, 0, w, horizonte);
+    // Casas de colores (pueblo mágico)
+    const colores = ['#E4007C', '#FFA400', '#1F4E9E', '#4E9A2E', '#C8812A', '#F7B8D8', '#9DC8F5'];
+    let x = -20;
+    let i = 0;
+    while (x < w) {
+      const cw = 150 + ((i * 37) % 60);
+      const ch = 170 + ((i * 53) % 90);
+      ctx.fillStyle = colores[i % colores.length];
+      ctx.fillRect(x, horizonte - ch, cw, ch);
+      ctx.fillStyle = 'rgba(255,243,220,0.85)';
+      for (let v = 0; v < 2; v++) {
+        cuadroRedondo(ctx, x + 24 + v * (cw / 2 - 8), horizonte - ch + 40, cw / 2 - 48, 54, 22);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#5A2C10';
+      cuadroRedondo(ctx, x + cw / 2 - 24, horizonte - 84, 48, 84, 20);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(0,0,0,0.12)';
+      ctx.fillRect(x + cw - 10, horizonte - ch, 10, ch);
+      x += cw;
+      i++;
+    }
+    // Empedrado
+    ctx.fillStyle = '#F2D6A2';
+    ctx.fillRect(0, horizonte, w, alto - horizonte);
+    ctx.fillStyle = 'rgba(200,129,42,0.18)';
+    for (let y = horizonte + 20; y < alto; y += 46) {
+      for (let px = ((y / 46) % 2) * 40; px < w; px += 80) {
+        cuadroRedondo(ctx, px + 6, y, 66, 34, 14);
+        ctx.fill();
+      }
+    }
+    // Andador central más claro
+    ctx.fillStyle = 'rgba(255,248,234,0.55)';
+    ctx.fillRect(w / 2 - 70, horizonte, 140, alto - horizonte);
+    // Fuente al centro
+    const fy = horizonte + (alto - horizonte) * 0.42;
+    ctx.fillStyle = '#B9C7D6';
+    ctx.beginPath(); ctx.ellipse(w / 2, fy, 120, 46, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#7FB3E0';
+    ctx.beginPath(); ctx.ellipse(w / 2, fy - 6, 96, 32, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#B9C7D6';
+    ctx.fillRect(w / 2 - 12, fy - 90, 24, 84);
+    ctx.beginPath(); ctx.ellipse(w / 2, fy - 90, 44, 14, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    for (const dx of [-30, 0, 30]) { ctx.beginPath(); ctx.arc(w / 2 + dx, fy - 112 - Math.abs(dx) * 0.3, 8, 0, Math.PI * 2); ctx.fill(); }
+    // Árboles en las orillas
+    for (const [tx, ty] of [[40, 0.12], [w - 40, 0.12], [30, 0.62], [w - 30, 0.62]] as const) {
+      const yy = horizonte + (alto - horizonte) * ty;
+      ctx.fillStyle = '#8B4A1F'; ctx.fillRect(tx - 10, yy, 20, 70);
+      ctx.fillStyle = '#4E9A2E'; ctx.beginPath(); ctx.arc(tx, yy - 10, 62, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#6DB34A'; ctx.beginPath(); ctx.arc(tx - 18, yy - 28, 34, 0, Math.PI * 2); ctx.fill();
+    }
+  };
+}
+
 /** Genera el atlas y los provisionales que falten. `alto` es la altura del lienzo del juego. */
 export function generarProvisionales(escena: Phaser.Scene, alto: number) {
   construirAtlasMueganitos(escena);
   construirAtlasClientes(escena);
   construirAtlasPuestos(escena);
   crear(escena, 'fondo_splash', 1080, alto, fondoSplash(alto));
+  crear(escena, 'fondo_plaza', 1080, alto, fondoPlaza(alto, (escena.registry.get('areaSuperior') as number) ?? 70));
   crear(escena, 'papel_picado_bandera', 150, 132, bandera);
   crear(escena, 'barra_relleno', 760, 46, barraRelleno);
   crear(escena, 'cazo', 520, 300, cazo);
