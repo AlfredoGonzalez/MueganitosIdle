@@ -3,10 +3,10 @@
 > Un idle-roguelite tierno para iOS y Android (vertical) donde salvas la dulcería de tu abuela
 > juntando dulces vivos que se **pegan** para crecer… porque los muéganos nunca se separan.
 
-**Estado:** GDD v0 + prototipo jugable: pantalla de carga y la Feria (soltar y pegar mueganitos).
+**Estado:** GDD v0 + prototipo jugable: pantalla de carga, la Feria (soltar y pegar mueganitos) y la Dulcería idle con guardado. Pendientes en [docs/backlog.md](docs/backlog.md).
 
 🎮 **Jugar en el navegador:** https://alfredogonzalez.github.io/MueganitosIdle/ (se actualiza en cada push).
-Atajos: agrega `#feria` al final para entrar directo a la feria, o `?rapido#feria` para horas de 10 segundos.
+Atajos: agrega `#feria` o `#dulceria` al final para entrar directo; `?rapido#feria` hace horas de 10 segundos; `?nueva` borra el progreso.
 
 ## Correr el juego
 Necesitas [Node.js](https://nodejs.org) 20 o más reciente.
@@ -48,7 +48,8 @@ Los textos del juego están en [`content/textos/es.json`](content/textos/es.json
 content/     textos y datos editables (JSON)
 assets/      arte y audio de la artista
 src/core/    reglas del juego (lógica pura, con pruebas)
-src/escenas/ pantallas de Phaser (Arranque, Carga, Sotano, Feria…)
+src/escenas/ pantallas de Phaser (Arranque, Carga, Sotano, Feria, Dulceria, Mundo…)
+src/servicios/ sesión y guardado
 src/ui/      piezas visuales (Mueganito, papel picado, burbujas, arte provisional)
 tests/       pruebas automáticas
 ```

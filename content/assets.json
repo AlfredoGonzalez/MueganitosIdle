@@ -140,6 +140,48 @@
       "ancho": 256,
       "alto": 256,
       "uso": "Cliente de la feria: Profe Memo (maestro jubilado, lentes). Busto dentro de un círculo."
+    },
+    {
+      "clave": "puesto_comal",
+      "archivo": "puestos/puesto_comal.png",
+      "ancho": 480,
+      "alto": 300,
+      "uso": "Puesto de la dulcería: Comal de la Abuela"
+    },
+    {
+      "clave": "puesto_vitrina",
+      "archivo": "puestos/puesto_vitrina.png",
+      "ancho": 480,
+      "alto": 300,
+      "uso": "Puesto de la dulcería: Vitrina de muéganos"
+    },
+    {
+      "clave": "puesto_carrito",
+      "archivo": "puestos/puesto_carrito.png",
+      "ancho": 480,
+      "alto": 300,
+      "uso": "Puesto de la dulcería: Carrito de feria"
+    },
+    {
+      "clave": "puesto_mesa",
+      "archivo": "puestos/puesto_mesa.png",
+      "ancho": 480,
+      "alto": 300,
+      "uso": "Puesto de la dulcería: Mesa en la plaza"
+    },
+    {
+      "clave": "puesto_kiosko",
+      "archivo": "puestos/puesto_kiosko.png",
+      "ancho": 480,
+      "alto": 300,
+      "uso": "Puesto de la dulcería: Kiosko del jardín"
+    },
+    {
+      "clave": "puesto_taller",
+      "archivo": "puestos/puesto_taller.png",
+      "ancho": 480,
+      "alto": 300,
+      "uso": "Puesto de la dulcería: Taller de cajeta"
     }
   ]
 }

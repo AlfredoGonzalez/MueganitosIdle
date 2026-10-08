@@ -51,3 +51,27 @@ export function estrella(escena: Phaser.Scene, x: number, y: number, r: number) 
   g.lineStyle(4, COLOR.piloncillo, 1).strokePoints(puntos, true);
   return g;
 }
+
+/** Ícono de moneda (pesito). */
+export function iconoMoneda(escena: Phaser.Scene, x: number, y: number, r: number) {
+  const g = escena.add.graphics({ x, y });
+  g.fillStyle(0xf2b53a, 1).fillCircle(0, 0, r);
+  g.lineStyle(Math.max(2, r * 0.14), COLOR.piloncillo, 1).strokeCircle(0, 0, r);
+  g.lineStyle(Math.max(2, r * 0.1), COLOR.cajeta, 1).strokeCircle(0, 0, r * 0.6);
+  return g;
+}
+
+/** Ícono de piloncillo (cono de azúcar). */
+export function iconoPiloncillo(escena: Phaser.Scene, x: number, y: number, r: number) {
+  const g = escena.add.graphics({ x, y });
+  g.fillStyle(COLOR.piloncillo, 1).fillPoints([
+    new Phaser.Math.Vector2(-r * 0.45, -r), new Phaser.Math.Vector2(r * 0.45, -r),
+    new Phaser.Math.Vector2(r * 0.85, r), new Phaser.Math.Vector2(-r * 0.85, r),
+  ], true);
+  g.lineStyle(Math.max(2, r * 0.12), 0x4a230c, 1).strokePoints([
+    new Phaser.Math.Vector2(-r * 0.45, -r), new Phaser.Math.Vector2(r * 0.45, -r),
+    new Phaser.Math.Vector2(r * 0.85, r), new Phaser.Math.Vector2(-r * 0.85, r),
+  ], true);
+  g.lineStyle(Math.max(2, r * 0.1), 0xc07a3e, 1).lineBetween(-r * 0.5, -r * 0.3, r * 0.5, -r * 0.3);
+  return g;
+}

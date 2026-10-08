@@ -37,11 +37,18 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
 - Atajos para probar: `#feria` entra directo a la feria; `?rapido` hace horas de 10 s; `?canvas` usa el
   renderizador Canvas (para comparar defectos de WebGL).
 
+## Dulcería y guardado
+- Economía pura en `src/core/economia.ts`; guardado con versión en `src/core/partida.ts`; números grandes
+  en `src/core/numeros.ts` (`formatoCorto`). Datos en `content/dulceria.json`.
+- `src/servicios/sesion.ts` (`Sesion`, en el registry como `'sesion'`) guarda en `localStorage`, cobra lo
+  de los ayudantes al volver y paga las ferias (`cobrarFeria`).
+- `src/escenas/Mundo.ts` corre siempre en paralelo: produce cada cuadro y autoguarda.
+- Atajos: `#dulceria` entra directo; `?nueva` borra el progreso; `?depurar` expone `window.juego`.
+
 ## Estado
-- Hecho: pantalla de carga, sótano provisional y prototipo de la Feria (soltar, pegar, combos, desborde,
-  4 horas con 6 cartas de Lotería, pedidos de clientes, resultados).
-- Siguiente: la dulcería idle y el guardado. Pendiente anotado: energía para entrar a la feria
-  (`docs/gdd/03-mecanicas.md`, sección 7).
+- Hecho: pantalla de carga, sótano provisional, Feria (soltar, pegar, combos, desborde, cartas de Lotería,
+  pedidos, tira de la familia) y Dulcería idle con 6 puestos, ayudantes, ganancias offline y guardado.
+- Pendientes y orden sugerido: `docs/backlog.md`.
 
 ## Publicación
 - GitHub Pages: `.github/workflows/pages.yml` publica `dist/` en cada push a `main` o a la rama de trabajo.

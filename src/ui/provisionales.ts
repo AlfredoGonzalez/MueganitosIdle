@@ -382,10 +382,108 @@ export function construirAtlasClientes(escena: Phaser.Scene) {
   tex.refresh();
 }
 
+/** Puestos de la dulcería (6 ilustraciones provisionales de 480×300). */
+export const ATLAS_PUESTOS = 'puestos';
+export const PUESTOS_IDS = ['comal', 'vitrina', 'carrito', 'mesa', 'kiosko', 'taller'] as const;
+
+function mueganitoMini(ctx: CanvasRenderingContext2D, x: number, y: number, t: number, tier: number) {
+  ctx.save();
+  ctx.translate(x - t / 2, y - t);
+  cuerpoMueganito(tier)(ctx, t, t);
+  ctx.translate(t * 0.15, t * 0.27); // los ojos van centrados en la cara
+  ojos(ctx, t * 0.7, t * 0.35);
+  ctx.restore();
+}
+
+function fondoPuesto(ctx: CanvasRenderingContext2D, w: number, h: number, a: string, b: string) {
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, a);
+  g.addColorStop(1, b);
+  ctx.fillStyle = g;
+  cuadroRedondo(ctx, 0, 0, w, h, 28);
+  ctx.fill();
+}
+
+const DIBUJOS_PUESTOS: Record<(typeof PUESTOS_IDS)[number], Dibujo> = {
+  comal: (ctx, w, h) => {
+    fondoPuesto(ctx, w, h, '#FFE7C2', '#F4B979');
+    for (const [x, c] of [[0.3, '#FFA400'], [0.45, '#E4007C'], [0.6, '#FFA400'], [0.72, '#E4007C']] as const) {
+      ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(w * x, h * 0.95); ctx.lineTo(w * x + 18, h * 0.72); ctx.lineTo(w * x + 36, h * 0.95); ctx.fill();
+    }
+    ctx.fillStyle = '#3A2214'; ctx.beginPath(); ctx.ellipse(w * 0.5, h * 0.72, w * 0.36, h * 0.09, 0, 0, Math.PI * 2); ctx.fill();
+    mueganitoMini(ctx, w * 0.42, h * 0.7, 90, 2);
+    mueganitoMini(ctx, w * 0.6, h * 0.7, 66, 1);
+  },
+  vitrina: (ctx, w, h) => {
+    fondoPuesto(ctx, w, h, '#DDF0F7', '#A9D3E6');
+    ctx.fillStyle = '#8B4A1F'; ctx.fillRect(w * 0.1, h * 0.78, w * 0.8, h * 0.12);
+    ctx.fillStyle = 'rgba(255,255,255,0.45)'; cuadroRedondo(ctx, w * 0.12, h * 0.25, w * 0.76, h * 0.55, 14); ctx.fill();
+    ctx.strokeStyle = '#5A2C10'; ctx.lineWidth = 8; cuadroRedondo(ctx, w * 0.12, h * 0.25, w * 0.76, h * 0.55, 14); ctx.stroke();
+    mueganitoMini(ctx, w * 0.3, h * 0.76, 70, 3);
+    mueganitoMini(ctx, w * 0.5, h * 0.76, 80, 4);
+    mueganitoMini(ctx, w * 0.7, h * 0.76, 66, 2);
+  },
+  carrito: (ctx, w, h) => {
+    fondoPuesto(ctx, w, h, '#FFE0EF', '#F7A8C8');
+    for (const [x, y, c] of [[0.72, 0.2, '#FFA400'], [0.82, 0.28, '#1F4E9E'], [0.64, 0.3, '#4E9A2E']] as const) {
+      ctx.strokeStyle = '#5A2C10'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(w * x, h * y + 22); ctx.lineTo(w * 0.7, h * 0.5); ctx.stroke();
+      ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(w * x, h * y, 22, 27, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.fillStyle = '#E4007C'; cuadroRedondo(ctx, w * 0.16, h * 0.48, w * 0.56, h * 0.3, 16); ctx.fill();
+    ctx.fillStyle = '#FFF3DC'; ctx.fillRect(w * 0.16, h * 0.56, w * 0.56, h * 0.06);
+    ctx.fillStyle = '#3A2214';
+    for (const x of [0.26, 0.62]) { ctx.beginPath(); ctx.arc(w * x, h * 0.84, 24, 0, Math.PI * 2); ctx.fill(); }
+  },
+  mesa: (ctx, w, h) => {
+    fondoPuesto(ctx, w, h, '#FFF1C9', '#F2C77A');
+    ctx.fillStyle = '#1F4E9E'; ctx.fillRect(w * 0.12, h * 0.55, w * 0.76, h * 0.12);
+    ctx.fillStyle = '#FFFFFF';
+    for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.arc(w * (0.16 + i * 0.1), h * 0.67, 12, 0, Math.PI); ctx.fill(); }
+    ctx.fillStyle = '#8B4A1F'; ctx.fillRect(w * 0.18, h * 0.67, 16, h * 0.28); ctx.fillRect(w * 0.79, h * 0.67, 16, h * 0.28);
+    mueganitoMini(ctx, w * 0.32, h * 0.55, 72, 5);
+    mueganitoMini(ctx, w * 0.52, h * 0.55, 84, 6);
+    mueganitoMini(ctx, w * 0.7, h * 0.55, 60, 3);
+  },
+  kiosko: (ctx, w, h) => {
+    fondoPuesto(ctx, w, h, '#DDEFD3', '#A8DC8A');
+    ctx.fillStyle = '#4E9A2E'; ctx.beginPath(); ctx.moveTo(w * 0.5, h * 0.08); ctx.lineTo(w * 0.85, h * 0.36); ctx.lineTo(w * 0.15, h * 0.36); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#FFF3DC';
+    for (const x of [0.22, 0.4, 0.6, 0.78]) ctx.fillRect(w * x - 7, h * 0.36, 14, h * 0.44);
+    ctx.fillStyle = '#C8812A'; ctx.fillRect(w * 0.14, h * 0.8, w * 0.72, h * 0.1);
+    mueganitoMini(ctx, w * 0.5, h * 0.8, 96, 7);
+  },
+  taller: (ctx, w, h) => {
+    fondoPuesto(ctx, w, h, '#FFE6C7', '#E8A867');
+    ctx.fillStyle = '#6B2E0E'; ctx.beginPath(); ctx.ellipse(w * 0.5, h * 0.62, w * 0.28, h * 0.26, 0, 0, Math.PI); ctx.fill();
+    ctx.fillStyle = '#C8812A'; ctx.beginPath(); ctx.ellipse(w * 0.5, h * 0.62, w * 0.28, h * 0.07, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#8B4A1F'; ctx.lineWidth = 12; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(w * 0.6, h * 0.6); ctx.lineTo(w * 0.78, h * 0.18); ctx.stroke();
+    for (const x of [0.22, 0.78]) { ctx.fillStyle = '#C8812A'; cuadroRedondo(ctx, w * x - 30, h * 0.62, 60, 70, 12); ctx.fill(); ctx.fillStyle = '#E4007C'; ctx.fillRect(w * x - 32, h * 0.6, 64, 16); }
+  },
+};
+
+export function construirAtlasPuestos(escena: Phaser.Scene) {
+  const w = 480;
+  const h = 300;
+  let tex = escena.textures.exists(ATLAS_PUESTOS) ? (escena.textures.get(ATLAS_PUESTOS) as Phaser.Textures.CanvasTexture) : null;
+  const nuevo = !tex;
+  if (!tex) tex = escena.textures.createCanvas(ATLAS_PUESTOS, w * 3, h * 2);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  PUESTOS_IDS.forEach((id, i) => {
+    const x = (i % 3) * w;
+    const y = Math.floor(i / 3) * h;
+    pintarCelda(escena, ctx, x, y, w, h, `puesto_${id}`, DIBUJOS_PUESTOS[id]);
+    if (nuevo) tex!.add(id, 0, x, y, w, h);
+  });
+  tex.refresh();
+}
+
 /** Genera el atlas y los provisionales que falten. `alto` es la altura del lienzo del juego. */
 export function generarProvisionales(escena: Phaser.Scene, alto: number) {
   construirAtlasMueganitos(escena);
   construirAtlasClientes(escena);
+  construirAtlasPuestos(escena);
   crear(escena, 'fondo_splash', 1080, alto, fondoSplash(alto));
   crear(escena, 'papel_picado_bandera', 150, 132, bandera);
   crear(escena, 'barra_relleno', 760, 46, barraRelleno);

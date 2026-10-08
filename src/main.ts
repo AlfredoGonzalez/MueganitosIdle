@@ -9,6 +9,9 @@ import { Arranque } from './escenas/Arranque';
 import { Carga } from './escenas/Carga';
 import { Sotano } from './escenas/Sotano';
 import { Feria } from './escenas/Feria';
+import { Dulceria } from './escenas/Dulceria';
+import { Mundo } from './escenas/Mundo';
+import { Sesion } from './servicios/sesion';
 
 /** Lienzo base del GDD: 1080 de ancho; el alto se adapta al teléfono (1920–2400). */
 const ANCHO = 1080;
@@ -47,10 +50,14 @@ async function iniciar() {
     // Una textura por lote: con varias, algunos WebGL dejaron de dibujar triángulos (probado en Chromium por software).
     // El costo es mínimo para este juego; se puede revisar al probar en celulares reales.
     render: { maxTextures: 1 },
-    scene: [Arranque, Carga, Sotano, Feria],
+    scene: [Arranque, Mundo, Carga, Sotano, Feria, Dulceria],
     callbacks: {
       preBoot: (juego) => {
         juego.registry.set('textos', crearTextos(es));
+        const sesion = new Sesion();
+        // ?nueva en la URL borra el progreso (para probar desde cero)
+        if (window.location.search.includes('nueva')) sesion.reiniciar();
+        juego.registry.set('sesion', sesion);
         juego.registry.set('areaSuperior', areas.arriba);
         juego.registry.set('areaInferior', areas.abajo);
       },

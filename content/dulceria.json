@@ -1,0 +1,19 @@
+{
+  "_nota": "Dulcería idle (región 1). Números del GDD 04 · Economía. 'ingreso' es pesitos por segundo por nivel.",
+  "pesitosIniciales": 10,
+  "hitos": [25, 50, 100, 200, 300, 400],
+  "factorHito": 2,
+  "factorCostoAyudante": 1000,
+  "topeOfflineHoras": 2,
+  "factorPesitosFeria": 0.05,
+  "ventaPorToqueSeg": 1,
+  "autoguardadoSeg": 10,
+  "puestos": [
+    { "id": "comal", "costo": 4, "razon": 1.07, "ingreso": 0.8, "ayudante": "Don Chuy", "ayudanteGratis": true },
+    { "id": "vitrina", "costo": 80, "razon": 1.15, "ingreso": 4, "ayudante": "Lupita" },
+    { "id": "carrito", "costo": 1500, "razon": 1.14, "ingreso": 25, "ayudante": "Toño el globero" },
+    { "id": "mesa", "costo": 36000, "razon": 1.13, "ingreso": 200, "ayudante": "Doña Cleo" },
+    { "id": "kiosko", "costo": 900000, "razon": 1.12, "ingreso": 1500, "ayudante": "Profe Memo" },
+    { "id": "taller", "costo": 25000000, "razon": 1.11, "ingreso": 12000, "ayudante": "Tía Rosy" }
+  ]
+}

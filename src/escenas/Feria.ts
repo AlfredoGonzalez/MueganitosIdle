@@ -8,6 +8,8 @@ import {
   type Carta, type Modificadores,
 } from '../core/feria';
 import type { Textos } from '../core/textos';
+import { formatoCorto } from '../core/numeros';
+import type { Sesion } from '../servicios/sesion';
 import { boton, botonSecundario } from '../ui/boton';
 import { cartaLoteria, ALTO_CARTA, ANCHO_CARTA } from '../ui/cartaLoteria';
 import { confeti, estrella, textoFlotante } from '../ui/efectos';
@@ -725,7 +727,7 @@ export class Feria extends Phaser.Scene {
       fontFamily: FUENTE_TITULO, fontSize: '110px', color: CSS.crema,
     }).setOrigin(0.5));
     capa.add(boton(this, W / 2, H * 0.52, this.tx.t('feria.continuar'), {}, () => this.reanudar()));
-    capa.add(botonSecundario(this, W / 2, H * 0.52 + 170, this.tx.t('feria.salir'), {}, () => this.salir('Carga')));
+    capa.add(botonSecundario(this, W / 2, H * 0.52 + 170, this.tx.t('feria.salir'), {}, () => this.salir('Dulceria')));
   }
 
   private terminar(motivo: 'tiempo' | 'desborde') {
@@ -737,7 +739,10 @@ export class Feria extends Phaser.Scene {
     const capa = this.velo(0.6);
     const panel = this.add.graphics();
     const pw = 900;
-    const ph = 1300;
+    const ph = 1400;
+    // Cobrar la feria en la dulcería (se guarda en ese momento)
+    const piloncillo = piloncilloPorPuntos(this.puntos) + this.piloncilloPedidos;
+    const pesitos = (this.registry.get('sesion') as Sesion).cobrarFeria(this.puntos, piloncillo);
     const px = W / 2 - pw / 2;
     const py = H / 2 - ph / 2 - 40;
     panel.fillStyle(COLOR.tinta, 1).fillRoundedRect(px, py + 16, pw, ph, 48);
@@ -763,13 +768,14 @@ export class Feria extends Phaser.Scene {
     }).setOrigin(0.5)]);
 
     const filas: [string, string][] = [
-      [this.tx.t('feria.piloncillo'), `+${piloncilloPorPuntos(this.puntos) + this.piloncilloPedidos}`],
+      [this.tx.t('feria.pesitos'), `+${formatoCorto(pesitos)}`],
+      [this.tx.t('feria.piloncillo'), `+${piloncillo}`],
       [this.tx.t('feria.pedidos'), `${this.pedidosCumplidos}`],
       [this.tx.t('feria.mejorCombo'), `×${Math.max(1, this.mejorCadena)}`],
       [this.tx.t('feria.tierMaximo'), ''],
     ];
     filas.forEach(([etiqueta, valor], i) => {
-      const y = py + 460 + i * 120;
+      const y = py + 440 + i * 112;
       const f = this.add.graphics();
       f.fillStyle(COLOR.cremaClara, 1).fillRoundedRect(px + 60, y - 48, pw - 120, 96, 26);
       f.lineStyle(5, COLOR.tinta, 1).strokeRoundedRect(px + 60, y - 48, pw - 120, 96, 26);
@@ -791,7 +797,7 @@ export class Feria extends Phaser.Scene {
     // Los botones aparecen después del conteo, para evitar toques accidentales.
     const botones = [
       boton(this, W / 2, py + ph - 250, this.tx.t('feria.otra'), {}, () => this.salir('Feria')),
-      botonSecundario(this, W / 2, py + ph - 100, this.tx.t('feria.inicio'), { ancho: 520, alto: 100, tamTexto: 38 }, () => this.salir('Carga')),
+      botonSecundario(this, W / 2, py + ph - 100, this.tx.t('feria.inicio'), { ancho: 520, alto: 100, tamTexto: 38 }, () => this.salir('Dulceria')),
     ];
     for (const b of botones) {
       b.disableInteractive().setAlpha(0);
@@ -802,7 +808,7 @@ export class Feria extends Phaser.Scene {
     });
   }
 
-  private salir(escena: 'Feria' | 'Carga') {
+  private salir(escena: 'Feria' | 'Dulceria') {
     this.cameras.main.fadeOut(300, 255, 243, 220);
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
       this.matter.world.resume();

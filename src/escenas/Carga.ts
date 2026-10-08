@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { cargaTerminada, indiceFrase, suavizarProgreso } from '../core/carga';
 import type { Textos } from '../core/textos';
+import type { Sesion } from '../servicios/sesion';
 import { encolarImagenes, plan } from './recursos';
 import { generarProvisionales } from '../ui/provisionales';
 import { Mueganito } from '../ui/mueganito';
@@ -140,7 +141,11 @@ export class Carga extends Phaser.Scene {
     this.familia.forEach((m, i) => this.time.delayedCall(i * 60, () => m.saltar(110)));
     this.time.delayedCall(450, () => {
       this.cameras.main.fadeOut(380, 255, 243, 220);
-      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => this.scene.start('Sotano'));
+      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+        // Primera vez: el sótano (onboarding). Después: directo a la dulcería.
+        const sesion = this.registry.get('sesion') as Sesion;
+        this.scene.start(sesion.partida.feriasJugadas === 0 ? 'Sotano' : 'Dulceria');
+      });
     });
   }
 }
