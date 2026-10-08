@@ -1,0 +1,110 @@
+{
+  "_nota": "Imágenes que el juego espera. Si un archivo no existe en assets/, el juego dibuja uno provisional. Tamaños en px (lienzo de 1080 de ancho).",
+  "imagenes": [
+    {
+      "clave": "fondo_splash",
+      "archivo": "fondos/fondo_splash.png",
+      "ancho": 1080,
+      "alto": 2400,
+      "uso": "Fondo de la pantalla de carga"
+    },
+    {
+      "clave": "logo_mueganitos",
+      "archivo": "ui/logo_mueganitos.png",
+      "ancho": 1024,
+      "alto": 512,
+      "uso": "Logo en la pantalla de carga"
+    },
+    {
+      "clave": "pegui_grande",
+      "archivo": "personajes/pegui_grande.png",
+      "ancho": 600,
+      "alto": 600,
+      "uso": "Pegui grande para la pantalla de carga y el onboarding (sin ojos: los ojos van en su propia capa)"
+    },
+    {
+      "clave": "mueganito_t01_cuerpo",
+      "archivo": "mueganitos/mueganito_t01_cuerpo.png",
+      "ancho": 80,
+      "alto": 80,
+      "uso": "Migajita (tier 1)"
+    },
+    {
+      "clave": "mueganito_t02_cuerpo",
+      "archivo": "mueganitos/mueganito_t02_cuerpo.png",
+      "ancho": 105,
+      "alto": 105,
+      "uso": "Mueganito / Pegui (tier 2)"
+    },
+    {
+      "clave": "mueganito_t03_cuerpo",
+      "archivo": "mueganitos/mueganito_t03_cuerpo.png",
+      "ancho": 135,
+      "alto": 135,
+      "uso": "Parejita (tier 3)"
+    },
+    {
+      "clave": "mueganito_t04_cuerpo",
+      "archivo": "mueganitos/mueganito_t04_cuerpo.png",
+      "ancho": 170,
+      "alto": 170,
+      "uso": "Trío Pegadito (tier 4)"
+    },
+    {
+      "clave": "mueganito_t05_cuerpo",
+      "archivo": "mueganitos/mueganito_t05_cuerpo.png",
+      "ancho": 210,
+      "alto": 210,
+      "uso": "Racimito (tier 5)"
+    },
+    {
+      "clave": "mueganito_t06_cuerpo",
+      "archivo": "mueganitos/mueganito_t06_cuerpo.png",
+      "ancho": 255,
+      "alto": 255,
+      "uso": "Muégano Familiar (tier 6)"
+    },
+    {
+      "clave": "mueganito_t07_cuerpo",
+      "archivo": "mueganitos/mueganito_t07_cuerpo.png",
+      "ancho": 305,
+      "alto": 305,
+      "uso": "Torrecita (tier 7)"
+    },
+    {
+      "clave": "mueganito_t08_cuerpo",
+      "archivo": "mueganitos/mueganito_t08_cuerpo.png",
+      "ancho": 360,
+      "alto": 360,
+      "uso": "Muégano de Fiesta (tier 8)"
+    },
+    {
+      "clave": "mueganito_t09_cuerpo",
+      "archivo": "mueganitos/mueganito_t09_cuerpo.png",
+      "ancho": 420,
+      "alto": 420,
+      "uso": "Muégano Gigante (tier 9)"
+    },
+    {
+      "clave": "mueganito_t10_cuerpo",
+      "archivo": "mueganitos/mueganito_t10_cuerpo.png",
+      "ancho": 490,
+      "alto": 490,
+      "uso": "¡Megamuégano! (tier 10)"
+    },
+    {
+      "clave": "mueganito_ojos_normal",
+      "archivo": "mueganitos/mueganito_ojos_normal.png",
+      "ancho": 120,
+      "alto": 60,
+      "uso": "Ojos abiertos (se escalan para cada tier)"
+    },
+    {
+      "clave": "mueganito_ojos_cerrados",
+      "archivo": "mueganitos/mueganito_ojos_cerrados.png",
+      "ancho": 120,
+      "alto": 60,
+      "uso": "Ojos cerrados (parpadeo)"
+    }
+  ]
+}

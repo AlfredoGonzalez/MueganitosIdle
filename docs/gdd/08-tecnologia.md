@@ -78,14 +78,18 @@ se desarrolla y prueba en el navegador.
 1. Coloca PNG/audio con el nombre correcto en `assets/…` (ver [07 · Arte](07-arte-audio.md#nombres-de-archivo-importante)).
 2. Edita textos, nombres y precios en `content/*.json` si lo necesita; si algo está mal escrito, el juego
    muestra un aviso amable en pantalla en lugar de romperse.
-3. Cada *push* publica una **versión web de prueba** (GitHub Pages) con enlace fijo.
-4. La pantalla **Galería** (`?galeria`) lista los assets esperados (✅ / ❌) usando un manifiesto.
+3. `npm run demo` genera el juego en **un solo archivo HTML** (`dist-demo/mueganitos-demo.html`) que se
+   comparte como página web de prueba. La CI de GitHub Actions también lo genera y lo deja descargable en
+   cada *push*. (GitHub Pages en un repositorio privado requiere GitHub Pro; alternativas gratuitas con
+   enlace fijo: Cloudflare Pages o Netlify conectados al repo.)
+4. *(Próximamente)* la pantalla **Galería** (`?galeria`) lista los assets esperados (✅ / ❌) usando
+   `content/assets.json`.
 
 ## Builds y publicación
 - **Android:** Android Studio / Gradle (Windows, Mac o Linux). Cuenta Google Play: US$25 (pago único).
 - **iOS:** requiere **Xcode en macOS** (Mac propia, Mac en la nube o CI con macOS como Codemagic o
   GitHub Actions). Cuenta Apple Developer: US$99 al año.
-- **CI (GitHub Actions):** lint + tipos + pruebas + build web en cada *push*; publicación de la demo web.
+- **CI (GitHub Actions):** tipos + pruebas + build + demo web en cada *push* (`.github/workflows/ci.yml`).
   Más adelante, Fastlane para subir builds a TestFlight / pruebas internas.
 
 ## Rendimiento (objetivos)
