@@ -18,7 +18,8 @@ PUESTOS = [
     ("Taller de cajeta", 25_000_000, 1.11, 12_000),
 ]
 HITOS = [25, 50, 100, 200, 300, 400]  # cada hito duplica el ingreso del puesto
-FACTOR_PESITOS_FERIA = 0.05           # pesitos = puntos × máx(1, factor × ingreso/seg)
+FACTOR_PESITOS_FERIA = 0.05           # pesitos = puntos × factor × máx(ingreso/seg, mínimo)
+INGRESO_MINIMO_FERIA = 4              # evita que al inicio una feria pague horas de ventas
 DIVISOR_PILONCILLO = 5                # piloncillo = ⌊√puntos / divisor⌋
 PUNTAJE_PRIMERA_FERIA = 3_000
 MEJORA_POR_FERIA = 1.12               # la feria mejora 12 % por partida (Recetario + habilidad)
@@ -80,7 +81,7 @@ def jugar(dias, boost):
                 total += inc
                 if seg in FERIAS_EN_SEGUNDO:
                     puntos = PUNTAJE_PRIMERA_FERIA * MEJORA_POR_FERIA ** ferias
-                    ganado = puntos * max(1, FACTOR_PESITOS_FERIA * inc)
+                    ganado = puntos * FACTOR_PESITOS_FERIA * max(inc, INGRESO_MINIMO_FERIA)
                     pesitos += ganado
                     total += ganado
                     pilon += piloncillo(puntos)

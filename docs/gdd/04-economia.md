@@ -57,7 +57,7 @@ Referencia: una primera feria de 160 s con ~150 caídas y eficiencia del 50 % da
 
 ### Recompensas de feria
 ```
-pesitos     = puntos × máx(1, 0.05 × ingreso_por_seg_de_la_dulcería)
+pesitos     = puntos × 0.05 × máx(ingreso_por_seg_de_la_dulcería, 4)
 piloncillo  = ⌊ √puntos / 5 ⌋ + bonos de pedidos
 ```
 | Puntos | Piloncillo | Comentario |

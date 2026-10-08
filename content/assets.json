@@ -196,6 +196,13 @@
       "ancho": 256,
       "alto": 256,
       "uso": "Tía Rosy (prima de Celaya, ayudante del Taller de cajeta). Busto dentro de un círculo."
+    },
+    {
+      "clave": "gomita_dulcimax",
+      "archivo": "mueganitos/gomita_dulcimax.png",
+      "ancho": 256,
+      "alto": 256,
+      "uso": "Gomita industrial de DulciMax (sabotaje): no se pega a nada. Plástica, gris azulada, cara enojada."
     }
   ]
 }

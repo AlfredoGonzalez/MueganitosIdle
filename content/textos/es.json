@@ -117,5 +117,86 @@
   "feria.regalo": "¡Carta de regalo!",
   "dulceria.vende": "Vende",
   "dulceria.cerrado": "Cerrado",
-  "dulceria.siguienteHito": "Siguiente hito"
+  "dulceria.siguienteHito": "Siguiente hito",
+  "region1.feria1.titulo": "El cazo despierta",
+  "region1.feria1.historia": [
+    "Pegui: ¡Hay más como yo en el cazo!",
+    "Abuela: Junta a los iguales, mijo. Así crecen.",
+    "Pegui: ¡Quiero ver un Muégano Familiar!"
+  ],
+  "region1.feria2.titulo": "Harina y amistad",
+  "region1.feria2.historia": [
+    "Don Chuy: ¡Chonita! Te presto mi comal viejito.",
+    "Abuela: Gracias, Chuy. A ver si estos chamacos lo calientan."
+  ],
+  "region1.feria3.titulo": "Llega DulciMax",
+  "region1.feria3.historia": [
+    "Lupita: ¿Ya vieron el espectacular en la plaza?",
+    "Pegui: «DulciMax: dulces perfectos, todos iguales»…",
+    "Abuela: Iguales, sí. Pegados, nunca."
+  ],
+  "region1.feria4.titulo": "La vitrina más bonita",
+  "region1.feria4.historia": [
+    "Lupita: ¡Su foto ya tiene mil corazones!",
+    "Lupita: Va a venir mucha gente con antojo. ¡Atiéndanlos!"
+  ],
+  "region1.feria5.titulo": "Treinta días",
+  "region1.feria5.historia": [
+    "Lic. Glucosio: Señora, le compro la plaza. Precio justo.",
+    "Abuela: No se vende.",
+    "Lic. Glucosio: Entonces pague la deuda. Les doy treinta días."
+  ],
+  "region1.feria6.titulo": "La primera página",
+  "region1.feria6.historia": [
+    "Pegui: ¡Encontré un papel en el cazo!",
+    "Abuela: Es la letra de tu abuelo Ramón…",
+    "Abuela: «Para la Torrecita: paciencia y piloncillo»."
+  ],
+  "region1.feria7.titulo": "Feria pasada por agua",
+  "region1.feria7.historia": [
+    "Profe Memo: ¡Se viene un aguacero!",
+    "Pegui: ¡Todo resbala! ¡Agárrense, hermanitos!"
+  ],
+  "region1.feria8.titulo": "Globos en el cielo",
+  "region1.feria8.historia": [
+    "Toño: ¡Hoy hay verbena! Traje cien globos.",
+    "Pegui: ¡Hagamos la feria más grande del año!"
+  ],
+  "region1.feria9.titulo": "Sabotaje",
+  "region1.feria9.historia": [
+    "Dulcibot: BIP. GOMITAS. INDUSTRIALES. BIP.",
+    "Pegui: ¡No se pegan a nada! Ayuda a los vecinos con sus pedidos."
+  ],
+  "region1.feria10.titulo": "La Gran Feria del Pueblo",
+  "region1.feria10.historia": [
+    "Lic. Glucosio: Que el pueblo decida: DulciMax o Los Pegaditos.",
+    "Abuela: Que hablen los dulces.",
+    "Pegui: ¡Hagamos un Muégano Gigante!"
+  ],
+  "region1.nombre": "Villa Piloncillo",
+  "mapa.pagare": "Pagaré de la plaza",
+  "mapa.faltan": "Faltan",
+  "mapa.pagada": "¡Plaza pagada!",
+  "mapa.abonar": "Abonar",
+  "mapa.abonar25": "25 %",
+  "mapa.abonar50": "50 %",
+  "mapa.abonarTodo": "Todo",
+  "mapa.abonado": "¡Abonaste",
+  "mapa.sinDinero": "No tienes pesitos para abonar",
+  "mapa.jugar": "¡A la feria!",
+  "mapa.objetivo": "Objetivo",
+  "mapa.bloqueada": "Gana la feria anterior para abrir esta",
+  "mapa.jefe": "Jefe",
+  "mapa.completa": "¡Villa Piloncillo está a salvo! Próximamente: la Gira a Cajetalá.",
+  "objetivo.puntos": "Haz {v} puntos",
+  "objetivo.tier": "Crea un {nombre}",
+  "objetivo.pedidos": "Cumple {v} pedidos",
+  "modificador.tormenta": "Tormenta: la charola está resbalosa",
+  "modificador.sabotaje": "Sabotaje: Dulcibot tira gomitas que no se pegan",
+  "feria.objetivoCumplido": "¡Objetivo cumplido!",
+  "feria.objetivoFallido": "Objetivo no cumplido",
+  "feria.otraVez": "Otra vez",
+  "feria.alMapa": "Al mapa",
+  "feria.feriaN": "Feria",
+  "nav.mapa": "Mapa"
 }

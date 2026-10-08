@@ -1,6 +1,8 @@
 import dul from '../../content/dulceria.json';
 import datosRecetario from '../../content/recetario.json';
 import { costoSiguiente, efectos, type ConfigRecetario, type EfectosRecetario } from '../core/recetario';
+import datosRegion from '../../content/region1.json';
+import { abonar, type ConfigRegion } from '../core/region';
 import {
   costoAyudante, costoCompra, gananciaOffline, ingresoTotal, maxComprable, multHitos, pesitosDeFeria, type Puesto,
 } from '../core/economia';
@@ -9,6 +11,7 @@ import { escribirPartida, leerPartida, partidaNueva, segundosFuera, type Partida
 const CLAVE = 'mueganitos.partida';
 const PUESTOS = dul.puestos as Puesto[];
 const RECETARIO = datosRecetario as ConfigRecetario;
+const REGION = datosRegion as ConfigRegion;
 
 /** Lo que se ganó mientras la app estaba cerrada (para la ventana "¡Mientras no estabas!"). */
 export interface Bienvenida {
@@ -48,6 +51,23 @@ export class Sesion {
   }
 
   readonly recetario = RECETARIO;
+  readonly region = REGION;
+
+  /** Guarda los listones de una feria del mapa (se queda el mejor resultado). */
+  registrarListones(n: number, listones: number) {
+    const clave = String(n);
+    this.partida.listones[clave] = Math.max(this.partida.listones[clave] ?? 0, listones);
+    this.guardar();
+  }
+
+  /** Abona al pagaré de la plaza una fracción de los pesitos. Regresa lo abonado. */
+  abonarPagare(fraccion: number): number {
+    const r = abonar(this.partida.pesitos, this.partida.pagado, REGION.pagare, fraccion);
+    this.partida.pesitos = r.pesitos;
+    this.partida.pagado = r.pagado;
+    this.guardar();
+    return r.abono;
+  }
 
   /** Efectos actuales del Recetario de la Abuela. */
   efectos(): EfectosRecetario {

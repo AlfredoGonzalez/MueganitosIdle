@@ -11,6 +11,8 @@ export interface Partida {
   niveles: Niveles;
   ayudantes: string[];
   recetario: Record<string, number>;
+  listones: Record<string, number>; // feria del mapa → mejores listones (0–3)
+  pagado: number; // abonado al pagaré de la plaza
   feriasJugadas: number;
   mejorPuntaje: number;
   ultimaVez: number; // ms (Date.now) del último guardado
@@ -30,6 +32,8 @@ export function partidaNueva(puestos: Puesto[], pesitosIniciales: number, ahora:
     niveles,
     ayudantes: puestos.filter((p) => p.ayudanteGratis).map((p) => p.id),
     recetario: {},
+    listones: {},
+    pagado: 0,
     feriasJugadas: 0,
     mejorPuntaje: 0,
     ultimaVez: ahora,
@@ -67,6 +71,13 @@ export function leerPartida(texto: string | null, puestos: Puesto[], pesitosInic
       if (n > 0) recetario[id] = n;
     }
   }
+  const listones: Record<string, number> = {};
+  if (datos.listones && typeof datos.listones === 'object') {
+    for (const [n, v] of Object.entries(datos.listones as Record<string, unknown>)) {
+      const l = Math.min(3, Math.floor(numero(v, 0)));
+      if (l > 0) listones[n] = l;
+    }
+  }
   return {
     version: VERSION_GUARDADO,
     pesitos: numero(datos.pesitos, base.pesitos),
@@ -75,6 +86,8 @@ export function leerPartida(texto: string | null, puestos: Puesto[], pesitosInic
     niveles,
     ayudantes: [...new Set([...ayudantes, ...base.ayudantes])],
     recetario,
+    listones,
+    pagado: numero(datos.pagado, 0),
     feriasJugadas: Math.floor(numero(datos.feriasJugadas, 0)),
     mejorPuntaje: numero(datos.mejorPuntaje, 0),
     ultimaVez: numero(datos.ultimaVez, ahora),

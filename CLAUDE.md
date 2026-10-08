@@ -51,10 +51,16 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
   dulcería y la Feria los lee al iniciar. Escena `src/escenas/Recetario.ts`; atajo `#recetario`.
 - La barra inferior es compartida: `barraNavegacion()` en `src/ui/navegacion.ts`.
 
+## Mapa y pagaré
+- Región en `content/region1.json` (10 ferias: objetivos, listones, modificador `tormenta`/`sabotaje`,
+  pagaré); textos `region1.feriaN.titulo/historia`. Lógica pura en `src/core/region.ts`.
+- `src/escenas/Mapa.ts`; el botón central de la barra abre el mapa; la Feria recibe `{ nodo }` y sin nodo
+  es feria libre. Atajo `#mapa`.
+
 ## Estado
 - Hecho: pantalla de carga, sótano provisional, Feria (soltar, pegar, combos, desborde, cartas de Lotería,
   pedidos, tira de la familia), Dulcería idle con 6 puestos, ayudantes, ganancias offline y guardado, y
-  Recetario de la Abuela (13 recetas).
+  Recetario de la Abuela (13 recetas), mapa de Villa Piloncillo con pagaré de la plaza.
 - Pendientes y orden sugerido: `docs/backlog.md`.
 
 ## Publicación

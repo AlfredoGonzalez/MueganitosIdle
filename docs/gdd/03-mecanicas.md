@@ -97,7 +97,7 @@ El corazón del juego. Se entra desde el **mapa de la región** (cada nodo es un
 ### Final del día y recompensas
 | Recompensa | Fórmula | Uso |
 |---|---|---|
-| **Pesitos** | puntos × máx(1, 0.05 × ingreso/seg de la dulcería) | Puestos y pagaré |
+| **Pesitos** | puntos × 0.05 × máx(ingreso/seg de la dulcería, 4) | Puestos y pagaré |
 | **Piloncillo** | ⌊√puntos ÷ 5⌋ + bonos de pedidos | Recetario |
 | **Listones** (1–3) | según el objetivo de la feria | Progreso del mapa; 3 listones por primera vez = 5 de cajeta |
 

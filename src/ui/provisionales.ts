@@ -545,6 +545,34 @@ function fondoPlaza(alto: number, arriba: number): Dibujo {
   };
 }
 
+/** Gomita industrial de DulciMax: plástica, gris azulada y enojada. */
+const gomita: Dibujo = (ctx, s) => {
+  cuadroRedondo(ctx, s * 0.04, s * 0.04, s * 0.92, s * 0.92, s * 0.2);
+  const g = ctx.createLinearGradient(0, 0, 0, s);
+  g.addColorStop(0, '#C7CEDB');
+  g.addColorStop(1, '#7D879A');
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.lineWidth = s * 0.04;
+  ctx.strokeStyle = '#4D5361';
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  cuadroRedondo(ctx, s * 0.14, s * 0.1, s * 0.5, s * 0.12, s * 0.06);
+  ctx.fill();
+  ctx.strokeStyle = '#2B2F3A';
+  ctx.lineWidth = s * 0.045;
+  ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(s * 0.26, s * 0.36); ctx.lineTo(s * 0.42, s * 0.44); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(s * 0.74, s * 0.36); ctx.lineTo(s * 0.58, s * 0.44); ctx.stroke();
+  ctx.fillStyle = '#FF4D4D';
+  for (const x of [0.36, 0.64]) { ctx.beginPath(); ctx.arc(s * x, s * 0.52, s * 0.05, 0, Math.PI * 2); ctx.fill(); }
+  ctx.beginPath(); ctx.moveTo(s * 0.36, s * 0.74); ctx.lineTo(s * 0.64, s * 0.74); ctx.stroke();
+  ctx.fillStyle = '#2B2F3A';
+  ctx.font = `900 ${Math.round(s * 0.12)}px Nunito, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('DM', s * 0.5, s * 0.92);
+};
+
 /** Genera el atlas y los provisionales que falten. `alto` es la altura del lienzo del juego. */
 export function generarProvisionales(escena: Phaser.Scene, alto: number) {
   construirAtlasMueganitos(escena);
@@ -556,6 +584,7 @@ export function generarProvisionales(escena: Phaser.Scene, alto: number) {
   crear(escena, 'barra_relleno', 760, 46, barraRelleno);
   crear(escena, 'cazo', 520, 300, cazo);
   crear(escena, 'brillo_suave', 256, 256, brilloSuave);
+  crear(escena, 'gomita_dulcimax', 256, 256, gomita);
   crear(escena, 'papel_confeti', 16, 10, (ctx, w, h) => {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, w, h);

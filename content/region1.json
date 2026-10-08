@@ -1,0 +1,21 @@
+{
+  "_nota": "Región 1: Villa Piloncillo (GDD 02). Objetivos: 'puntos', 'tier' (crear ese mueganito) o 'pedidos'. 'listones' = puntos para el 2.º y 3.er listón. Modificadores: 'tormenta' (charola resbalosa) y 'sabotaje' (gomitas de DulciMax).",
+  "id": "villa_piloncillo",
+  "pagare": 10000000000,
+  "ferias": [
+    { "n": 1, "objetivos": [{ "tipo": "tier", "valor": 6 }], "listones": [1500, 3000] },
+    { "n": 2, "objetivos": [{ "tipo": "puntos", "valor": 2000 }], "listones": [3500, 6000] },
+    { "n": 3, "objetivos": [{ "tipo": "puntos", "valor": 4000 }], "listones": [7000, 11000] },
+    { "n": 4, "objetivos": [{ "tipo": "pedidos", "valor": 3 }], "listones": [6000, 10000] },
+    { "n": 5, "objetivos": [{ "tipo": "puntos", "valor": 10000 }], "listones": [15000, 22000] },
+    { "n": 6, "objetivos": [{ "tipo": "tier", "valor": 7 }], "listones": [12000, 20000] },
+    { "n": 7, "objetivos": [{ "tipo": "puntos", "valor": 15000 }], "listones": [22000, 32000], "modificador": "tormenta" },
+    { "n": 8, "objetivos": [{ "tipo": "puntos", "valor": 25000 }], "listones": [35000, 50000] },
+    { "n": 9, "objetivos": [{ "tipo": "pedidos", "valor": 5 }], "listones": [30000, 45000], "modificador": "sabotaje" },
+    { "n": 10, "objetivos": [{ "tipo": "puntos", "valor": 50000 }, { "tipo": "tier", "valor": 9 }], "listones": [70000, 100000], "jefe": true }
+  ],
+  "modificadores": {
+    "tormenta": { "friccion": 0.08 },
+    "sabotaje": { "gomitaCadaSeg": 9, "gomitaDuraSeg": 22, "tamGomita": 150 }
+  }
+}

@@ -35,7 +35,7 @@ export class Sotano extends Phaser.Scene {
 
     boton(this, W / 2, H - abajo - 330, tx.t('sotano.hornear'), {}, () => {
       this.cameras.main.fadeOut(300, 255, 243, 220);
-      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => this.scene.start('Feria'));
+      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => this.scene.start('Feria', { nodo: 1 }));
     });
     const volver = this.add.text(W / 2, H - abajo - 190, tx.t('sotano.volver'), {
       fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '44px', color: CSS.cempasuchil,

@@ -10,7 +10,10 @@ Lista viva de pendientes e ideas. Lo hecho se marca con ✅ y la fecha.
 - ✅ (2026-10-08) **Carta elegida sin querer al hacer spam:** las cartas se activan 0.8 s después de
   aparecer y solo cuenta un toque que empieza y termina sobre la misma carta.
 - ✅ (2026-10-08) **"Sigue" encimado con el pedido del cliente:** los clientes ya no usan la columna derecha.
-- ⬜ **Es muy fácil juntar mucho dinero** (y aún no se llega a desbordar). Revisar balance cuando haya más
+- 🟡 (2026-10-08) **Es muy fácil juntar mucho dinero:** la feria pagaba *mínimo 1 pesito por punto*
+  (una feria al inicio = 1 hora de ventas). Ahora paga `puntos × 0.05 × máx(ingreso, 4)` (≈ 12 min al
+  inicio) y el pagaré de la plaza (10 B) le da uso al dinero. Falta jugarlo para confirmar; si aún se
+  siente fácil: Revisar balance cuando haya más
   en qué gastar (pagaré de la plaza, puestos más caros). Ideas: bajar `factorPesitosFeria` (0.05) o el
   mínimo de 1 pesito por punto al inicio; subir `razon` de los puestos; charola un poco más chica o caídas
   más rápidas para que el desborde sea un riesgo real. Medirlo con la simulación (`docs/gdd/anexos`).
@@ -21,7 +24,9 @@ Lista viva de pendientes e ideas. Lo hecho se marca con ✅ y la fecha.
 
 ## Siguientes pasos (orden sugerido)
 1. ✅ (2026-10-08) **Recetario de la Abuela:** 13 recetas en 4 ramas (Charola, Feria, Dulcería, Pueblo).
-2. ⬜ **Mapa de la región y pagaré de la plaza:** 10 ferias con objetivo e historia; abonos con pesitos.
+2. ✅ (2026-10-08) **Mapa de la región y pagaré de la plaza:** 10 ferias con objetivo, historia y
+   listones; tormenta (feria 7) y sabotaje de DulciMax (feria 9); jefe en la 10; abonos al pagaré.
+2b. ⬜ **La Gira (prestigio)** al completar la región: Estrellas de Fama y región 2 (Cajetalá).
 3. ⬜ **Onboarding completo:** primer merge guiado, nombre del jugador, nombre y colores del letrero.
 4. ⬜ **Sonido y música** (squish por tier, clink de monedas, música de feria).
 5. ⬜ **Anuncios recompensados (simulados en web):** doblar ganancias offline, ×2 por 4 h, re-roll de cartas.

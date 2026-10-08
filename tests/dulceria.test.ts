@@ -59,8 +59,8 @@ describe('offline y feria', () => {
     expect(gananciaOffline(10, 99_999, dul)).toEqual({ pesitos: 72_000, segundos: 7200, topado: true });
     expect(gananciaOffline(10, -50, dul).pesitos).toBe(0);
   });
-  it('pesitos de feria = puntos × máx(1, 0.05 × ingreso)', () => {
-    expect(pesitosDeFeria(3000, 0.8, dul)).toBe(3000);
+  it('pesitos de feria = puntos × 0.05 × máx(ingreso, 4)', () => {
+    expect(pesitosDeFeria(3000, 0.8, dul)).toBe(600); // ≈ 12 min del Comal inicial, no 1 hora
     expect(pesitosDeFeria(3000, 1000, dul)).toBe(150_000);
   });
   it('el reloj atrasado no da ganancias', () => {
@@ -117,5 +117,14 @@ describe('guardado del recetario', () => {
     const raro = leerPartida('{"version":1,"recetario":{"a":-3,"b":"x","c":2}}', puestos, 10, 0)!;
     expect(raro.recetario).toEqual({ c: 2 });
     expect(leerPartida('{"version":1}', puestos, 10, 0)!.recetario).toEqual({});
+  });
+});
+
+describe('guardado del mapa', () => {
+  it('listones (máximo 3) y pagado', () => {
+    const raro = leerPartida('{"version":1,"listones":{"1":3,"2":9,"3":-1},"pagado":500}', puestos, 10, 0)!;
+    expect(raro.listones).toEqual({ 1: 3, 2: 3 });
+    expect(raro.pagado).toBe(500);
+    expect(partidaNueva(puestos, 10, 0)).toMatchObject({ listones: {}, pagado: 0 });
   });
 });

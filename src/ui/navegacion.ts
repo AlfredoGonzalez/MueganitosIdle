@@ -5,12 +5,12 @@ import { boton } from './boton';
 import { textoFlotante } from './efectos';
 import { COLOR, CSS, FUENTE_TEXTO } from './paleta';
 
-type Destino = 'Dulceria' | 'Recetario';
+type Destino = 'Dulceria' | 'Recetario' | 'Mapa';
 
-const ITEMS: { clave: string; escena: Destino | 'Feria' | null }[] = [
+const ITEMS: { clave: string; escena: Destino | null }[] = [
   { clave: 'nav.dulceria', escena: 'Dulceria' },
   { clave: 'nav.recetario', escena: 'Recetario' },
-  { clave: 'nav.feria', escena: 'Feria' },
+  { clave: 'nav.feria', escena: 'Mapa' }, // el botón central abre el mapa de ferias
   { clave: 'nav.album', escena: null },
   { clave: 'nav.tienda', escena: null },
 ];
@@ -33,9 +33,9 @@ export function barraNavegacion(escena: Phaser.Scene, y: number, activo: Destino
   const ancho = W / ITEMS.length;
   ITEMS.forEach(({ clave, escena: destino }, i) => {
     const x = ancho * i + ancho / 2;
-    if (destino === 'Feria') {
+    if (destino === 'Mapa') {
       boton(escena, x, y - 60, '', { ancho: 170, alto: 170, fondo: COLOR.rosa, sombra: COLOR.rosaOscuro }, () => {
-        if (permitido()) irA(escena, 'Feria');
+        if (permitido() && activo !== 'Mapa') irA(escena, 'Mapa');
       });
       escena.add.graphics().lineStyle(8, COLOR.cempasuchil, 1).strokeCircle(x, y - 60, 92);
       dibujarCarpa(escena, x, y - 66);

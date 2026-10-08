@@ -15,6 +15,7 @@ export interface ConfigDulceria {
   factorCostoAyudante: number;
   topeOfflineHoras: number;
   factorPesitosFeria: number;
+  ingresoMinimoFeria: number;
 }
 
 /** Costo del siguiente nivel cuando el puesto está en `nivel`. */
@@ -77,7 +78,11 @@ export function gananciaOffline(ingresoConAyudantes: number, segundosFuera: numb
   return { pesitos: ingresoConAyudantes * segundos, segundos, topado: segundosFuera > cfg.topeOfflineHoras * 3600 };
 }
 
-/** Pesitos que paga una feria: puntos × máx(1, factor × ingreso/seg). */
-export function pesitosDeFeria(puntos: number, ingresoPorSeg: number, cfg: Pick<ConfigDulceria, 'factorPesitosFeria'>): number {
-  return Math.floor(puntos * Math.max(1, cfg.factorPesitosFeria * ingresoPorSeg));
+/**
+ * Pesitos que paga una feria: puntos × factor × máx(ingreso/seg, mínimo).
+ * Con factor 0.05, cada 1,000 puntos valen ~50 s de ventas de la dulcería; el mínimo evita
+ * que al inicio (ingreso casi 0) la feria pague casi nada… o muchísimo, como pasaba antes.
+ */
+export function pesitosDeFeria(puntos: number, ingresoPorSeg: number, cfg: Pick<ConfigDulceria, 'factorPesitosFeria' | 'ingresoMinimoFeria'>): number {
+  return Math.floor(puntos * cfg.factorPesitosFeria * Math.max(ingresoPorSeg, cfg.ingresoMinimoFeria));
 }

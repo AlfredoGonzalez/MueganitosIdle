@@ -11,6 +11,8 @@ import type { Textos } from '../core/textos';
 import { formatoCorto } from '../core/numeros';
 import type { Sesion } from '../servicios/sesion';
 import type { EfectosRecetario } from '../core/recetario';
+import datosRegion from '../../content/region1.json';
+import { avanceObjetivo, listonesGanados, objetivosCumplidos, type ConfigRegion, type FeriaMapa } from '../core/region';
 import { boton, botonSecundario } from '../ui/boton';
 import { cartaLoteria, ALTO_CARTA, ANCHO_CARTA } from '../ui/cartaLoteria';
 import { confeti, estrella, textoFlotante } from '../ui/efectos';
@@ -20,6 +22,7 @@ import { ATLAS, ATLAS_CLIENTES, CLIENTES, FRAME_OJOS, FRAME_OJOS_CERRADOS, frame
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
 
 const MAZO = datosCartas.cartas as Carta[];
+const REGION = datosRegion as ConfigRegion;
 
 /** Un mueganito dentro de la charola: cuerpo de física + imágenes sincronizadas. */
 interface Pieza {
@@ -91,6 +94,12 @@ export class Feria extends Phaser.Scene {
   private linea!: Phaser.GameObjects.Graphics;
   private capa?: Phaser.GameObjects.Container;
   private ef!: EfectosRecetario;
+  /** Feria del mapa que se juega (null = feria libre, p. ej. con el atajo #feria). */
+  private nodo: FeriaMapa | null = null;
+  private objetivoAvisado = false;
+  private friccion = cfg.fisica.friccion;
+  private gomitaSeg = 0;
+  private txtObjetivo?: Phaser.GameObjects.Text;
   private rerollsRestantes = 0;
   private instruccion?: Phaser.GameObjects.Text;
   private familia: { m: Mueganito; numero: Phaser.GameObjects.Text; incognita: Phaser.GameObjects.Text }[] = [];
@@ -110,8 +119,15 @@ export class Feria extends Phaser.Scene {
     });
   }
 
+  init(datos: { nodo?: number }) {
+    this.nodo = REGION.ferias.find((f) => f.n === datos?.nodo) ?? null;
+  }
+
   create() {
     this.tx = this.registry.get('textos') as Textos;
+    this.objetivoAvisado = false;
+    this.gomitaSeg = 0;
+    this.friccion = this.nodo?.modificador === 'tormenta' ? REGION.modificadores.tormenta.friccion : cfg.fisica.friccion;
     this.ef = (this.registry.get('sesion') as Sesion).efectos();
     this.reiniciarEstado();
     this.construirEscenario();
@@ -119,6 +135,7 @@ export class Feria extends Phaser.Scene {
     this.prepararSiguiente();
     if (this.ef.cartaInicial) this.darCartaDeRegalo();
     this.configurarEntrada();
+    if (this.nodo?.modificador === 'tormenta') this.lluvia();
     this.matter.world.on('collisionstart', this.alChocar, this);
     this.matter.world.on('collisionactive', this.alChocar, this);
     this.time.addEvent({ delay: 450, loop: true, callback: () => this.parpadeoAlAzar() });
@@ -292,13 +309,20 @@ export class Feria extends Phaser.Scene {
     estrella(this, W - 36 - 330 + 44, y, 24).setDepth(21);
     this.txtPuntos = this.add.text(W - 66, y, '0', estiloHud).setOrigin(1, 0.5).setDepth(21);
 
-    this.txtCartas = this.add.text(40, y + 72, '', {
+    if (this.nodo) {
+      this.txtObjetivo = this.add.text(W / 2, y + 74, '', {
+        fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '30px', color: CSS.crema, align: 'center',
+        backgroundColor: '#3A2214', padding: { x: 18, y: 6 },
+      }).setOrigin(0.5).setDepth(21);
+    }
+    const yBajo = this.nodo ? 40 : 0; // con objetivo, lo demás baja un poco
+    this.txtCartas = this.add.text(40, y + 72 + yBajo, '', {
       fontFamily: FUENTE_TEXTO, fontStyle: '800', fontSize: '28px', color: CSS.crema, wordWrap: { width: 700 },
     }).setDepth(21);
 
     // Siguiente caída
     const xs = W - 110;
-    const ys = y + 150;
+    const ys = y + 150 + yBajo;
     this.add.text(xs, ys - 82, this.tx.t('feria.sigue').toUpperCase(), {
       fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '24px', color: CSS.crema,
     }).setOrigin(0.5).setLetterSpacing(3).setDepth(21);
@@ -307,7 +331,7 @@ export class Feria extends Phaser.Scene {
     this.sigue = new Mueganito(this, xs, ys + 40, 1, 76).setDepth(21);
 
     // Pausa
-    const pausa = botonSecundario(this, 96, y + 150, 'II', { ancho: 104, alto: 92, tamTexto: 40 }, () => this.pausar());
+    const pausa = botonSecundario(this, 96, y + 150 + yBajo, 'II', { ancho: 104, alto: 92, tamTexto: 40 }, () => this.pausar());
     pausa.setDepth(22);
     this.actualizarHud();
   }
@@ -321,6 +345,65 @@ export class Feria extends Phaser.Scene {
     this.txtTiempo.setColor(sol ? '#FFD84A' : '#FFC56B');
     this.txtPuntos.setText(this.puntos.toLocaleString('es-MX'));
     this.txtCartas.setText(this.elegidas.map((c) => c.nombre).join(' · '));
+    this.actualizarObjetivo();
+  }
+
+  private resultado() {
+    return { puntos: this.puntos, tierMaximo: this.tierMaximo, pedidos: this.pedidosCumplidos };
+  }
+
+  /** Línea del objetivo en el HUD (p. ej. "2,345 / 4,000 pts") y aviso al cumplirlo. */
+  private actualizarObjetivo() {
+    if (!this.nodo || !this.txtObjetivo) return;
+    const r = this.resultado();
+    const partes = this.nodo.objetivos.map((o) => {
+      const listo = avanceObjetivo(o, r) >= 1 ? ' ✓' : '';
+      if (o.tipo === 'puntos') return `${Math.min(r.puntos, o.valor).toLocaleString('es-MX')} / ${o.valor.toLocaleString('es-MX')}${listo}`;
+      if (o.tipo === 'pedidos') return `${this.tx.t('feria.pedidos')}: ${Math.min(r.pedidos, o.valor)}/${o.valor}${listo}`;
+      return `${this.tx.t(`tier.${o.valor}`)}${listo}`;
+    });
+    this.txtObjetivo.setText(`${this.tx.t('mapa.objetivo')}: ${partes.join(' · ')}`);
+    const cumplido = objetivosCumplidos(this.nodo, r);
+    this.txtObjetivo.setColor(cumplido ? '#A8F08A' : CSS.crema);
+    if (cumplido && !this.objetivoAvisado) {
+      this.objetivoAvisado = true;
+      textoFlotante(this, this.scale.width / 2, this.lineaY + 160, this.tx.t('feria.objetivoCumplido'), { tam: 64, color: CSS.nopal, titulo: true });
+      confeti(this, this.scale.width / 2, this.lineaY + 160, 50, 360);
+    }
+  }
+
+  /** Modificador "tormenta": lluvia que cae sobre la feria (solo decorativa; la física se vuelve resbalosa). */
+  private lluvia() {
+    const { width: W, height: H } = this.scale;
+    this.add.rectangle(W / 2, H / 2, W, H, 0x2a3a66, 0.18).setDepth(1);
+    for (let i = 0; i < 40; i++) {
+      const gota = this.add.image(Phaser.Math.Between(0, W), Phaser.Math.Between(-H, 0), 'papel_confeti')
+        .setTint(0xcfe6ff).setDisplaySize(4, 46).setAlpha(0.55).setAngle(12).setDepth(2);
+      this.tweens.add({
+        targets: gota, y: H + 60, x: gota.x - 180, duration: Phaser.Math.Between(700, 1100), repeat: -1,
+        delay: Phaser.Math.Between(0, 1000), onRepeat: () => gota.setPosition(Phaser.Math.Between(0, W + 180), -60),
+      });
+    }
+  }
+
+  /** Modificador "sabotaje": Dulcibot suelta gomitas que no se pegan y se deshacen después de un rato. */
+  private soltarGomita() {
+    const m = REGION.modificadores.sabotaje;
+    const tam = m.tamGomita;
+    const x = Phaser.Math.FloatBetween(this.izq + tam / 2, this.der - tam / 2);
+    const cuerpo = this.matter.add.rectangle(x, this.soltarY, tam, tam, {
+      chamfer: { radius: tam * 0.2 }, restitution: cfg.fisica.rebote, friction: this.friccion,
+      frictionAir: cfg.fisica.friccionAire, density: cfg.fisica.densidad * 1.5,
+    });
+    const img = this.add.image(x, this.soltarY, 'gomita_dulcimax').setDisplaySize(tam, tam).setDepth(3);
+    const ojos = this.add.image(x, this.soltarY, ATLAS, FRAME_OJOS).setVisible(false);
+    const pieza: Pieza = { tier: 0, tam, cuerpo, img, ojos, nacio: this.time.now, pop: { v: 1 }, pegando: false };
+    this.piezas.set(cuerpo.id, pieza);
+    this.time.delayedCall(m.gomitaDuraSeg * 1000, () => {
+      if (!this.piezas.has(cuerpo.id)) return;
+      confeti(this, cuerpo.position.x, cuerpo.position.y, 16, 120);
+      this.quitarPieza(pieza);
+    });
   }
 
   // ───────────────────────── Soltar ─────────────────────────
@@ -394,7 +477,7 @@ export class Feria extends Phaser.Scene {
     const cuerpo = this.matter.add.rectangle(x, y, tam, tam, {
       chamfer: { radius: tam * cfg.redondeo },
       restitution: cfg.fisica.rebote,
-      friction: cfg.fisica.friccion,
+      friction: this.friccion,
       frictionAir: cfg.fisica.friccionAire,
       density: cfg.fisica.densidad,
     });
@@ -426,7 +509,8 @@ export class Feria extends Phaser.Scene {
     for (const par of evento.pairs) {
       const a = this.piezas.get(par.bodyA.id);
       const b = this.piezas.get(par.bodyB.id);
-      if (!a || !b || a.pegando || b.pegando || a.tier !== b.tier) continue;
+      // Las gomitas de DulciMax (tier 0) no se pegan a nada
+      if (!a || !b || a.pegando || b.pegando || a.tier !== b.tier || a.tier === 0) continue;
       a.pegando = true;
       b.pegando = true;
       this.porPegar.push([a, b]);
@@ -510,6 +594,15 @@ export class Feria extends Phaser.Scene {
       if (this.soltar(tier, this.xSoltar)) {
         this.listoParaSoltar = this.time.now + enfriamientoMs(cfg, this.mod) * this.ef.factorEnfriamiento;
         this.prepararSiguiente();
+      }
+    }
+
+    // Sabotaje de DulciMax
+    if (this.nodo?.modificador === 'sabotaje') {
+      this.gomitaSeg += dt;
+      if (this.gomitaSeg >= REGION.modificadores.sabotaje.gomitaCadaSeg) {
+        this.gomitaSeg = 0;
+        this.soltarGomita();
       }
     }
 
@@ -782,7 +875,7 @@ export class Feria extends Phaser.Scene {
       fontFamily: FUENTE_TITULO, fontSize: '110px', color: CSS.crema,
     }).setOrigin(0.5));
     capa.add(boton(this, W / 2, H * 0.52, this.tx.t('feria.continuar'), {}, () => this.reanudar()));
-    capa.add(botonSecundario(this, W / 2, H * 0.52 + 170, this.tx.t('feria.salir'), {}, () => this.salir('Dulceria')));
+    capa.add(botonSecundario(this, W / 2, H * 0.52 + 170, this.tx.t('feria.salir'), {}, () => this.salir(this.nodo ? 'Mapa' : 'Dulceria')));
   }
 
   private terminar(motivo: 'tiempo' | 'desborde') {
@@ -794,7 +887,7 @@ export class Feria extends Phaser.Scene {
     const capa = this.velo(0.6);
     const panel = this.add.graphics();
     const pw = 900;
-    const ph = 1400;
+    const ph = this.nodo ? 1530 : 1400;
     // Cobrar la feria en la dulcería (se guarda en ese momento)
     const piloncillo = piloncilloPorPuntos(this.puntos) + this.piloncilloPedidos;
     const pesitos = (this.registry.get('sesion') as Sesion).cobrarFeria(this.puntos, piloncillo);
@@ -822,6 +915,23 @@ export class Feria extends Phaser.Scene {
       fontFamily: FUENTE_TEXTO, fontStyle: '800', fontSize: '34px', color: CSS.piloncillo,
     }).setOrigin(0.5)]);
 
+    // Feria del mapa: objetivo y listones
+    let desplazamiento = 0;
+    if (this.nodo) {
+      const listones = listonesGanados(this.nodo, this.resultado());
+      (this.registry.get('sesion') as Sesion).registrarListones(this.nodo.n, listones);
+      capa.add(this.add.text(W / 2, py + 420, listones > 0 ? this.tx.t('feria.objetivoCumplido') : this.tx.t('feria.objetivoFallido'), {
+        fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '40px', color: listones > 0 ? CSS.nopal : CSS.rosa,
+      }).setOrigin(0.5));
+      for (let i = 0; i < 3; i++) {
+        const e = estrella(this, W / 2 - 80 + i * 80, py + 490, 32);
+        e.setAlpha(i < listones ? 1 : 0.2);
+        capa.add(e);
+        if (i < listones) this.tweens.add({ targets: e, scale: { from: 0, to: 1 }, duration: 300, delay: 300 + i * 250, ease: 'Back.easeOut' });
+      }
+      desplazamiento = 130;
+    }
+
     const filas: [string, string][] = [
       [this.tx.t('feria.pesitos'), `+${formatoCorto(pesitos)}`],
       [this.tx.t('feria.piloncillo'), `+${piloncillo}`],
@@ -830,7 +940,7 @@ export class Feria extends Phaser.Scene {
       [this.tx.t('feria.tierMaximo'), ''],
     ];
     filas.forEach(([etiqueta, valor], i) => {
-      const y = py + 440 + i * 112;
+      const y = py + 440 + desplazamiento + i * 112;
       const f = this.add.graphics();
       f.fillStyle(COLOR.cremaClara, 1).fillRoundedRect(px + 60, y - 48, pw - 120, 96, 26);
       f.lineStyle(5, COLOR.tinta, 1).strokeRoundedRect(px + 60, y - 48, pw - 120, 96, 26);
@@ -851,8 +961,9 @@ export class Feria extends Phaser.Scene {
 
     // Los botones aparecen después del conteo, para evitar toques accidentales.
     const botones = [
-      boton(this, W / 2, py + ph - 250, this.tx.t('feria.otra'), {}, () => this.salir('Feria')),
-      botonSecundario(this, W / 2, py + ph - 100, this.tx.t('feria.inicio'), { ancho: 520, alto: 100, tamTexto: 38 }, () => this.salir('Dulceria')),
+      boton(this, W / 2, py + ph - 250, this.tx.t(this.nodo ? 'feria.otraVez' : 'feria.otra'), {}, () => this.salir('Feria')),
+      botonSecundario(this, W / 2, py + ph - 100, this.tx.t(this.nodo ? 'feria.alMapa' : 'feria.inicio'), { ancho: 520, alto: 100, tamTexto: 38 },
+        () => this.salir(this.nodo ? 'Mapa' : 'Dulceria')),
     ];
     for (const b of botones) {
       b.disableInteractive().setAlpha(0);
@@ -863,11 +974,12 @@ export class Feria extends Phaser.Scene {
     });
   }
 
-  private salir(escena: 'Feria' | 'Dulceria') {
+  private salir(escena: 'Feria' | 'Dulceria' | 'Mapa') {
     this.cameras.main.fadeOut(300, 255, 243, 220);
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
       this.matter.world.resume();
-      this.scene.start(escena);
+      // "Otra vez" repite la misma feria del mapa
+      this.scene.start(escena, escena === 'Feria' ? { nodo: this.nodo?.n } : undefined);
     });
   }
 }

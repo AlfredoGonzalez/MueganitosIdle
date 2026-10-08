@@ -13,6 +13,7 @@
   "factorCostoAyudante": 1000,
   "topeOfflineHoras": 2,
   "factorPesitosFeria": 0.05,
+  "ingresoMinimoFeria": 4,
   "ventaPorToqueSeg": 1,
   "autoguardadoSeg": 10,
   "puestos": [
