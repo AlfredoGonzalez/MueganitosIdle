@@ -3,6 +3,7 @@ import { costoSiguiente, nivelMaximo, valorMostrado, type Receta } from '../core
 import { formatoCorto } from '../core/numeros';
 import type { Textos } from '../core/textos';
 import type { Sesion } from '../servicios/sesion';
+import { audioDe } from '../servicios/audio';
 import { confeti, iconoPiloncillo, textoFlotante } from '../ui/efectos';
 import { barraNavegacion } from '../ui/navegacion';
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
@@ -28,6 +29,7 @@ export class Recetario extends Phaser.Scene {
   create() {
     this.tx = this.registry.get('textos') as Textos;
     this.sesion = this.registry.get('sesion') as Sesion;
+    audioDe(this)?.musica('dulceria');
     this.rama = (this.registry.get('pestanaRecetario') as string) ?? 'charola';
     const { width: W, height: H } = this.scale;
     const arriba = this.registry.get('areaSuperior') as number;
@@ -159,11 +161,13 @@ export class Recetario extends Phaser.Scene {
   private aprender(r: Receta, x: number, y: number) {
     if (costoSiguiente(r, this.sesion.nivelReceta(r.id)) === null) return;
     if (this.sesion.aprenderReceta(r.id)) {
+      audioDe(this)?.efecto('hito');
       confeti(this, x, y, 50, 240);
       textoFlotante(this, x, y - 90, this.tx.t('recetario.aprendida'), { tam: 52, color: CSS.nopal, titulo: true });
       navigator.vibrate?.(25);
       this.dibujarLista();
     } else {
+      audioDe(this)?.efecto('error');
       textoFlotante(this, this.scale.width / 2, y - 120, this.tx.t('recetario.faltaPiloncillo'), { tam: 40, color: CSS.rosa });
     }
   }

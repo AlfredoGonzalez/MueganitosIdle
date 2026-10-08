@@ -198,5 +198,8 @@
   "feria.otraVez": "Otra vez",
   "feria.alMapa": "Al mapa",
   "feria.feriaN": "Feria",
-  "nav.mapa": "Mapa"
+  "nav.mapa": "Mapa",
+  "sonido.todo": "Sí",
+  "sonido.efectos": "Efectos",
+  "sonido.silencio": "No"
 }

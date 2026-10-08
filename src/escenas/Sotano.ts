@@ -3,6 +3,7 @@ import type { Textos } from '../core/textos';
 import { Mueganito } from '../ui/mueganito';
 import { burbuja } from '../ui/burbuja';
 import { boton } from '../ui/boton';
+import { audioDe } from '../servicios/audio';
 import { CSS, FUENTE_TEXTO } from '../ui/paleta';
 
 /** Provisional: el sótano del onboarding. Por ahora solo cierra el recorrido del splash. */
@@ -14,6 +15,7 @@ export class Sotano extends Phaser.Scene {
   create() {
     const { width: W, height: H } = this.scale;
     const tx = this.registry.get('textos') as Textos;
+    audioDe(this)?.musica('sotano');
     const abajo = this.registry.get('areaInferior') as number;
     this.cameras.main.setBackgroundColor('#160B05').fadeIn(500, 22, 11, 5);
 

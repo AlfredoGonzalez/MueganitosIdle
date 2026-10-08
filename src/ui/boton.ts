@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { COLOR, CSS, FUENTE_TEXTO } from './paleta';
+import { audioDe } from '../servicios/audio';
 
 export interface OpcionesBoton {
   ancho?: number;
@@ -29,6 +30,7 @@ export function boton(escena: Phaser.Scene, x: number, y: number, texto: string,
   c.on('pointerout', () => c.setScale(1));
   c.on('pointerup', () => {
     escena.tweens.add({ targets: c, scale: 1, duration: 80 });
+    audioDe(escena)?.efecto('boton');
     alTocar();
   });
   return c;

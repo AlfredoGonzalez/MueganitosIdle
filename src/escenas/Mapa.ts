@@ -3,10 +3,12 @@ import { formatoCorto } from '../core/numeros';
 import { feriaActual, feriaDesbloqueada, regionCompleta, totalListones, type FeriaMapa, type Objetivo } from '../core/region';
 import type { Textos } from '../core/textos';
 import type { Sesion } from '../servicios/sesion';
+import { audioDe } from '../servicios/audio';
 import { boton, botonSecundario } from '../ui/boton';
 import { confeti, estrella, iconoMoneda, textoFlotante } from '../ui/efectos';
 import { Mueganito } from '../ui/mueganito';
 import { barraNavegacion } from '../ui/navegacion';
+import { botonSonido } from '../ui/botonSonido';
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
 
 /** Texto de un objetivo, p. ej. "Haz 2,000 puntos" o "Crea un Muégano Familiar". */
@@ -32,6 +34,7 @@ export class Mapa extends Phaser.Scene {
   create() {
     this.tx = this.registry.get('textos') as Textos;
     this.sesion = this.registry.get('sesion') as Sesion;
+    audioDe(this)?.musica('dulceria');
     this.modal = false;
     const { width: W, height: H } = this.scale;
     const arriba = this.registry.get('areaSuperior') as number;
@@ -45,6 +48,7 @@ export class Mapa extends Phaser.Scene {
     this.add.text(W / 2, arriba + 90, this.tx.t('region1.nombre'), {
       fontFamily: FUENTE_TITULO, fontSize: '80px', color: CSS.tinta,
     }).setOrigin(0.5);
+    botonSonido(this, W - 120, arriba + 60);
     const listones = totalListones(this.sesion.partida.listones);
     estrella(this, W / 2 - 60, arriba + 165, 22);
     this.add.text(W / 2 - 28, arriba + 165, `${listones} / ${this.sesion.region.ferias.length * 3}`, {
@@ -114,11 +118,13 @@ export class Mapa extends Phaser.Scene {
     const W = this.scale.width;
     const arriba = this.registry.get('areaSuperior') as number;
     if (abono <= 0) {
+      audioDe(this)?.efecto('error');
       textoFlotante(this, W / 2, arriba + 230, this.tx.t('mapa.sinDinero'), { tam: 38, color: CSS.rosa });
       return;
     }
     textoFlotante(this, W / 2, arriba + 230, `${this.tx.t('mapa.abonado')} ${formatoCorto(abono)}!`, { tam: 44, color: CSS.nopal, titulo: true });
     confeti(this, W / 2, arriba + 290, 30, 260);
+    audioDe(this)?.efecto('moneda');
     this.refrescarPagare();
   }
 
@@ -198,6 +204,7 @@ export class Mapa extends Phaser.Scene {
 
   private previa(f: FeriaMapa, listones: number) {
     this.modal = true;
+    audioDe(this)?.efecto('carta');
     const { width: W, height: H } = this.scale;
     const velo = this.add.rectangle(W / 2, H / 2, W, H, 0x1b0f18, 0.6).setInteractive();
     const pw = W - 80;

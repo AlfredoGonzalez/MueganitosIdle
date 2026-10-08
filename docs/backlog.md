@@ -28,10 +28,14 @@ Lista viva de pendientes e ideas. Lo hecho se marca con ✅ y la fecha.
    listones; tormenta (feria 7) y sabotaje de DulciMax (feria 9); jefe en la 10; abonos al pagaré.
 2b. ⬜ **La Gira (prestigio)** al completar la región: Estrellas de Fama y región 2 (Cajetalá).
 3. ⬜ **Onboarding completo:** primer merge guiado, nombre del jugador, nombre y colores del letrero.
-4. ⬜ **Sonido y música** (squish por tier, clink de monedas, música de feria).
+4. ✅ (2026-10-08) **Sonido y música** sintetizados: 15 efectos (squish que sube por tier, monedas,
+   fiesta, pedidos, alarma de desborde…) y 3 pistas originales (vals de dulcería, polka de feria, cajita
+   del sótano), con botón de sonido. Pendiente: grabaciones reales (ver idea abajo).
 5. ⬜ **Anuncios recompensados (simulados en web):** doblar ganancias offline, ×2 por 4 h, re-roll de cartas.
 
 ## Ideas sueltas
+- ⬜ Reemplazar el audio sintetizado por **grabaciones reales** (compositor/banco de sonidos): cargar
+  `assets/audio/<efecto>.ogg|m4a` cuando existan y usar el sintetizado como respaldo.
 - ⬜ Entregar un pedido tocando un mueganito que **ya está** en la charola (hoy solo cuenta el recién hecho).
 - ⬜ **Fiebre de azúcar** en la dulcería: 20 toques rápidos → ×3 por 10 s (GDD 03).
 - ⬜ Pantalla **Galería de assets** (`?galeria`) para que la artista vea qué archivos faltan.

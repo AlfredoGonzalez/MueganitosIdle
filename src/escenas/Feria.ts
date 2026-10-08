@@ -10,6 +10,8 @@ import {
 import type { Textos } from '../core/textos';
 import { formatoCorto } from '../core/numeros';
 import type { Sesion } from '../servicios/sesion';
+import { audioDe } from '../servicios/audio';
+import { botonSonido } from '../ui/botonSonido';
 import type { EfectosRecetario } from '../core/recetario';
 import datosRegion from '../../content/region1.json';
 import { avanceObjetivo, listonesGanados, objetivosCumplidos, type ConfigRegion, type FeriaMapa } from '../core/region';
@@ -100,6 +102,7 @@ export class Feria extends Phaser.Scene {
   private friccion = cfg.fisica.friccion;
   private gomitaSeg = 0;
   private txtObjetivo?: Phaser.GameObjects.Text;
+  private alarmaSeg = 0;
   private rerollsRestantes = 0;
   private instruccion?: Phaser.GameObjects.Text;
   private familia: { m: Mueganito; numero: Phaser.GameObjects.Text; incognita: Phaser.GameObjects.Text }[] = [];
@@ -125,7 +128,9 @@ export class Feria extends Phaser.Scene {
 
   create() {
     this.tx = this.registry.get('textos') as Textos;
+    audioDe(this)?.musica('feria');
     this.objetivoAvisado = false;
+    this.alarmaSeg = 0;
     this.gomitaSeg = 0;
     this.friccion = this.nodo?.modificador === 'tormenta' ? REGION.modificadores.tormenta.friccion : cfg.fisica.friccion;
     this.ef = (this.registry.get('sesion') as Sesion).efectos();
@@ -367,6 +372,7 @@ export class Feria extends Phaser.Scene {
     this.txtObjetivo.setColor(cumplido ? '#A8F08A' : CSS.crema);
     if (cumplido && !this.objetivoAvisado) {
       this.objetivoAvisado = true;
+      audioDe(this)?.efecto('hito');
       textoFlotante(this, this.scale.width / 2, this.lineaY + 160, this.tx.t('feria.objetivoCumplido'), { tam: 64, color: CSS.nopal, titulo: true });
       confeti(this, this.scale.width / 2, this.lineaY + 160, 50, 360);
     }
@@ -493,6 +499,7 @@ export class Feria extends Phaser.Scene {
     if (tier <= this.tierMaximo) return;
     this.tierMaximo = tier;
     this.actualizarFamilia(true);
+    if (tier >= 3) audioDe(this)?.efecto('nuevo');
   }
 
   private quitarPieza(p: Pieza) {
@@ -540,6 +547,7 @@ export class Feria extends Phaser.Scene {
       if (tier >= TIER_MAXIMO) {
         // ¡Fiesta! Dos Megamuéganos explotan en confeti.
         this.puntos += cfg.bonoFiesta * (sol ? 2 : 1);
+        audioDe(this)?.efecto('fiesta');
         confeti(this, x, y, 90, 520);
         this.cameras.main.shake(350, 0.012);
         textoFlotante(this, x, y - 60, this.tx.t('feria.fiesta'), { tam: 96, color: CSS.rosa, titulo: true });
@@ -550,6 +558,8 @@ export class Feria extends Phaser.Scene {
       this.registrarTier(tier + 1);
       const ganados = puntosPorMerge(tier + 1, this.cadena, sol, cfg, this.mod);
       this.puntos += ganados;
+      audioDe(this)?.efecto('pegar', { tier: tier + 1 });
+      if (this.cadena >= 2) audioDe(this)?.efecto('combo', { combo: this.cadena });
       confeti(this, x, y, 10 + tier * 3, tam * 0.9);
       textoFlotante(this, x, y - tam / 2, `+${ganados.toLocaleString('es-MX')}`, { tam: 40 + tier * 3 });
       if (this.cadena >= 2) {
@@ -592,6 +602,7 @@ export class Feria extends Phaser.Scene {
         this.tweens.add({ targets: t, alpha: 0, duration: 400, onComplete: () => t.destroy() });
       }
       if (this.soltar(tier, this.xSoltar)) {
+        audioDe(this)?.efecto('soltar');
         this.listoParaSoltar = this.time.now + enfriamientoMs(cfg, this.mod) * this.ef.factorEnfriamiento;
         this.prepararSiguiente();
       }
@@ -628,6 +639,15 @@ export class Feria extends Phaser.Scene {
     const d = actualizarDesborde(this.segundosArriba, arriba, dt, cfg);
     this.segundosArriba = d.segundos;
     this.dibujarLinea(d.alerta);
+    if (d.alerta > 0) {
+      this.alarmaSeg -= dt;
+      if (this.alarmaSeg <= 0) {
+        audioDe(this)?.efecto('alarma');
+        this.alarmaSeg = 0.45 - d.alerta * 0.25; // más rápido mientras más cerca de perder
+      }
+    } else {
+      this.alarmaSeg = 0;
+    }
     if (d.perdio) {
       this.terminar('desborde');
       return;
@@ -726,6 +746,7 @@ export class Feria extends Phaser.Scene {
         const puntos = Math.round(puntosPorPedido(tier, sol, cfg.pedidos, this.mod) * this.ef.factorPuntosPedido);
         this.puntos += puntos;
         this.pedidosCumplidos++;
+        audioDe(this)?.efecto('pedido');
         this.piloncilloPedidos += piloncilloPorPedido(tier) + this.ef.piloncilloExtraPedido;
         confeti(this, destinoX, destinoY - 40, 24, 160);
         textoFlotante(this, destinoX, destinoY - 110, this.tx.t('feria.gracias'), { tam: 52, color: CSS.nopal, titulo: true });
@@ -804,6 +825,7 @@ export class Feria extends Phaser.Scene {
     const mano = this.add.container(0, 0).setName('mano');
     capa.add(mano);
     const ofrecidas = ofrecerCartas(MAZO, datosCartas.probabilidadRareza, this.ef.cartasOfrecidas, Math.random);
+    audioDe(this)?.efecto('carta');
     const escala = Math.min(1, (W - 40) / (ofrecidas.length * (ANCHO_CARTA + 36) - 36));
     const sep = (ANCHO_CARTA + 36) * escala;
     const x0 = W / 2 - ((ofrecidas.length - 1) * sep) / 2;
@@ -852,6 +874,7 @@ export class Feria extends Phaser.Scene {
   private elegirCarta(carta: Carta, vista: Phaser.GameObjects.Container) {
     if (this.estado !== 'cartas') return;
     this.estado = 'pausa'; // evita doble elección mientras anima
+    audioDe(this)?.efecto('compra');
     this.tweens.add({
       targets: vista, scale: 1.12, angle: 0, duration: 180, yoyo: true,
       onComplete: () => {
@@ -875,11 +898,13 @@ export class Feria extends Phaser.Scene {
       fontFamily: FUENTE_TITULO, fontSize: '110px', color: CSS.crema,
     }).setOrigin(0.5));
     capa.add(boton(this, W / 2, H * 0.52, this.tx.t('feria.continuar'), {}, () => this.reanudar()));
+    capa.add(botonSonido(this, W / 2, H * 0.52 + 300));
     capa.add(botonSecundario(this, W / 2, H * 0.52 + 170, this.tx.t('feria.salir'), {}, () => this.salir(this.nodo ? 'Mapa' : 'Dulceria')));
   }
 
   private terminar(motivo: 'tiempo' | 'desborde') {
     this.congelar('fin');
+    audioDe(this)?.efecto(motivo === 'tiempo' ? 'fin' : 'perder');
     const { width: W, height: H } = this.scale;
     if (motivo === 'desborde') this.cameras.main.shake(300, 0.01);
     else confeti(this, W / 2, H * 0.3, 70, 600);

@@ -14,6 +14,7 @@ import { Mundo } from './escenas/Mundo';
 import { Recetario } from './escenas/Recetario';
 import { Mapa } from './escenas/Mapa';
 import { Sesion } from './servicios/sesion';
+import { Audio } from './servicios/audio';
 
 /** Lienzo base del GDD: 1080 de ancho; el alto se adapta al teléfono (1920–2400). */
 const ANCHO = 1080;
@@ -60,6 +61,7 @@ async function iniciar() {
         // ?nueva en la URL borra el progreso (para probar desde cero)
         if (window.location.search.includes('nueva')) sesion.reiniciar();
         juego.registry.set('sesion', sesion);
+        juego.registry.set('audio', new Audio());
         juego.registry.set('areaSuperior', areas.arriba);
         juego.registry.set('areaInferior', areas.abajo);
       },

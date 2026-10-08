@@ -57,6 +57,13 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
 - `src/escenas/Mapa.ts`; el botón central de la barra abre el mapa; la Feria recibe `{ nodo }` y sin nodo
   es feria libre. Atajo `#mapa`.
 
+## Audio
+- `src/servicios/audio.ts` (`Audio`, en el registry como `'audio'`; usar `audioDe(escena)`): todo se
+  sintetiza con Web Audio, sin archivos. `efecto('pegar', { tier })`, `musica('feria' | 'dulceria' | 'sotano')`.
+- Melodías editables en `content/musica.json` (notas MIDI; `erroresPista` avisa si algo no cuadra).
+- El audio se desbloquea con el primer toque (regla de los navegadores). `botonSonido()` cambia
+  todo → solo efectos → silencio y lo recuerda.
+
 ## Estado
 - Hecho: pantalla de carga, sótano provisional, Feria (soltar, pegar, combos, desborde, cartas de Lotería,
   pedidos, tira de la familia), Dulcería idle con 6 puestos, ayudantes, ganancias offline y guardado, y

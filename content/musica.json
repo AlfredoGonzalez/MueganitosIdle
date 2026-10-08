@@ -1,0 +1,37 @@
+{
+  "_nota": "Música provisional sintetizada (Web Audio). Notas en MIDI (60 = Do central); null = silencio. Cada pista: 'pasosPorCompas' pasos por compás; melodía y bajo tienen un valor por paso; 'acordes' uno por compás y suenan en los pasos de 'pasosAcorde'.",
+  "volumen": { "musica": 0.32, "efectos": 0.55 },
+  "escalaTiers": [0, 2, 4, 7, 9, 12, 14, 16, 19, 24],
+  "notaBaseTiers": 67,
+  "pistas": {
+    "dulceria": {
+      "_estilo": "Vals de pueblo en Fa (3/4): bajo en el 1, 'pah-pah' de jarana, melodía de marimba.",
+      "bpm": 150, "pasosPorPulso": 2, "pasosPorCompas": 6, "pasosAcorde": [2, 4],
+      "timbre": "marimba",
+      "acordes": [[57, 60, 65], [55, 58, 64], [55, 58, 64], [57, 60, 65], [57, 60, 65], [58, 62, 65], [55, 58, 64], [57, 60, 65]],
+      "bajo": [41, null, null, null, null, null, 36, null, null, null, null, null, 36, null, null, null, null, null, 41, null, null, null, null, null,
+               41, null, null, null, null, null, 46, null, null, null, null, null, 36, null, null, null, null, null, 41, null, null, null, null, null],
+      "melodia": [72, null, 69, null, 72, 74, 76, null, 74, null, 72, 70, 69, null, 70, null, 72, null, 69, null, null, null, 65, null,
+                  72, null, 72, 74, 76, null, 77, null, 76, null, 74, null, 72, null, 70, null, 67, null, 65, null, null, null, null, null]
+    },
+    "feria": {
+      "_estilo": "Polka de banda en Do (2/4): oom-pah, melodía brillante y platillo en contratiempo.",
+      "bpm": 120, "pasosPorPulso": 2, "pasosPorCompas": 4, "pasosAcorde": [1, 3],
+      "timbre": "metal", "platillo": [1, 3],
+      "acordes": [[60, 64, 67], [59, 62, 65], [59, 62, 65], [60, 64, 67], [60, 64, 67], [60, 65, 69], [59, 62, 65], [60, 64, 67]],
+      "bajo": [48, null, 43, null, 43, null, 50, null, 43, null, 50, null, 48, null, 43, null,
+               48, null, 43, null, 41, null, 48, null, 43, null, 50, null, 48, null, 43, null],
+      "melodia": [76, 79, 76, 72, 74, 77, 74, 71, 74, 76, 77, 79, 76, null, 72, null,
+                  79, 81, 79, 76, 77, 81, 77, 74, 74, 77, 76, 74, 72, null, null, null]
+    },
+    "sotano": {
+      "_estilo": "Cajita de música en La menor: arpegios lentos, sin bajo.",
+      "bpm": 72, "pasosPorPulso": 1, "pasosPorCompas": 4, "pasosAcorde": [],
+      "timbre": "celesta",
+      "acordes": [],
+      "bajo": [],
+      "melodia": [81, 76, 72, 76, 77, 72, 69, 72, 79, 76, 72, 76, 79, 74, 71, 74,
+                  81, 76, 72, 76, 77, 72, 69, 72, 76, 72, 69, 72, 69, null, null, null]
+    }
+  }
+}

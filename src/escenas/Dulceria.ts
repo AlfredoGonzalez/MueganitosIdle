@@ -3,10 +3,12 @@ import { ingresoPuesto, tramoHito } from '../core/economia';
 import { formatoCorto } from '../core/numeros';
 import type { Textos } from '../core/textos';
 import type { Sesion } from '../servicios/sesion';
+import { audioDe } from '../servicios/audio';
 import { boton } from '../ui/boton';
 import { confeti, iconoMoneda, iconoPiloncillo, textoFlotante } from '../ui/efectos';
 import { Mueganito } from '../ui/mueganito';
 import { barraNavegacion } from '../ui/navegacion';
+import { botonSonido } from '../ui/botonSonido';
 import { papelPicado } from '../ui/papelPicado';
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
 import { ATLAS_CLIENTES, ATLAS_PUESTOS } from '../ui/provisionales';
@@ -74,6 +76,7 @@ export class Dulceria extends Phaser.Scene {
   create() {
     this.tx = this.registry.get('textos') as Textos;
     this.sesion = this.registry.get('sesion') as Sesion;
+    audioDe(this)?.musica('dulceria');
     this.puestos = [];
     this.elegido = null;
     this.modal = false;
@@ -138,6 +141,7 @@ export class Dulceria extends Phaser.Scene {
     l.fillStyle(0x5a2c10, 1).fillRoundedRect(W / 2 - 290, yl - 52 + 10, 580, 104, 20);
     l.fillStyle(COLOR.piloncillo, 1).fillRoundedRect(W / 2 - 290, yl - 52, 580, 104, 20);
     l.lineStyle(6, 0x5a2c10, 1).strokeRoundedRect(W / 2 - 290, yl - 52, 580, 104, 20);
+    botonSonido(this, W - 110, yl + 110);
     this.add.text(W / 2, yl + 4, this.tx.t('dulceria.letrero'), {
       fontFamily: FUENTE_TITULO, fontSize: '72px', color: CSS.crema,
       shadow: { offsetX: 0, offsetY: 5, color: CSS.rosa, fill: true },
@@ -420,6 +424,7 @@ export class Dulceria extends Phaser.Scene {
     this.tweens.add({ targets: v.dibujo, scaleX: v.dibujo.scaleX * 0.95, scaleY: v.dibujo.scaleY * 0.95, duration: 60, yoyo: true });
     if (this.sesion.nivel(id) > 0) {
       const ganado = this.sesion.ventaPorToque(id);
+      audioDe(this)?.efecto('moneda');
       textoFlotante(this, v.caja.x + Phaser.Math.Between(-60, 60), v.caja.y - 60, `+${formatoCorto(ganado)}`, { tam: 40 });
     }
     this.abrirPanel(id);
@@ -433,10 +438,12 @@ export class Dulceria extends Phaser.Scene {
     const hitos = this.sesion.comprar(id, cantidad);
     const v = this.vista(id);
     if (!hitos) {
+      audioDe(this)?.efecto('error');
       this.tweens.add({ targets: this.panel.comprarTexto, x: { from: this.panel.comprarTexto.x - 8, to: this.panel.comprarTexto.x + 8 }, duration: 50, yoyo: true, repeat: 2 });
       return;
     }
     this.tweens.add({ targets: v.dibujo, scaleY: v.dibujo.scaleY * 1.08, duration: 90, yoyo: true });
+    audioDe(this)?.efecto(hitos.length ? 'hito' : 'compra');
     if (!abierto) confeti(this, v.caja.x, v.caja.y, 40, 220);
     if (hitos.length) {
       confeti(this, v.caja.x, v.caja.y, 60, 280);
@@ -451,11 +458,13 @@ export class Dulceria extends Phaser.Scene {
     if (!id || this.modal || this.sesion.tieneAyudante(id)) return;
     const v = this.vista(id);
     if (this.sesion.contratar(id)) {
+      audioDe(this)?.efecto('hito');
       confeti(this, v.caja.x, v.caja.y - 60, 40, 220);
       textoFlotante(this, v.caja.x, v.caja.y - 150, `¡${this.sesion.puesto(id).ayudante}!`, { tam: 48, color: CSS.nopal, titulo: true });
       this.sesion.guardar();
       this.refrescar();
     } else {
+      audioDe(this)?.efecto('error');
       this.tweens.add({ targets: this.panel.ayudanteTexto, x: { from: this.panel.ayudanteTexto.x - 8, to: this.panel.ayudanteTexto.x + 8 }, duration: 50, yoyo: true, repeat: 2 });
     }
   }
@@ -500,6 +509,7 @@ export class Dulceria extends Phaser.Scene {
     const capa = this.add.container(0, 0, elementos).setDepth(9000);
     const cobrar = boton(this, W / 2, py + ph - 110, this.tx.t('dulceria.cobrar'), {}, () => {
       confeti(this, W / 2, py + 320, 60, 400);
+      audioDe(this)?.efecto('fin');
       this.tweens.add({ targets: capa, alpha: 0, duration: 300, delay: 250, onComplete: () => { capa.destroy(); this.modal = false; } });
     });
     capa.add(cobrar);

@@ -108,6 +108,9 @@ Los textos, nombres y precios también viven en archivos editables (`content/*.j
 pueden corregir sin tocar código (ver [08 · Tecnología](08-tecnologia.md#flujo-de-trabajo-de-la-artista)).
 
 ## Audio
+> **Estado actual:** el juego trae música y efectos **sintetizados por código** (Web Audio) como
+> provisionales, con melodías en `content/musica.json`. Lo de abajo es la meta para el audio final.
+
 ### Música (loops de 1–2 min)
 | Pista | Ambiente | Instrumentación sugerida | BPM |
 |---|---|---|:-:|

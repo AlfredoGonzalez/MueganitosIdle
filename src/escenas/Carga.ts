@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { cargaTerminada, indiceFrase, suavizarProgreso } from '../core/carga';
 import type { Textos } from '../core/textos';
 import type { Sesion } from '../servicios/sesion';
+import { audioDe } from '../servicios/audio';
 import { encolarImagenes, plan } from './recursos';
 import { generarProvisionales } from '../ui/provisionales';
 import { Mueganito } from '../ui/mueganito';
@@ -134,6 +135,8 @@ export class Carga extends Phaser.Scene {
   private alTocar() {
     if (this.quiereEntrar) return;
     this.quiereEntrar = true;
+    audioDe(this)?.desbloquear();
+    audioDe(this)?.efecto('nuevo');
     if (this.listo) this.entrar();
   }
 
