@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
-<defs><clipPath id="circulo72"><circle cx="100" cy="100" r="94"/></clipPath>
-    <radialGradient id="luz73" cx="0.5" cy="0.35" r="0.7"><stop offset="0" stop-color="#ffe9f3"/><stop offset="1" stop-color="#FFD3E6"/></radialGradient></defs>
+<defs><clipPath id="circulo81"><circle cx="100" cy="100" r="94"/></clipPath>
+    <radialGradient id="luz82" cx="0.5" cy="0.35" r="0.7"><stop offset="0" stop-color="#ffe9f3"/><stop offset="1" stop-color="#FFD3E6"/></radialGradient></defs>
 <g transform="scale(1.28)">
-  <circle cx="100" cy="100" r="94" fill="url(#luz73)"/>
-  <g clip-path="url(#circulo72)">
+  <circle cx="100" cy="100" r="94" fill="url(#luz82)"/>
+  <g clip-path="url(#circulo81)">
     <g transform="translate(30,40) rotate(45)" opacity="0.25"><rect x="-9" y="-9" width="18" height="18" rx="3" fill="none" stroke="#cea7b2" stroke-width="2.4"/><circle r="3" fill="#cea7b2"/></g><g transform="translate(170,150) rotate(45)" opacity="0.25"><rect x="-9" y="-9" width="18" height="18" rx="3" fill="none" stroke="#cea7b2" stroke-width="2.4"/><circle r="3" fill="#cea7b2"/></g><g transform="translate(26,150) rotate(45)" opacity="0.25"><rect x="-9" y="-9" width="18" height="18" rx="3" fill="none" stroke="#cea7b2" stroke-width="2.4"/><circle r="3" fill="#cea7b2"/></g><g transform="translate(168,44) rotate(45)" opacity="0.25"><rect x="-9" y="-9" width="18" height="18" rx="3" fill="none" stroke="#cea7b2" stroke-width="2.4"/><circle r="3" fill="#cea7b2"/></g>
     <circle cx="52" cy="70" r="17" fill="#2A160A" stroke="#3A2214" stroke-width="3.2"/><circle cx="148" cy="70" r="17" fill="#2A160A" stroke="#3A2214" stroke-width="3.2"/>
         <ellipse cx="100" cy="88" rx="47" ry="48" fill="#2A160A" stroke="#3A2214" stroke-width="3.2"/>

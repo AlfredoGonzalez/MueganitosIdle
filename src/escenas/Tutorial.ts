@@ -6,6 +6,7 @@ import { boton } from '../ui/boton';
 import { burbuja } from '../ui/burbuja';
 import { confeti, textoFlotante } from '../ui/efectos';
 import { Mueganito } from '../ui/mueganito';
+import { ponerFondo } from '../ui/fondo';
 import { ATLAS, FRAME_OJOS, frameCuerpo } from '../ui/provisionales';
 import { COLOR, CSS, FUENTE_TITULO } from '../ui/paleta';
 
@@ -65,11 +66,12 @@ export class Tutorial extends Phaser.Scene {
     this.caidas = 0;
     this.puedeSoltar = false;
     this.terminado = false;
-    this.cameras.main.setBackgroundColor('#2A1609').fadeIn(400, 255, 243, 220);
+    ponerFondo(this, 'fondo_sotano');
+    this.cameras.main.fadeIn(400, 255, 243, 220);
 
     // El sótano, ya con la luz del cazo encendida
-    const luz = this.add.image(W / 2, H * 0.55, 'brillo_suave').setDisplaySize(1300, 1500).setTint(0xffb35c).setAlpha(0.5);
-    this.tweens.add({ targets: luz, alpha: 0.65, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    const luz = this.add.image(W / 2, H * 0.55, 'brillo_suave').setDisplaySize(1300, 1500).setTint(0xffb35c).setAlpha(0.22);
+    this.tweens.add({ targets: luz, alpha: 0.32, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
 
     // Pegui mira desde arriba y habla
     this.yDialogo = arriba + 120;

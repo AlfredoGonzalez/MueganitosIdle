@@ -14,8 +14,8 @@ Cómo reemplazarlo con tu arte:
 3. Listo: `npm run arte` **no vuelve a tocar** un PNG que tú cambiaste (lo reconoce por su huella en
    `svg/exportados.json`). Solo lo reemplaza si alguien usa `npm run arte -- --forzar`.
 
-Los fondos (`fondo_splash`, `fondo_plaza`) todavía los dibuja el juego por código porque se adaptan
-al alto de cada teléfono.
+Los fondos miden más que la pantalla: el juego los **recorta** según el teléfono (nunca los estira).
+En `content/assets.json` dice, para cada uno, qué franja siempre se ve y dónde va el horizonte.
 
 ## `fuentes/`
 Chicle y Nunito en TTF (para exportar los textos del logo). Ambas son de Google Fonts con licencia

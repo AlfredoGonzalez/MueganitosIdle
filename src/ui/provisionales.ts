@@ -8,8 +8,11 @@ import { TIERS } from './paleta';
 
 type Dibujo = (ctx: CanvasRenderingContext2D, w: number, h: number) => void;
 
+/** Claves con PNG real que todavía no termina de cargar: no se les dibuja provisional (si no, el PNG se ignora). */
+let porCargar = new Set<string>();
+
 function crear(escena: Phaser.Scene, clave: string, w: number, h: number, dibujar: Dibujo) {
-  if (escena.textures.exists(clave)) return;
+  if (escena.textures.exists(clave) || porCargar.has(clave)) return;
   const tex = escena.textures.createCanvas(clave, w, h);
   if (!tex) return;
   dibujar(tex.getContext(), w, h);
@@ -494,70 +497,88 @@ export function construirAtlasPuestos(escena: Phaser.Scene) {
   tex.refresh();
 }
 
-/** Fondo de la dulcería: plaza de pueblo (cielo, casas de colores, empedrado, fuente y árboles). */
-function fondoPlaza(alto: number, arriba: number): Dibujo {
-  return (ctx, w) => {
-    const horizonte = arriba + 470;
-    const cielo = ctx.createLinearGradient(0, 0, 0, horizonte);
-    cielo.addColorStop(0, '#FFC98A');
-    cielo.addColorStop(1, '#FFE7C2');
-    ctx.fillStyle = cielo;
-    ctx.fillRect(0, 0, w, horizonte);
-    // Casas de colores (pueblo mágico)
-    const colores = ['#E4007C', '#FFA400', '#1F4E9E', '#4E9A2E', '#C8812A', '#F7B8D8', '#9DC8F5'];
-    let x = -20;
-    let i = 0;
-    while (x < w) {
-      const cw = 150 + ((i * 37) % 60);
-      const ch = 170 + ((i * 53) % 90);
-      ctx.fillStyle = colores[i % colores.length];
-      ctx.fillRect(x, horizonte - ch, cw, ch);
-      ctx.fillStyle = 'rgba(255,243,220,0.85)';
-      for (let v = 0; v < 2; v++) {
-        cuadroRedondo(ctx, x + 24 + v * (cw / 2 - 8), horizonte - ch + 40, cw / 2 - 48, 54, 22);
-        ctx.fill();
-      }
-      ctx.fillStyle = '#5A2C10';
-      cuadroRedondo(ctx, x + cw / 2 - 24, horizonte - 84, 48, 84, 20);
+/** Plaza: 1080×2600 con el horizonte en y = 700 (igual que el arte; ver content/fondos.json). */
+const fondoPlaza: Dibujo = (ctx, w, alto) => {
+  const horizonte = 700;
+  const cielo = ctx.createLinearGradient(0, 0, 0, horizonte);
+  cielo.addColorStop(0, '#FFC98A');
+  cielo.addColorStop(1, '#FFE7C2');
+  ctx.fillStyle = cielo;
+  ctx.fillRect(0, 0, w, horizonte);
+  // Casas de colores (pueblo mágico)
+  const colores = ['#E4007C', '#FFA400', '#1F4E9E', '#4E9A2E', '#C8812A', '#F7B8D8', '#9DC8F5'];
+  let x = -20;
+  let i = 0;
+  while (x < w) {
+    const cw = 150 + ((i * 37) % 60);
+    const ch = 170 + ((i * 53) % 90);
+    ctx.fillStyle = colores[i % colores.length];
+    ctx.fillRect(x, horizonte - ch, cw, ch);
+    ctx.fillStyle = 'rgba(255,243,220,0.85)';
+    for (let v = 0; v < 2; v++) {
+      cuadroRedondo(ctx, x + 24 + v * (cw / 2 - 8), horizonte - ch + 40, cw / 2 - 48, 54, 22);
       ctx.fill();
-      ctx.fillStyle = 'rgba(0,0,0,0.12)';
-      ctx.fillRect(x + cw - 10, horizonte - ch, 10, ch);
-      x += cw;
-      i++;
     }
-    // Empedrado
-    ctx.fillStyle = '#F2D6A2';
-    ctx.fillRect(0, horizonte, w, alto - horizonte);
-    ctx.fillStyle = 'rgba(200,129,42,0.18)';
-    for (let y = horizonte + 20; y < alto; y += 46) {
-      for (let px = ((y / 46) % 2) * 40; px < w; px += 80) {
-        cuadroRedondo(ctx, px + 6, y, 66, 34, 14);
-        ctx.fill();
-      }
+    ctx.fillStyle = '#5A2C10';
+    cuadroRedondo(ctx, x + cw / 2 - 24, horizonte - 84, 48, 84, 20);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.fillRect(x + cw - 10, horizonte - ch, 10, ch);
+    x += cw;
+    i++;
+  }
+  // Empedrado
+  ctx.fillStyle = '#F2D6A2';
+  ctx.fillRect(0, horizonte, w, alto - horizonte);
+  ctx.fillStyle = 'rgba(200,129,42,0.18)';
+  for (let y = horizonte + 20; y < alto; y += 46) {
+    for (let px = ((y / 46) % 2) * 40; px < w; px += 80) {
+      cuadroRedondo(ctx, px + 6, y, 66, 34, 14);
+      ctx.fill();
     }
-    // Andador central más claro
-    ctx.fillStyle = 'rgba(255,248,234,0.55)';
-    ctx.fillRect(w / 2 - 70, horizonte, 140, alto - horizonte);
-    // Fuente al centro
-    const fy = horizonte + (alto - horizonte) * 0.42;
-    ctx.fillStyle = '#B9C7D6';
-    ctx.beginPath(); ctx.ellipse(w / 2, fy, 120, 46, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#7FB3E0';
-    ctx.beginPath(); ctx.ellipse(w / 2, fy - 6, 96, 32, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#B9C7D6';
-    ctx.fillRect(w / 2 - 12, fy - 90, 24, 84);
-    ctx.beginPath(); ctx.ellipse(w / 2, fy - 90, 44, 14, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.8)';
-    for (const dx of [-30, 0, 30]) { ctx.beginPath(); ctx.arc(w / 2 + dx, fy - 112 - Math.abs(dx) * 0.3, 8, 0, Math.PI * 2); ctx.fill(); }
-    // Árboles en las orillas
-    for (const [tx, ty] of [[40, 0.12], [w - 40, 0.12], [30, 0.62], [w - 30, 0.62]] as const) {
-      const yy = horizonte + (alto - horizonte) * ty;
-      ctx.fillStyle = '#8B4A1F'; ctx.fillRect(tx - 10, yy, 20, 70);
-      ctx.fillStyle = '#4E9A2E'; ctx.beginPath(); ctx.arc(tx, yy - 10, 62, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#6DB34A'; ctx.beginPath(); ctx.arc(tx - 18, yy - 28, 34, 0, Math.PI * 2); ctx.fill();
-    }
-  };
-}
+  }
+  // Andador central más claro
+  ctx.fillStyle = 'rgba(255,248,234,0.55)';
+  ctx.fillRect(w / 2 - 70, horizonte, 140, alto - horizonte);
+};
+
+/** Fuente de la plaza (pieza aparte, 360×300). */
+const fuentePlaza: Dibujo = (ctx, w) => {
+  const fy = 200;
+  ctx.fillStyle = '#B9C7D6';
+  ctx.beginPath(); ctx.ellipse(w / 2, fy, 160, 60, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#7FB3E0';
+  ctx.beginPath(); ctx.ellipse(w / 2, fy - 8, 128, 42, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#B9C7D6';
+  ctx.fillRect(w / 2 - 16, fy - 120, 32, 112);
+  ctx.beginPath(); ctx.ellipse(w / 2, fy - 120, 58, 18, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  for (const dx of [-40, 0, 40]) { ctx.beginPath(); ctx.arc(w / 2 + dx, fy - 150 - Math.abs(dx) * 0.3, 10, 0, Math.PI * 2); ctx.fill(); }
+};
+
+/** Árbol de la plaza (pieza aparte, 220×290; el pie del tronco en y = 268). */
+const arbolPlaza: Dibujo = (ctx, w) => {
+  ctx.fillStyle = '#8B4A1F'; ctx.fillRect(w / 2 - 14, 150, 28, 118);
+  ctx.fillStyle = '#4E9A2E'; ctx.beginPath(); ctx.arc(w / 2, 100, 90, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#6DB34A'; ctx.beginPath(); ctx.arc(w / 2 - 26, 74, 48, 0, Math.PI * 2); ctx.fill();
+};
+
+/** Sótano: pared oscura con un poco de luz al centro. */
+const fondoSotano: Dibujo = (ctx, w, h) => {
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, '#1A0D06'); g.addColorStop(0.6, '#2A160A'); g.addColorStop(1, '#160B05');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+};
+
+/** Feria: cielo de atardecer (1080×2600, horizonte en y = 800). */
+const fondoFeria: Dibujo = (ctx, w, h) => {
+  const cielo = ctx.createLinearGradient(0, 0, 0, 800);
+  cielo.addColorStop(0, '#5B3C8F'); cielo.addColorStop(1, '#FF9E5E');
+  ctx.fillStyle = cielo; ctx.fillRect(0, 0, w, 800);
+  const suelo = ctx.createLinearGradient(0, 800, 0, h);
+  suelo.addColorStop(0, '#FF9E5E'); suelo.addColorStop(1, '#FFC97A');
+  ctx.fillStyle = suelo; ctx.fillRect(0, 800, w, h - 800);
+};
 
 /** Gomita industrial de DulciMax: plástica, gris azulada y enojada. */
 const gomita: Dibujo = (ctx, s) => {
@@ -588,15 +609,20 @@ const gomita: Dibujo = (ctx, s) => {
 };
 
 /** Genera el atlas y los provisionales que falten. `alto` es la altura del lienzo del juego. */
-export function generarProvisionales(escena: Phaser.Scene, alto: number) {
+export function generarProvisionales(escena: Phaser.Scene, pendientes: string[] = []) {
+  porCargar = new Set(pendientes);
   construirAtlasMueganitos(escena);
   construirAtlasClientes(escena);
   construirAtlasPuestos(escena);
-  crear(escena, 'fondo_splash', 1080, alto, fondoSplash(alto));
-  crear(escena, 'fondo_plaza', 1080, alto, fondoPlaza(alto, (escena.registry.get('areaSuperior') as number) ?? 70));
+  crear(escena, 'fondo_splash', 1080, 2400, fondoSplash(2400));
+  crear(escena, 'fondo_plaza', 1080, 2600, fondoPlaza);
+  crear(escena, 'fondo_sotano', 1080, 2400, fondoSotano);
+  crear(escena, 'fondo_feria', 1080, 2600, fondoFeria);
+  crear(escena, 'plaza_fuente', 360, 300, fuentePlaza);
+  crear(escena, 'plaza_arbol', 220, 290, arbolPlaza);
   crear(escena, 'papel_picado_bandera', 150, 132, bandera);
   crear(escena, 'barra_relleno', 760, 46, barraRelleno);
-  crear(escena, 'cazo', 520, 300, cazo);
+  crear(escena, 'sotano_cazo', 624, 360, cazo);
   crear(escena, 'brillo_suave', 256, 256, brilloSuave);
   crear(escena, 'gomita_dulcimax', 256, 256, gomita);
   crear(escena, 'papel_confeti', 16, 10, (ctx, w, h) => {

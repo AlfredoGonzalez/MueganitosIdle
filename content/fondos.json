@@ -1,0 +1,7 @@
+{
+  "_nota": "Cómo se acomoda cada fondo (más alto que la pantalla; se recorta, nunca se estira). ancla 'centro': se centra y se recorta parejo arriba y abajo. ancla 'arriba': su borde de arriba queda en areaSuperior + desplazamiento (así el horizonte cae siempre en el mismo lugar respecto al HUD). relleno: color para lo que el fondo no alcance a cubrir.",
+  "fondo_splash": { "ancla": "centro", "relleno": "#FFF6E4" },
+  "fondo_sotano": { "ancla": "centro", "relleno": "#160B05" },
+  "fondo_plaza": { "ancla": "arriba", "desplazamiento": -230, "relleno": "#FFAE6B" },
+  "fondo_feria": { "ancla": "arriba", "desplazamiento": -70, "relleno": "#4A2F7E" }
+}

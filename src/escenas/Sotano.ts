@@ -4,6 +4,7 @@ import { audioDe } from '../servicios/audio';
 import { boton } from '../ui/boton';
 import { burbuja } from '../ui/burbuja';
 import { Mueganito } from '../ui/mueganito';
+import { ponerFondo } from '../ui/fondo';
 import { CSS, FUENTE_TEXTO } from '../ui/paleta';
 
 /** Onboarding 1: el sótano. Pegui despierta en el cazo y habla en burbujas, una por una. */
@@ -27,14 +28,15 @@ export class Sotano extends Phaser.Scene {
     this.indice = 0;
     this.terminado = false;
     this.yBurbuja = arriba + 120;
-    this.cameras.main.setBackgroundColor('#160B05').fadeIn(500, 22, 11, 5);
+    ponerFondo(this, 'fondo_sotano');
+    this.cameras.main.fadeIn(500, 22, 11, 5);
 
     // El cazo de cobre brillando y Pegui asomándose
     const yCazo = Math.round(H * 0.66);
     const brillo = this.add.image(W / 2, yCazo + 20, 'brillo_suave').setDisplaySize(1100, 800).setTint(0xff9a3c).setAlpha(0.35);
     this.tweens.add({ targets: brillo, alpha: 0.55, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     const pegui = new Mueganito(this, W / 2, yCazo + 240, 2, 200).parpadearSolo();
-    this.add.image(W / 2, yCazo + 150, 'cazo').setDisplaySize(620, 360);
+    this.add.image(W / 2, yCazo + 150, 'sotano_cazo').setDisplaySize(620, 358);
     this.tweens.add({ targets: pegui, y: yCazo + 40, duration: 900, delay: 400, ease: 'Back.easeOut', onComplete: () => pegui.respirar() });
 
     const pista = this.add.text(W / 2, H - abajo - 120, this.tx.t('sotano.tocaParaSeguir'), {

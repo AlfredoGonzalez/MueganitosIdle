@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="300" viewBox="0 0 360 300">
+<defs><linearGradient id="agua206" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A8DAF5" stop-opacity="1"/><stop offset="1" stop-color="#5FA8DA" stop-opacity="1"/></linearGradient><linearGradient id="piedra207" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EAD9C0" stop-opacity="1"/><stop offset="1" stop-color="#C7AE8C" stop-opacity="1"/></linearGradient></defs>
+
+  <ellipse cx="180" cy="262" rx="170" ry="34" fill="#000000" opacity="0.12"/>
+  <path d="M20,190 Q20,170 40,166 H320 Q340,170 340,190 V226 Q340,256 300,260 H60 Q20,256 20,226 Z" fill="url(#piedra207)" stroke="#3A2214" stroke-width="5"/>
+  <ellipse cx="180" cy="176" rx="150" ry="30" fill="url(#agua206)" stroke="#3A2214" stroke-width="5"/>
+  <ellipse cx="140" cy="170" rx="60" ry="8" fill="#FFFFFF" opacity="0.5"/>
+  <path d="M60,196 V252" stroke="#B89C78" stroke-width="3"/><path d="M120,196 V252" stroke="#B89C78" stroke-width="3"/><path d="M180,196 V252" stroke="#B89C78" stroke-width="3"/><path d="M240,196 V252" stroke="#B89C78" stroke-width="3"/><path d="M300,196 V252" stroke="#B89C78" stroke-width="3"/>
+  <rect x="166" y="70" width="28" height="104" rx="8" fill="url(#piedra207)" stroke="#3A2214" stroke-width="4"/>
+  <ellipse cx="180" cy="76" rx="56" ry="16" fill="url(#piedra207)" stroke="#3A2214" stroke-width="4"/>
+  <ellipse cx="180" cy="72" rx="42" ry="9" fill="url(#agua206)"/>
+  <path d="M180,60 C180,20 150,10 130,40 M180,60 C180,20 210,10 230,40" fill="none" stroke="#8CCBEF" stroke-width="7" stroke-linecap="round"/>
+  <path d="M136,76 Q120,120 112,160 M224,76 Q240,120 248,160" fill="none" stroke="#8CCBEF" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+  <circle cx="128" cy="44" r="7" fill="#FFFFFF"/><circle cx="232" cy="44" r="7" fill="#FFFFFF"/><circle cx="110" cy="162" r="7" fill="#FFFFFF"/><circle cx="250" cy="162" r="7" fill="#FFFFFF"/><circle cx="180" cy="26" r="7" fill="#FFFFFF"/>
+</svg>

@@ -20,6 +20,7 @@ import { cartaLoteria, ALTO_CARTA, ANCHO_CARTA } from '../ui/cartaLoteria';
 import { confeti, estrella, textoFlotante } from '../ui/efectos';
 import { Mueganito } from '../ui/mueganito';
 import { papelPicado } from '../ui/papelPicado';
+import { ponerFondo } from '../ui/fondo';
 import { ATLAS, ATLAS_CLIENTES, CLIENTES, FRAME_OJOS, FRAME_OJOS_CERRADOS, frameCuerpo } from '../ui/provisionales';
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
 
@@ -204,9 +205,7 @@ export class Feria extends Phaser.Scene {
     this.xSoltar = W / 2;
 
     // Cielo de atardecer de feria
-    const cielo = this.add.graphics();
-    cielo.fillGradientStyle(0x5b3c8f, 0x5b3c8f, 0xff9e5e, 0xff9e5e, 1).fillRect(0, 0, W, H * 0.55);
-    cielo.fillGradientStyle(0xff9e5e, 0xff9e5e, 0xffc97a, 0xffc97a, 1).fillRect(0, H * 0.55 - 1, W, H * 0.45 + 1);
+    ponerFondo(this, 'fondo_feria');
     papelPicado(this, arriba + 10, W);
 
     // Charola de madera (dibujo) + paredes de física

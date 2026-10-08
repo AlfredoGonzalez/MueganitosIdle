@@ -6,14 +6,14 @@
       "archivo": "fondos/fondo_splash.png",
       "ancho": 1080,
       "alto": 2400,
-      "uso": "Fondo de la pantalla de carga"
+      "uso": "Pantalla de carga: el interior de la dulcería con mostrador. Se recorta parejo arriba y abajo (zona segura: y 240–2160); los mueganitos se paran en el mostrador (y ≈ 1300–1360)."
     },
     {
       "clave": "fondo_plaza",
       "archivo": "fondos/fondo_plaza.png",
       "ancho": 1080,
-      "alto": 2400,
-      "uso": "Fondo de la dulcería: la plaza del pueblo (casas arriba, empedrado, fuente al centro)"
+      "alto": 2600,
+      "uso": "Plaza del pueblo: cielo y casas arriba, empedrado abajo. El horizonte va en y = 700 (ver content/fondos.json). Sin fuente ni árboles: son piezas aparte."
     },
     {
       "clave": "logo_mueganitos",
@@ -210,6 +210,41 @@
       "ancho": 256,
       "alto": 256,
       "uso": "Abuela Chonita en el onboarding y la historia. Busto dentro de un círculo, como los clientes: chongo canoso, lentes, rebozo rosa."
+    },
+    {
+      "clave": "fondo_sotano",
+      "archivo": "fondos/fondo_sotano.png",
+      "ancho": 1080,
+      "alto": 2400,
+      "uso": "Sótano oscuro del onboarding (paredes de ladrillo, repisas, ventanita con luna). Se recorta parejo; deja oscuro el centro y arriba a la izquierda (ahí van las burbujas)."
+    },
+    {
+      "clave": "fondo_feria",
+      "archivo": "fondos/fondo_feria.png",
+      "ancho": 1080,
+      "alto": 2600,
+      "uso": "Feria al atardecer (rueda de la fortuna, carpas, focos). Horizonte en y = 800; abajo queda casi liso porque encima va la charola."
+    },
+    {
+      "clave": "plaza_fuente",
+      "archivo": "fondos/plaza_fuente.png",
+      "ancho": 360,
+      "alto": 300,
+      "uso": "Fuente de cantera al centro de la plaza (el juego la acomoda entre los puestos)."
+    },
+    {
+      "clave": "plaza_arbol",
+      "archivo": "fondos/plaza_arbol.png",
+      "ancho": 220,
+      "alto": 290,
+      "uso": "Laurel podado con tronco encalado (orillas de la plaza; se usa 4 veces)."
+    },
+    {
+      "clave": "sotano_cazo",
+      "archivo": "fondos/sotano_cazo.png",
+      "ancho": 624,
+      "alto": 360,
+      "uso": "El cazo de cobre del abuelo, de donde sale Pegui en el sótano."
     }
   ]
 }

@@ -22,3 +22,8 @@ export function encolarImagenes(escena: Phaser.Scene, claves?: string[]) {
     if (!escena.textures.exists(clave)) escena.load.image(clave, url);
   }
 }
+
+/** Imágenes reales que todavía no están cargadas (para no taparlas con un provisional). */
+export function pendientes(escena: Phaser.Scene) {
+  return plan.cargar.map(({ clave }) => clave).filter((clave) => !escena.textures.exists(clave));
+}

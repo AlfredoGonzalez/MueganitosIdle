@@ -96,12 +96,15 @@ El juego encuentra los archivos **por su nombre**. Reglas:
 
 ## Arte base (hecho con código)
 Para no esperar, el repositorio ya trae un **arte base vectorial**: los 10 mueganitos con sus ojos, la
-Abuela y los 6 vecinos, los 6 puestos, el logo y la gomita de DulciMax. Está en `arte_fuente/svg/`
+Abuela y los 6 vecinos, los 6 puestos, el logo, la gomita de DulciMax y los fondos (carga, sótano,
+plaza y feria, con la fuente, los árboles y el cazo como piezas aparte). Está en `arte_fuente/svg/`
 (se abre en Inkscape, Illustrator o Figma) y sus PNG ya están en `assets/`.
 
 - Es un **punto de partida**: se puede retocar, redibujar encima o reemplazar por completo.
 - Para reemplazar uno, exporta tu PNG con el mismo nombre y ponlo encima: el script `npm run arte`
   ya no lo vuelve a tocar (ver [`arte_fuente/LEEME.md`](../../arte_fuente/LEEME.md)).
+- Los fondos se **recortan** según el alto del teléfono (no se estiran): respeta la zona segura y el
+  horizonte que indica `content/assets.json` para cada uno.
 - Reglas que conviene conservar: silueta de **cuadro redondeado** (así es el cuerpo de física), cara
   centrada con los ojos a 44 % de la altura, y un accesorio o forma distinta en cada tier.
 

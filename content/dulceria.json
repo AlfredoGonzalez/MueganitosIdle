@@ -62,7 +62,7 @@
     }
   ],
   "plaza": {
-    "_nota": "Vista de la plaza: filas de puestos (fracción del alto disponible), paseantes y monedas flotantes.",
+    "_nota": "Vista de la plaza: filas de puestos (fracción del alto disponible), paseantes y monedas flotantes. fuente.y y arboles[i][1] son fracciones del alto debajo del horizonte; arboles[i][0] es x.",
     "filas": [
       0.17,
       0.5,
@@ -74,6 +74,29 @@
     ],
     "anchoPuesto": 380,
     "paseantes": 4,
-    "monedasCadaMs": 2200
+    "monedasCadaMs": 2200,
+    "fuente": {
+      "y": 0.42,
+      "escala": 0.75
+    },
+    "arboles": [
+      [
+        40,
+        0.12
+      ],
+      [
+        1040,
+        0.12
+      ],
+      [
+        30,
+        0.62
+      ],
+      [
+        1050,
+        0.62
+      ]
+    ],
+    "escalaArbol": 0.7
   }
 }

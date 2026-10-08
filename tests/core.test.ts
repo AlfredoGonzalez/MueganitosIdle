@@ -4,6 +4,8 @@ import { cargaTerminada, indiceFrase, suavizarProgreso } from '../src/core/carga
 import { planDeCarga, rutaRelativaAssets } from '../src/core/assets';
 import es from '../content/textos/es.json';
 import manifiesto from '../content/assets.json';
+import fondos from '../content/fondos.json';
+import { yFondo, type ConfigFondo } from '../src/core/fondos';
 
 describe('textos', () => {
   const tx = crearTextos({ hola: 'Hola', frases: ['a', 'b'] }, { solo: 'respaldo' });
@@ -55,3 +57,22 @@ describe('assets', () => {
     for (const a of manifiesto.imagenes) expect(a.archivo).toMatch(/^[a-z0-9_]+\/[a-z0-9_]+\.png$/);
   });
 });
+
+describe('fondos', () => {
+  const cfg = fondos as unknown as Record<string, ConfigFondo>;
+  it('se centran o se anclan arriba sin dejar huecos en la pantalla', () => {
+    for (const alto of [1920, 2160, 2400]) {
+      for (const arriba of [70, 140]) {
+        for (const [clave, c] of Object.entries(cfg)) {
+          if (clave.startsWith('_')) continue;
+          const a = manifiesto.imagenes.find((i) => i.clave === clave);
+          expect(a, clave).toBeDefined();
+          const y = yFondo(c, alto, a!.alto, arriba);
+          expect(y + a!.alto, clave).toBeGreaterThanOrEqual(alto);
+          if (c.ancla === 'centro') expect(y).toBeLessThanOrEqual(0);
+        }
+      }
+    }
+  });
+});
+

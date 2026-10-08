@@ -34,6 +34,11 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
   y gomita; `npm run arte` los guarda en `arte_fuente/svg/` (editables) y exporta los PNG a `assets/` con
   resvg. No sobrescribe un PNG que la artista haya cambiado (huellas en `arte_fuente/svg/exportados.json`).
   Los cuerpos de mueganito se exportan a 512 (la celda del atlas) y se escalan en el juego.
+- **Fondos:** más altos que la pantalla (1080×2400/2600) y **nunca se estiran**: `ponerFondo(escena, clave)`
+  (`src/ui/fondo.ts`) los recorta según `content/fondos.json` (ancla `centro` o `arriba` + desplazamiento).
+  La fuente y los árboles de la plaza y el cazo del sótano son piezas aparte que acomoda el código.
+- Los provisionales no se dibujan para claves con PNG aún por cargar (`pendientes()` en `recursos.ts`);
+  si no, el PNG real se ignoraría.
 
 ## Feria (prototipo)
 - Escena `src/escenas/Feria.ts` con física Matter: cuerpos redondeados sincronizados a mano con las imágenes.

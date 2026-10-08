@@ -9,6 +9,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { svg } from './arte/comun.mjs';
+import { arbol, cazo, fondoFeria, fondoPlaza, fondoSotano, fondoSplash, fuente } from './arte/fondos.mjs';
 import { logo } from './arte/logo.mjs';
 import { cuerpo, gomita, ojos } from './arte/mueganitos.mjs';
 import { puesto } from './arte/puestos.mjs';
@@ -31,7 +32,17 @@ function dibujo(clave) {
   if ((m = clave.match(/^cliente_(\w+)$/))) return [256, 256, retrato(m[1], 256)];
   if ((m = clave.match(/^puesto_(\w+)$/))) return [480, 300, puesto(m[1])];
   if (clave === 'logo_mueganitos') return [1024, 512, logo('Mueganitos', textos['carga.subtitulo'].toUpperCase())];
-  return null; // fondos: siguen dibujándose por código (se adaptan al alto de cada teléfono)
+  const fondos = {
+    fondo_splash: [1080, 2400, fondoSplash],
+    fondo_plaza: [1080, 2600, fondoPlaza],
+    fondo_sotano: [1080, 2400, fondoSotano],
+    fondo_feria: [1080, 2600, fondoFeria],
+    plaza_fuente: [360, 300, fuente],
+    plaza_arbol: [220, 290, arbol],
+    sotano_cazo: [624, 360, cazo],
+  };
+  if (fondos[clave]) return [fondos[clave][0], fondos[clave][1], fondos[clave][2]()];
+  return null;
 }
 
 const filtro = process.argv.slice(2).filter((a) => !a.startsWith('--'));

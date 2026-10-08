@@ -3,8 +3,9 @@ import { cargaTerminada, indiceFrase, suavizarProgreso } from '../core/carga';
 import type { Textos } from '../core/textos';
 import type { Sesion } from '../servicios/sesion';
 import { audioDe } from '../servicios/audio';
-import { encolarImagenes, plan } from './recursos';
+import { encolarImagenes, pendientes, plan } from './recursos';
 import { generarProvisionales } from '../ui/provisionales';
+import { ponerFondo } from '../ui/fondo';
 import { Mueganito } from '../ui/mueganito';
 import { papelPicado } from '../ui/papelPicado';
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
@@ -42,7 +43,7 @@ export class Carga extends Phaser.Scene {
 
   create() {
     this.progresoReal = 1;
-    generarProvisionales(this, this.scale.height);
+    generarProvisionales(this, pendientes(this));
   }
 
   private construir() {
@@ -53,7 +54,7 @@ export class Carga extends Phaser.Scene {
     this.inicio = this.time.now;
     this.frases = tx.lista('carga.frases');
 
-    this.add.image(W / 2, H / 2, 'fondo_splash').setDisplaySize(W, H);
+    ponerFondo(this, 'fondo_splash');
     papelPicado(this, arriba + 24, W);
 
     // Logo: imagen de la artista si existe; si no, texto con la tipografía del juego.

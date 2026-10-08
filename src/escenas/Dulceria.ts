@@ -10,6 +10,7 @@ import { Mueganito } from '../ui/mueganito';
 import { barraNavegacion } from '../ui/navegacion';
 import { botonSonido } from '../ui/botonSonido';
 import { letrero } from '../ui/letrero';
+import { ponerFondo } from '../ui/fondo';
 import { papelPicado } from '../ui/papelPicado';
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
 import { ATLAS_CLIENTES, ATLAS_PUESTOS } from '../ui/provisionales';
@@ -86,12 +87,17 @@ export class Dulceria extends Phaser.Scene {
     const abajo = this.registry.get('areaInferior') as number;
     const plaza = this.sesion.cfg.plaza;
 
-    this.add.image(W / 2, H / 2, 'fondo_plaza').setDisplaySize(W, H);
+    ponerFondo(this, 'fondo_plaza');
+    const horizonte = arriba + 470;
+    // La fuente y los árboles son piezas aparte: se acomodan según el alto de cada teléfono.
+    this.add.image(W / 2, horizonte + (H - horizonte) * plaza.fuente.y, 'plaza_fuente').setOrigin(0.5, 0.67).setScale(plaza.fuente.escala);
+    for (const [x, fy] of plaza.arboles) {
+      this.add.image(x, horizonte + (H - horizonte) * fy + 70, 'plaza_arbol').setOrigin(0.5, 268 / 290).setScale(plaza.escalaArbol);
+    }
     papelPicado(this, arriba + 10, W);
     this.construirHud(arriba);
 
     const yNav = H - abajo - 120;
-    const horizonte = arriba + 470;
     const piso = yNav - 90;
     this.zonaPlaza = { x0: 120, x1: W - 120, y0: horizonte + 40, y1: piso - 60 };
 

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { encolarImagenes } from './recursos';
+import { encolarImagenes, pendientes } from './recursos';
 import { generarProvisionales } from '../ui/provisionales';
 
 /** Carga lo mínimo para dibujar la pantalla de carga y pasa a ella. */
@@ -15,7 +15,7 @@ export class Arranque extends Phaser.Scene {
   }
 
   create() {
-    generarProvisionales(this, this.scale.height);
+    generarProvisionales(this, pendientes(this));
     this.scene.launch('Mundo'); // la dulcería vende en paralelo a cualquier pantalla
     // Atajos para probar: #feria entra directo a la feria; #dulceria a la dulcería.
     const atajos: Record<string, string> = {
