@@ -301,7 +301,7 @@ export class Presentacion extends Phaser.Scene {
     el.style.cssText = [
       'width:760px', 'height:120px', 'box-sizing:border-box', 'padding:0 90px', 'border-radius:60px',
       `border:6px solid ${CSS.tinta}`, `background:${CSS.cremaClara}`, `color:${CSS.tinta}`,
-      `font:900 54px ${FUENTE_TEXTO}`, 'text-align:center', 'outline:none', `box-shadow:0 10px 0 ${CSS.tinta}`,
+      `font:900 54px ${FUENTE_TEXTO}`, 'text-align:center', 'outline:none', '-webkit-user-select:text', 'user-select:text', 'touch-action:manipulation', `box-shadow:0 10px 0 ${CSS.tinta}`,
     ].join(';');
     el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') el.blur();
