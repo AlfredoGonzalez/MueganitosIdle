@@ -62,8 +62,8 @@ El juego encuentra los archivos **por su nombre**. Reglas:
 ### P0 · Prototipo de la feria
 | Asset | Archivo(s) | Tamaño (px) | Cant. |
 |---|---|---|:-:|
-| Mueganitos tier 1–10 (cuerpo) | `mueganito_t01_cuerpo.png` … `t10` | Diámetros 80 · 105 · 135 · 170 · 210 · 255 · 305 · 360 · 420 · 490 | 10 |
-| Ojos (compartidos, se escalan) | `mueganito_ojos_normal / cerrados / feliz / susto.png` | 120 × 60 | 4 |
+| Mueganitos tier 1–10 (cuerpo) | `mueganito_t01_cuerpo.png` … `t10` | 512 × 512 cada uno (el juego los escala; en la feria miden de 80 a 490) | 10 |
+| Ojos (compartidos, se escalan) | `mueganito_ojos_normal / cerrados / feliz / susto.png` | 240 × 120 | 4 |
 | Charola | `feria_charola_fondo.png`, `feria_charola_borde.png` | 900 × 1150 | 2 |
 | Fondo de feria | `fondo_feria_atardecer.png` | 1080 × 2400 | 1 |
 | Íconos de moneda | `icono_pesito / piloncillo / cajeta / estrella.png` | 128 × 128 | 4 |
@@ -93,6 +93,17 @@ El juego encuentra los archivos **por su nombre**. Reglas:
 | Regiones 2 y 3 | Familia de dulces (10), puestos (6 × 3), vecinos (6 × 2), fondos y mapa |
 | Tienda y Álbum | Ilustraciones de paquetes de cajeta, marcos del álbum |
 | Cosméticos | Glaseados (skins) de mueganitos, charolas, decoraciones |
+
+## Arte base (hecho con código)
+Para no esperar, el repositorio ya trae un **arte base vectorial**: los 10 mueganitos con sus ojos, la
+Abuela y los 6 vecinos, los 6 puestos, el logo y la gomita de DulciMax. Está en `arte_fuente/svg/`
+(se abre en Inkscape, Illustrator o Figma) y sus PNG ya están en `assets/`.
+
+- Es un **punto de partida**: se puede retocar, redibujar encima o reemplazar por completo.
+- Para reemplazar uno, exporta tu PNG con el mismo nombre y ponlo encima: el script `npm run arte`
+  ya no lo vuelve a tocar (ver [`arte_fuente/LEEME.md`](../../arte_fuente/LEEME.md)).
+- Reglas que conviene conservar: silueta de **cuadro redondeado** (así es el cuerpo de física), cara
+  centrada con los ojos a 44 % de la altura, y un accesorio o forma distinta en cada tier.
 
 ## Cómo ver tu arte en el juego sin programar
 1. Exporta el PNG con el **nombre correcto**.

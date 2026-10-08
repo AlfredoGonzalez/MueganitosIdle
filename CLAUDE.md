@@ -30,6 +30,10 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
 - **Todos los mueganitos viven en un solo atlas** (`ATLAS` en `src/ui/provisionales.ts`): se arma al
   arrancar con el arte de la artista o los provisionales. No uses una textura por mueganito: con muchas
   texturas distintas a la vez, el WebGL de Phaser 4 llegó a dibujar triángulos faltantes (probado).
+- **Arte base vectorial:** `scripts/arte/*.mjs` dibuja en SVG los mueganitos, ojos, retratos, puestos, logo
+  y gomita; `npm run arte` los guarda en `arte_fuente/svg/` (editables) y exporta los PNG a `assets/` con
+  resvg. No sobrescribe un PNG que la artista haya cambiado (huellas en `arte_fuente/svg/exportados.json`).
+  Los cuerpos de mueganito se exportan a 512 (la celda del atlas) y se escalan en el juego.
 
 ## Feria (prototipo)
 - Escena `src/escenas/Feria.ts` con física Matter: cuerpos redondeados sincronizados a mano con las imágenes.
