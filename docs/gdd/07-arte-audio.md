@@ -98,8 +98,8 @@ El juego encuentra los archivos **por su nombre**. Reglas:
 1. Exporta el PNG con el **nombre correcto**.
 2. Súbelo a la carpeta `assets/` correspondiente del repositorio (con GitHub Desktop o arrastrando el
    archivo en la página web de GitHub).
-3. Con cada cambio se genera la **demo web** del juego (un solo archivo HTML) y se comparte como
-   enlace que se abre en el celular. Mientras una imagen no exista, el juego dibuja una provisional.
+3. Cada cambio publica el juego en **GitHub Pages** (el enlace está en el README) y en unos minutos
+   ves tu arte en el celular. Mientras una imagen no exista, el juego dibuja una provisional.
 4. *(Próximamente)* la **Galería de assets** (`?galeria`) mostrará todos los archivos que el juego espera,
    con ✅ los que ya existen y ❌ los que faltan o tienen un nombre incorrecto. Mientras tanto, la lista
    está en `content/assets.json`.

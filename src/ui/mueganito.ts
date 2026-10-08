@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { ATLAS, FRAME_OJOS, FRAME_OJOS_CERRADOS, frameCuerpo } from './provisionales';
 
 /**
  * Un mueganito con cuerpo + ojos en capas separadas (como pide el GDD), para
@@ -11,11 +12,11 @@ export class Mueganito extends Phaser.GameObjects.Container {
 
   constructor(escena: Phaser.Scene, x: number, y: number, tier: number, tamano: number, claveCuerpo?: string) {
     super(escena, x, y);
-    const clave = claveCuerpo && escena.textures.exists(claveCuerpo)
-      ? claveCuerpo
-      : `mueganito_t${String(tier).padStart(2, '0')}_cuerpo`;
-    this.cuerpo = escena.add.image(0, 0, clave).setOrigin(0.5, 1).setDisplaySize(tamano, tamano);
-    this.ojos = escena.add.image(0, -tamano * 0.555, 'mueganito_ojos_normal').setDisplaySize(tamano * 0.7, tamano * 0.35);
+    this.cuerpo = claveCuerpo && escena.textures.exists(claveCuerpo)
+      ? escena.add.image(0, 0, claveCuerpo)
+      : escena.add.image(0, 0, ATLAS, frameCuerpo(tier));
+    this.cuerpo.setOrigin(0.5, 1).setDisplaySize(tamano, tamano);
+    this.ojos = escena.add.image(0, -tamano * 0.555, ATLAS, FRAME_OJOS).setDisplaySize(tamano * 0.7, tamano * 0.35);
     this.add([this.cuerpo, this.ojos]);
     escena.add.existing(this);
   }
@@ -40,10 +41,10 @@ export class Mueganito extends Phaser.GameObjects.Container {
     const siguiente = () => {
       this.scene.time.delayedCall(Phaser.Math.Between(1800, 4200), () => {
         if (!this.active) return;
-        this.ojos.setTexture('mueganito_ojos_cerrados');
+        this.ojos.setFrame(FRAME_OJOS_CERRADOS, false, false);
         this.scene.time.delayedCall(130, () => {
           if (!this.active) return;
-          this.ojos.setTexture('mueganito_ojos_normal');
+          this.ojos.setFrame(FRAME_OJOS, false, false);
           siguiente();
         });
       });

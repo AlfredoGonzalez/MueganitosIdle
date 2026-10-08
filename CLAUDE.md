@@ -27,7 +27,20 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
   provisional **con la misma clave**. No hay que registrar archivos a mano (`import.meta.glob`).
 - Nombres: minúsculas, sin acentos ni espacios, `categoria_nombre_variante.png` (lo valida una prueba).
 - Los mueganitos tienen cuerpo y ojos en capas separadas (`Mueganito` en `src/ui/mueganito.ts`).
+- **Todos los mueganitos viven en un solo atlas** (`ATLAS` en `src/ui/provisionales.ts`): se arma al
+  arrancar con el arte de la artista o los provisionales. No uses una textura por mueganito: con muchas
+  texturas distintas a la vez, el WebGL de Phaser 4 llegó a dibujar triángulos faltantes (probado).
+
+## Feria (prototipo)
+- Escena `src/escenas/Feria.ts` con física Matter: cuerpos redondeados sincronizados a mano con las imágenes.
+- Reglas puras en `src/core/feria.ts`; balance en `content/feria.json`; cartas en `content/cartas.json`.
+- Atajos para probar: `#feria` entra directo a la feria; `?rapido` hace horas de 10 s; `?canvas` usa el
+  renderizador Canvas (para comparar defectos de WebGL).
 
 ## Estado
-- Hecho: pantalla de carga (splash) y un sótano provisional.
-- Siguiente: prototipo de la Feria (charola con física Matter, soltar y pegar) — ver `docs/gdd/03-mecanicas.md`.
+- Hecho: pantalla de carga, sótano provisional y prototipo de la Feria (soltar, pegar, combos, desborde,
+  4 horas con 6 cartas de Lotería, resultados).
+- Siguiente: playtest; luego pedidos de clientes, la dulcería idle y el guardado.
+
+## Publicación
+- GitHub Pages: `.github/workflows/pages.yml` publica `dist/` en cada push a `main` o a la rama de trabajo.

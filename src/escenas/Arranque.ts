@@ -9,11 +9,14 @@ export class Arranque extends Phaser.Scene {
   }
 
   preload() {
-    encolarImagenes(this, ['fondo_splash', 'logo_mueganitos', 'pegui_grande', 'mueganito_ojos_normal', 'mueganito_ojos_cerrados']);
+    // Con el atajo #feria se carga todo aquí; si no, solo lo que usa la pantalla de carga.
+    if (window.location.hash === '#feria') encolarImagenes(this);
+    else encolarImagenes(this, ['fondo_splash', 'logo_mueganitos', 'pegui_grande', 'mueganito_ojos_normal', 'mueganito_ojos_cerrados']);
   }
 
   create() {
     generarProvisionales(this, this.scale.height);
-    this.scene.start('Carga');
+    // Atajo para probar: abrir con #feria entra directo a la feria.
+    this.scene.start(window.location.hash === '#feria' ? 'Feria' : 'Carga');
   }
 }

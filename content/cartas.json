@@ -1,0 +1,18 @@
+{
+  "_nota": "Cartas de Lotería del prototipo. 'efecto' dice qué cambia; 'valor' cuánto. 'tier' es el mueganito que ilustra la carta provisional.",
+  "probabilidadRareza": { "comun": 70, "rara": 25, "legendaria": 5 },
+  "cartas": [
+    { "id": "el_comal", "numero": 12, "nombre": "El Comal", "rareza": "comun", "efecto": "enfriamiento", "valor": 0.85, "tier": 2,
+      "descripcion": "Los mueganitos caen 15 % más rápido." },
+    { "id": "la_canela", "numero": 7, "nombre": "La Canela", "rareza": "comun", "efecto": "puntosTier4", "valor": 0.3, "tier": 4,
+      "descripcion": "Pegar del Trío Pegadito para arriba da +30 % de puntos." },
+    { "id": "la_campana", "numero": 21, "nombre": "La Campana", "rareza": "comun", "efecto": "segundosExtra", "valor": 15, "tier": 5,
+      "descripcion": "+15 segundos al Día de Feria." },
+    { "id": "la_abuelita", "numero": 1, "nombre": "La Abuelita", "rareza": "comun", "efecto": "autoCaida", "valor": 6, "tier": 6,
+      "descripcion": "Cae un mueganito sola cada 6 s (cada copia: 1 s menos)." },
+    { "id": "la_cajeta", "numero": 33, "nombre": "La Cajeta", "rareza": "rara", "efecto": "caidaMayor", "valor": 0.1, "tier": 3,
+      "descripcion": "10 % de probabilidad de que caiga uno más grande." },
+    { "id": "el_sol", "numero": 5, "nombre": "El Sol", "rareza": "legendaria", "efecto": "solFinal", "valor": 30, "tier": 10,
+      "descripcion": "Los últimos 30 s del día valen el doble." }
+  ]
+}

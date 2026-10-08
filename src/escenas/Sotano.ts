@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { Textos } from '../core/textos';
 import { Mueganito } from '../ui/mueganito';
 import { burbuja } from '../ui/burbuja';
+import { boton } from '../ui/boton';
 import { CSS, FUENTE_TEXTO } from '../ui/paleta';
 
 /** Provisional: el sótano del onboarding. Por ahora solo cierra el recorrido del splash. */
@@ -32,9 +33,10 @@ export class Sotano extends Phaser.Scene {
       },
     });
 
-    this.add.text(W / 2, H - abajo - 280, tx.t('sotano.proximamente'), {
-      fontFamily: FUENTE_TEXTO, fontStyle: '800', fontSize: '40px', color: '#FFE9C7',
-    }).setOrigin(0.5).setAlpha(0.8);
+    boton(this, W / 2, H - abajo - 330, tx.t('sotano.hornear'), {}, () => {
+      this.cameras.main.fadeOut(300, 255, 243, 220);
+      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => this.scene.start('Feria'));
+    });
     const volver = this.add.text(W / 2, H - abajo - 190, tx.t('sotano.volver'), {
       fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '44px', color: CSS.cempasuchil,
     }).setOrigin(0.5).setPadding(30, 20, 30, 20).setInteractive({ useHandCursor: true });

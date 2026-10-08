@@ -78,10 +78,9 @@ se desarrolla y prueba en el navegador.
 1. Coloca PNG/audio con el nombre correcto en `assets/…` (ver [07 · Arte](07-arte-audio.md#nombres-de-archivo-importante)).
 2. Edita textos, nombres y precios en `content/*.json` si lo necesita; si algo está mal escrito, el juego
    muestra un aviso amable en pantalla en lugar de romperse.
-3. `npm run demo` genera el juego en **un solo archivo HTML** (`dist-demo/mueganitos-demo.html`) que se
-   comparte como página web de prueba. La CI de GitHub Actions también lo genera y lo deja descargable en
-   cada *push*. (GitHub Pages en un repositorio privado requiere GitHub Pro; alternativas gratuitas con
-   enlace fijo: Cloudflare Pages o Netlify conectados al repo.)
+3. Cada *push* publica el juego en **GitHub Pages** (`.github/workflows/pages.yml`), con enlace fijo que se
+   abre en el celular. Además, `npm run demo` genera el juego en **un solo archivo HTML**
+   (`dist-demo/mueganitos-demo.html`) para compartirlo por otros medios.
 4. *(Próximamente)* la pantalla **Galería** (`?galeria`) lista los assets esperados (✅ / ❌) usando
    `content/assets.json`.
 

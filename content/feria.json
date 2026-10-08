@@ -1,0 +1,49 @@
+{
+  "_nota": "Balance del Día de Feria (prototipo). Tiempos en segundos salvo que diga ms. Tamaños en px del lienzo de 1080.",
+  "horas": 4,
+  "segundosPorHora": 40,
+  "enfriamientoMs": 600,
+  "pesosCaida": [
+    60,
+    30,
+    10
+  ],
+  "tamanos": [
+    80,
+    105,
+    135,
+    170,
+    210,
+    255,
+    305,
+    360,
+    420,
+    490
+  ],
+  "redondeo": 0.38,
+  "charola": {
+    "ancho": 900,
+    "alto": 1250,
+    "pared": 28
+  },
+  "desbordeSegundos": 2,
+  "graciaCaidaMs": 1400,
+  "velocidadQuieto": 2.5,
+  "comboVentanaMs": 1000,
+  "combos": [
+    1,
+    1.5,
+    2,
+    3,
+    4
+  ],
+  "bonoFiesta": 50000,
+  "maxPiezas": 80,
+  "fisica": {
+    "gravedad": 2.2,
+    "rebote": 0.05,
+    "friccion": 0.5,
+    "friccionAire": 0.012,
+    "densidad": 0.002
+  }
+}

@@ -5,7 +5,6 @@ import { TIERS } from './paleta';
  * Arte provisional dibujado por código. Usa las MISMAS claves que el arte final
  * (content/assets.json): cuando la artista agrega un PNG, este dibujo deja de usarse.
  */
-const LADO = 512; // resolución de los provisionales (se escalan al mostrarse)
 
 type Dibujo = (ctx: CanvasRenderingContext2D, w: number, h: number) => void;
 
@@ -190,16 +189,69 @@ const brilloSuave: Dibujo = (ctx, w, h) => {
   ctx.fillRect(0, 0, w, h);
 };
 
-/** Genera los provisionales que falten. `alto` es la altura del lienzo del juego. */
-export function generarProvisionales(escena: Phaser.Scene, alto: number) {
-  for (let t = 1; t <= 10; t++) {
-    crear(escena, `mueganito_t${String(t).padStart(2, '0')}_cuerpo`, LADO, LADO, cuerpoMueganito(t));
+/** Atlas único de mueganitos (cuerpos t01–t10 y ojos). Una sola textura = un solo lote para WebGL. */
+export const ATLAS = 'mueganitos';
+export const frameCuerpo = (tier: number) => `cuerpo_t${String(tier).padStart(2, '0')}`;
+export const FRAME_OJOS = 'ojos_normal';
+export const FRAME_OJOS_CERRADOS = 'ojos_cerrados';
+
+const CELDA = 512;
+const OJOS = { w: 240, h: 120 };
+
+/** Dibuja en la celda la imagen de la artista (si ya se cargó) o el provisional. */
+function pintarCelda(escena: Phaser.Scene, ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, claveArte: string, provisional: Dibujo) {
+  ctx.save();
+  ctx.clearRect(x, y, w, h);
+  ctx.translate(x, y);
+  if (escena.textures.exists(claveArte)) {
+    const fuente = escena.textures.get(claveArte).getSourceImage() as CanvasImageSource & { width: number; height: number };
+    const k = Math.min(w / fuente.width, h / fuente.height);
+    const dw = fuente.width * k;
+    const dh = fuente.height * k;
+    ctx.drawImage(fuente, (w - dw) / 2, (h - dh) / 2, dw, dh);
+  } else {
+    provisional(ctx, w, h);
   }
-  crear(escena, 'mueganito_ojos_normal', 240, 120, ojos);
-  crear(escena, 'mueganito_ojos_cerrados', 240, 120, ojosCerrados);
+  ctx.restore();
+}
+
+/**
+ * Construye (o vuelve a pintar) el atlas. Se llama otra vez cuando terminan de cargar
+ * las imágenes de la artista: las celdas se repintan sin romper lo que ya está en pantalla.
+ */
+export function construirAtlasMueganitos(escena: Phaser.Scene) {
+  let tex = escena.textures.exists(ATLAS) ? (escena.textures.get(ATLAS) as Phaser.Textures.CanvasTexture) : null;
+  const nuevo = !tex;
+  if (!tex) tex = escena.textures.createCanvas(ATLAS, CELDA * 4, CELDA * 3);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  for (let t = 1; t <= 10; t++) {
+    const x = ((t - 1) % 4) * CELDA;
+    const y = Math.floor((t - 1) / 4) * CELDA;
+    pintarCelda(escena, ctx, x, y, CELDA, CELDA, `mueganito_t${String(t).padStart(2, '0')}_cuerpo`, cuerpoMueganito(t));
+    if (nuevo) tex.add(frameCuerpo(t), 0, x, y, CELDA, CELDA);
+  }
+  const ojosEn: [string, string, Dibujo, number][] = [
+    [FRAME_OJOS, 'mueganito_ojos_normal', ojos, CELDA * 2],
+    [FRAME_OJOS_CERRADOS, 'mueganito_ojos_cerrados', ojosCerrados, CELDA * 3],
+  ];
+  for (const [frame, clave, dibujo, x] of ojosEn) {
+    pintarCelda(escena, ctx, x, CELDA * 2, OJOS.w, OJOS.h, clave, dibujo);
+    if (nuevo) tex.add(frame, 0, x, CELDA * 2, OJOS.w, OJOS.h);
+  }
+  tex.refresh();
+}
+
+/** Genera el atlas y los provisionales que falten. `alto` es la altura del lienzo del juego. */
+export function generarProvisionales(escena: Phaser.Scene, alto: number) {
+  construirAtlasMueganitos(escena);
   crear(escena, 'fondo_splash', 1080, alto, fondoSplash(alto));
   crear(escena, 'papel_picado_bandera', 150, 132, bandera);
   crear(escena, 'barra_relleno', 760, 46, barraRelleno);
   crear(escena, 'cazo', 520, 300, cazo);
   crear(escena, 'brillo_suave', 256, 256, brilloSuave);
+  crear(escena, 'papel_confeti', 16, 10, (ctx, w, h) => {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+  });
 }

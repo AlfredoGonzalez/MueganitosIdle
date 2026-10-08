@@ -8,6 +8,7 @@ import { crearTextos } from './core/textos';
 import { Arranque } from './escenas/Arranque';
 import { Carga } from './escenas/Carga';
 import { Sotano } from './escenas/Sotano';
+import { Feria } from './escenas/Feria';
 
 /** Lienzo base del GDD: 1080 de ancho; el alto se adapta al teléfono (1920–2400). */
 const ANCHO = 1080;
@@ -38,12 +39,15 @@ async function iniciar() {
   );
   const alto = altoDelLienzo();
   const areas = areasSeguras(alto);
-  new Phaser.Game({
-    type: Phaser.AUTO,
+  const juego = new Phaser.Game({
+    type: window.location.search.includes('canvas') ? Phaser.CANVAS : Phaser.AUTO,
     parent: 'juego',
     backgroundColor: '#FFE0B5',
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH, width: ANCHO, height: alto },
-    scene: [Arranque, Carga, Sotano],
+    // Una textura por lote: con varias, algunos WebGL dejaron de dibujar triángulos (probado en Chromium por software).
+    // El costo es mínimo para este juego; se puede revisar al probar en celulares reales.
+    render: { maxTextures: 1 },
+    scene: [Arranque, Carga, Sotano, Feria],
     callbacks: {
       preBoot: (juego) => {
         juego.registry.set('textos', crearTextos(es));
@@ -52,6 +56,8 @@ async function iniciar() {
       },
     },
   });
+  // Para depurar desde la consola del navegador: abrir con ?depurar
+  if (window.location.search.includes('depurar')) (window as unknown as { juego: Phaser.Game }).juego = juego;
 }
 
 iniciar();
