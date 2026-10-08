@@ -1,0 +1,24 @@
+{
+  "_nota": "Recetario de la Abuela: mejoras permanentes que se compran con piloncillo. 'valor' es lo que suma cada nivel. Costos del GDD 03 §4.",
+  "ramas": ["charola", "feria", "dulceria", "pueblo"],
+  "recetas": [
+    { "id": "charola_ancha", "rama": "charola", "efecto": "anchoCharola", "valor": 0.04, "costos": [5, 10, 20] },
+    { "id": "caidas_grandes", "rama": "charola", "efecto": "caidasGrandes", "valor": 1, "costos": [10, 20, 40] },
+    { "id": "comal_rapido", "rama": "charola", "efecto": "enfriamiento", "valor": 0.06, "costos": [8, 16, 32] },
+
+    { "id": "dia_largo", "rama": "feria", "efecto": "segundosExtra", "valor": 10, "costos": [10, 25, 60] },
+    { "id": "cuarta_carta", "rama": "feria", "efecto": "cartasExtra", "valor": 1, "costos": [60] },
+    { "id": "rebarajar", "rama": "feria", "efecto": "rerolls", "valor": 1, "costos": [25, 150] },
+    { "id": "carta_de_regalo", "rama": "feria", "efecto": "cartaInicial", "valor": 1, "costos": [40] },
+
+    { "id": "buena_sazon", "rama": "dulceria", "efecto": "ingreso", "valor": 0.1, "costos": [8, 20, 50, 120, 300] },
+    { "id": "caja_grande", "rama": "dulceria", "efecto": "topeOffline", "valor": 1, "costos": [10, 25, 60, 150] },
+    { "id": "vecinos_amables", "rama": "dulceria", "efecto": "ayudantesBaratos", "valor": 0.2, "costos": [50] },
+
+    { "id": "propina", "rama": "pueblo", "efecto": "piloncilloPedido", "valor": 1, "costos": [15, 40, 100] },
+    { "id": "paciencia", "rama": "pueblo", "efecto": "paciencia", "valor": 0.25, "costos": [15, 40] },
+    { "id": "fama_del_pueblo", "rama": "pueblo", "efecto": "puntosPedido", "valor": 0.5, "costos": [20, 50] }
+  ],
+  "topeOfflinePorNivel": [2, 3, 4, 6, 8],
+  "pesosPorNivelCaidas": [[60, 30, 10], [54, 34, 12], [48, 38, 14], [42, 42, 16]]
+}

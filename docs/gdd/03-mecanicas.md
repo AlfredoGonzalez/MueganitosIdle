@@ -154,6 +154,10 @@ con páginas que se van llenando (las páginas del abuelo desbloquean ramas nuev
 | **Pueblo** | +1 piloncillo por pedido · Más clientes · Desbloquear cartas nuevas al mazo | 15 → 40 → 100 → 250 |
 
 - El primer nodo se puede comprar al terminar la primera feria (≈ 10 de piloncillo).
+- **Prototipo (implementado):** 13 recetas — Charola: más ancha, masa generosa, comal bien caliente ·
+  Feria: hasta tarde, baraja completa (4 cartas), rebarajar, carta de regalo · Dulcería: buena sazón,
+  caja más grande (tope offline 3/4/6/8 h), vecinos amables · Pueblo: propina, clientes pacientes, fama
+  del pueblo. Datos en `content/recetario.json`.
 - El jefe de la región 1 (tier 9) debe ser alcanzable con ~300–500 de piloncillo invertido
   (≈ día 2 de juego).
 

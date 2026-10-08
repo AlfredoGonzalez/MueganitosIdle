@@ -10,6 +10,7 @@ export interface Partida {
   piloncillo: number;
   niveles: Niveles;
   ayudantes: string[];
+  recetario: Record<string, number>;
   feriasJugadas: number;
   mejorPuntaje: number;
   ultimaVez: number; // ms (Date.now) del último guardado
@@ -28,6 +29,7 @@ export function partidaNueva(puestos: Puesto[], pesitosIniciales: number, ahora:
     piloncillo: 0,
     niveles,
     ayudantes: puestos.filter((p) => p.ayudanteGratis).map((p) => p.id),
+    recetario: {},
     feriasJugadas: 0,
     mejorPuntaje: 0,
     ultimaVez: ahora,
@@ -58,6 +60,13 @@ export function leerPartida(texto: string | null, puestos: Puesto[], pesitosInic
   const ayudantes = Array.isArray(datos.ayudantes)
     ? datos.ayudantes.filter((a): a is string => typeof a === 'string' && puestos.some((p) => p.id === a))
     : base.ayudantes;
+  const recetario: Record<string, number> = {};
+  if (datos.recetario && typeof datos.recetario === 'object') {
+    for (const [id, nivel] of Object.entries(datos.recetario as Record<string, unknown>)) {
+      const n = Math.floor(numero(nivel, 0));
+      if (n > 0) recetario[id] = n;
+    }
+  }
   return {
     version: VERSION_GUARDADO,
     pesitos: numero(datos.pesitos, base.pesitos),
@@ -65,6 +74,7 @@ export function leerPartida(texto: string | null, puestos: Puesto[], pesitosInic
     piloncillo: Math.floor(numero(datos.piloncillo, 0)),
     niveles,
     ayudantes: [...new Set([...ayudantes, ...base.ayudantes])],
+    recetario,
     feriasJugadas: Math.floor(numero(datos.feriasJugadas, 0)),
     mejorPuntaje: numero(datos.mejorPuntaje, 0),
     ultimaVez: numero(datos.ultimaVez, ahora),

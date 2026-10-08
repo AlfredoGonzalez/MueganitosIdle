@@ -107,3 +107,15 @@ describe('números grandes', () => {
     expect(formatoCorto(250_000)).toBe('250 K');
   });
 });
+
+describe('guardado del recetario', () => {
+  it('se conserva y descarta niveles inválidos', () => {
+    const p = partidaNueva(puestos, 10, 0);
+    p.recetario = { buena_sazon: 2 };
+    const leida = leerPartida(escribirPartida(p, 1), puestos, 10, 2)!;
+    expect(leida.recetario).toEqual({ buena_sazon: 2 });
+    const raro = leerPartida('{"version":1,"recetario":{"a":-3,"b":"x","c":2}}', puestos, 10, 0)!;
+    expect(raro.recetario).toEqual({ c: 2 });
+    expect(leerPartida('{"version":1}', puestos, 10, 0)!.recetario).toEqual({});
+  });
+});

@@ -45,9 +45,16 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
 - `src/escenas/Mundo.ts` corre siempre en paralelo: produce cada cuadro y autoguarda.
 - Atajos: `#dulceria` entra directo; `?nueva` borra el progreso; `?depurar` expone `window.juego`.
 
+## Recetario de la Abuela
+- Datos en `content/recetario.json` (costos por nivel); textos `receta.<id>.nombre/descripcion` en es.json.
+- `src/core/recetario.ts` → `efectos()` devuelve los multiplicadores; `Sesion.efectos()` los usa en la
+  dulcería y la Feria los lee al iniciar. Escena `src/escenas/Recetario.ts`; atajo `#recetario`.
+- La barra inferior es compartida: `barraNavegacion()` en `src/ui/navegacion.ts`.
+
 ## Estado
 - Hecho: pantalla de carga, sótano provisional, Feria (soltar, pegar, combos, desborde, cartas de Lotería,
-  pedidos, tira de la familia) y Dulcería idle con 6 puestos, ayudantes, ganancias offline y guardado.
+  pedidos, tira de la familia), Dulcería idle con 6 puestos, ayudantes, ganancias offline y guardado, y
+  Recetario de la Abuela (13 recetas).
 - Pendientes y orden sugerido: `docs/backlog.md`.
 
 ## Publicación

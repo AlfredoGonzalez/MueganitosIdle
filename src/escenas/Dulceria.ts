@@ -4,6 +4,7 @@ import { formatoCorto } from '../core/numeros';
 import type { Textos } from '../core/textos';
 import type { Sesion } from '../servicios/sesion';
 import { boton } from '../ui/boton';
+import { barraNavegacion } from '../ui/navegacion';
 import { confeti, iconoMoneda, iconoPiloncillo, textoFlotante } from '../ui/efectos';
 import { papelPicado } from '../ui/papelPicado';
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
@@ -66,7 +67,7 @@ export class Dulceria extends Phaser.Scene {
     const ySelector = yNav - 170;
     this.construirTarjetas(arriba + 420, ySelector - 70);
     this.construirSelector(ySelector);
-    this.construirNavegacion(yNav);
+    barraNavegacion(this, yNav, 'Dulceria', () => !this.modal);
     this.refrescar();
 
     this.cameras.main.fadeIn(300, 255, 243, 220);
@@ -311,66 +312,6 @@ export class Dulceria extends Phaser.Scene {
     b.fondo.clear();
     if (activo) b.fondo.fillStyle(COLOR.tinta, 1).fillRoundedRect(b.x + 6, y - 34, b.w - 12, 68, 20);
     b.texto.setColor(activo ? CSS.crema : CSS.tinta);
-  }
-
-  private construirNavegacion(y: number) {
-    const W = this.scale.width;
-    const abajo = this.registry.get('areaInferior') as number;
-    const g = this.add.graphics();
-    g.fillStyle(COLOR.tinta, 1).fillRect(0, y - 80, W, this.scale.height - (y - 80));
-    const items: [string, boolean][] = [
-      ['nav.dulceria', true], ['nav.recetario', false], ['nav.feria', true], ['nav.album', false], ['nav.tienda', false],
-    ];
-    const ancho = W / items.length;
-    items.forEach(([clave, disponible], i) => {
-      const x = ancho * i + ancho / 2;
-      if (clave === 'nav.feria') {
-        boton(this, x, y - 60, '', { ancho: 170, alto: 170, fondo: COLOR.rosa, sombra: COLOR.rosaOscuro }, () => this.irAFeria());
-        this.add.graphics().lineStyle(8, COLOR.cempasuchil, 1).strokeCircle(x, y - 60, 92);
-        this.dibujarCarpa(x, y - 66);
-        this.add.text(x, y + 50 - abajo * 0, this.tx.t(clave), {
-          fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '28px', color: CSS.crema,
-        }).setOrigin(0.5);
-        return;
-      }
-      const activo = clave === 'nav.dulceria';
-      const t = this.add.text(x, y + 10, this.tx.t(clave), {
-        fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '28px',
-        color: activo ? '#FFA400' : disponible ? CSS.crema : '#A8917D',
-      }).setOrigin(0.5);
-      if (!disponible) {
-        t.setInteractive({ useHandCursor: true }).on('pointerup', () => textoFlotante(this, x, y - 70, this.tx.t('dulceria.pronto'), { tam: 40, color: CSS.cempasuchil }));
-      }
-    });
-  }
-
-  /** Ícono de carpa de feria (techo a rayas con orilla de olanes y banderita) sobre el botón central. */
-  private dibujarCarpa(x: number, y: number) {
-    const g = this.add.graphics({ x, y });
-    // Cuerpo
-    g.fillStyle(0xffffff, 1).fillRect(-34, 2, 68, 40);
-    g.fillStyle(COLOR.rosaOscuro, 1).fillTriangle(-12, 42, 12, 42, 0, 14);
-    // Techo a rayas
-    const franjas = 6;
-    for (let i = 0; i < franjas; i++) {
-      const x0 = -48 + (96 / franjas) * i;
-      const x1 = x0 + 96 / franjas;
-      g.fillStyle(i % 2 === 0 ? 0xffffff : COLOR.cempasuchil, 1).fillTriangle(0, -44, x0, 2, x1, 2);
-    }
-    // Olanes
-    for (let i = 0; i < franjas; i++) {
-      g.fillStyle(i % 2 === 0 ? 0xffffff : COLOR.cempasuchil, 1).fillCircle(-48 + 8 + i * 16, 4, 8);
-    }
-    // Banderita
-    g.lineStyle(4, 0xffffff, 1).lineBetween(0, -44, 0, -64);
-    g.fillStyle(COLOR.cempasuchil, 1).fillTriangle(0, -64, 0, -52, 18, -58);
-  }
-
-  private irAFeria() {
-    if (this.modal) return;
-    this.sesion.guardar();
-    this.cameras.main.fadeOut(300, 255, 243, 220);
-    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => this.scene.start('Feria'));
   }
 
   // ───────────────────────── ¡Mientras no estabas! ─────────────────────────

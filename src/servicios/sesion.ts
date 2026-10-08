@@ -1,4 +1,6 @@
 import dul from '../../content/dulceria.json';
+import datosRecetario from '../../content/recetario.json';
+import { costoSiguiente, efectos, type ConfigRecetario, type EfectosRecetario } from '../core/recetario';
 import {
   costoAyudante, costoCompra, gananciaOffline, ingresoTotal, maxComprable, multHitos, pesitosDeFeria, type Puesto,
 } from '../core/economia';
@@ -6,6 +8,7 @@ import { escribirPartida, leerPartida, partidaNueva, segundosFuera, type Partida
 
 const CLAVE = 'mueganitos.partida';
 const PUESTOS = dul.puestos as Puesto[];
+const RECETARIO = datosRecetario as ConfigRecetario;
 
 /** Lo que se ganó mientras la app estaba cerrada (para la ventana "¡Mientras no estabas!"). */
 export interface Bienvenida {
@@ -44,14 +47,37 @@ export class Sesion {
     this.guardar(ahora);
   }
 
+  readonly recetario = RECETARIO;
+
+  /** Efectos actuales del Recetario de la Abuela. */
+  efectos(): EfectosRecetario {
+    return efectos(RECETARIO, this.partida.recetario);
+  }
+
+  nivelReceta(id: string) {
+    return this.partida.recetario[id] ?? 0;
+  }
+
+  /** Aprende el siguiente nivel de una receta pagando piloncillo. */
+  aprenderReceta(id: string): boolean {
+    const r = RECETARIO.recetas.find((x) => x.id === id);
+    if (!r) return false;
+    const costo = costoSiguiente(r, this.nivelReceta(id));
+    if (costo === null || costo > this.partida.piloncillo) return false;
+    this.partida.piloncillo -= costo;
+    this.partida.recetario[id] = this.nivelReceta(id) + 1;
+    this.guardar();
+    return true;
+  }
+
   /** Producción con la app abierta: todos los puestos venden. */
   ingresoPorSeg(): number {
-    return ingresoTotal(PUESTOS, this.partida.niveles, dul);
+    return ingresoTotal(PUESTOS, this.partida.niveles, dul) * this.efectos().factorIngreso;
   }
 
   /** Producción fuera de la app: solo los puestos con ayudante. */
   ingresoConAyudantes(): number {
-    return ingresoTotal(PUESTOS, this.partida.niveles, dul, this.partida.ayudantes);
+    return ingresoTotal(PUESTOS, this.partida.niveles, dul, this.partida.ayudantes) * this.efectos().factorIngreso;
   }
 
   tick(dtSeg: number) {
@@ -62,7 +88,7 @@ export class Sesion {
   /** Al volver a la app (o al abrirla) se cobra lo que vendieron los ayudantes. */
   aplicarTiempoFuera(ahora: number, mostrar: boolean) {
     const fuera = segundosFuera(this.partida.ultimaVez, ahora);
-    const g = gananciaOffline(this.ingresoConAyudantes(), fuera, dul);
+    const g = gananciaOffline(this.ingresoConAyudantes(), fuera, { topeOfflineHoras: this.efectos().topeOfflineHoras });
     this.partida.ultimaVez = ahora; // ya cobrado: no se vuelve a contar
     if (g.pesitos <= 0) return;
     this.sumar(g.pesitos);
@@ -105,7 +131,7 @@ export class Sesion {
   }
 
   costoAyudante(id: string) {
-    return costoAyudante(this.puesto(id), dul);
+    return costoAyudante(this.puesto(id), dul) * this.efectos().factorCostoAyudante;
   }
 
   tieneAyudante(id: string) {
@@ -123,7 +149,7 @@ export class Sesion {
   /** Toque en un puesto: una venta rápida (unos segundos de su producción). */
   ventaPorToque(id: string): number {
     const p = this.puesto(id);
-    const ganado = p.ingreso * this.nivel(id) * multHitos(this.nivel(id), dul) * dul.ventaPorToqueSeg;
+    const ganado = p.ingreso * this.nivel(id) * multHitos(this.nivel(id), dul) * dul.ventaPorToqueSeg * this.efectos().factorIngreso;
     this.sumar(ganado);
     return ganado;
   }

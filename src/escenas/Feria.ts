@@ -10,6 +10,7 @@ import {
 import type { Textos } from '../core/textos';
 import { formatoCorto } from '../core/numeros';
 import type { Sesion } from '../servicios/sesion';
+import type { EfectosRecetario } from '../core/recetario';
 import { boton, botonSecundario } from '../ui/boton';
 import { cartaLoteria, ALTO_CARTA, ANCHO_CARTA } from '../ui/cartaLoteria';
 import { confeti, estrella, textoFlotante } from '../ui/efectos';
@@ -89,6 +90,8 @@ export class Feria extends Phaser.Scene {
   private guia!: Phaser.GameObjects.Graphics;
   private linea!: Phaser.GameObjects.Graphics;
   private capa?: Phaser.GameObjects.Container;
+  private ef!: EfectosRecetario;
+  private rerollsRestantes = 0;
   private instruccion?: Phaser.GameObjects.Text;
   private familia: { m: Mueganito; numero: Phaser.GameObjects.Text; incognita: Phaser.GameObjects.Text }[] = [];
 
@@ -109,10 +112,12 @@ export class Feria extends Phaser.Scene {
 
   create() {
     this.tx = this.registry.get('textos') as Textos;
+    this.ef = (this.registry.get('sesion') as Sesion).efectos();
     this.reiniciarEstado();
     this.construirEscenario();
     this.construirHud();
     this.prepararSiguiente();
+    if (this.ef.cartaInicial) this.darCartaDeRegalo();
     this.configurarEntrada();
     this.matter.world.on('collisionstart', this.alChocar, this);
     this.matter.world.on('collisionactive', this.alChocar, this);
@@ -122,6 +127,7 @@ export class Feria extends Phaser.Scene {
 
   private reiniciarEstado() {
     this.estado = 'jugando';
+    this.rerollsRestantes = this.ef.rerollsGratis;
     this.piezas = new Map();
     this.porPegar = [];
     this.elegidas = [];
@@ -148,7 +154,8 @@ export class Feria extends Phaser.Scene {
   /** Con ?rapido en la URL las horas duran 10 s (para probar cartas y final). */
   private calcularDuraciones() {
     const rapido = window.location.search.includes('rapido');
-    return duracionesHoras(rapido ? { ...cfg, segundosPorHora: 10 } : cfg, this.mod);
+    const mod = { ...this.mod, segundosExtra: this.mod.segundosExtra + this.ef.segundosExtra };
+    return duracionesHoras(rapido ? { ...cfg, segundosPorHora: 10 } : cfg, mod);
   }
 
   // ───────────────────────── Escenario ─────────────────────────
@@ -157,7 +164,9 @@ export class Feria extends Phaser.Scene {
     const { width: W, height: H } = this.scale;
     const arriba = this.registry.get('areaSuperior') as number;
     const abajo = this.registry.get('areaInferior') as number;
-    const { ancho, pared } = cfg.charola;
+    const pared = cfg.charola.pared;
+    // El Recetario puede ensanchar la charola (sin salirse de la pantalla).
+    const ancho = Math.min(W - pared * 2 - 16, Math.round(cfg.charola.ancho * this.ef.factorAnchoCharola));
 
     this.fondo = H - abajo - 190;
     const disponible = this.fondo - (arriba + 690); // deja lugar a HUD y clientes
@@ -353,7 +362,7 @@ export class Feria extends Phaser.Scene {
 
   private prepararSiguiente() {
     const enMano = this.siguiente;
-    this.siguiente = tierDeCaida(cfg, this.mod, Math.random);
+    this.siguiente = tierDeCaida({ pesosCaida: this.ef.pesosCaida }, this.mod, Math.random);
     // Lo que estaba en "Sigue" pasa a la mano; se sortea uno nuevo para "Sigue".
     this.pintarMano(enMano);
     this.sigue.cuerpo.setFrame(frameCuerpo(this.siguiente)).setDisplaySize(76, 76);
@@ -499,7 +508,7 @@ export class Feria extends Phaser.Scene {
         this.tweens.add({ targets: t, alpha: 0, duration: 400, onComplete: () => t.destroy() });
       }
       if (this.soltar(tier, this.xSoltar)) {
-        this.listoParaSoltar = this.time.now + enfriamientoMs(cfg, this.mod);
+        this.listoParaSoltar = this.time.now + enfriamientoMs(cfg, this.mod) * this.ef.factorEnfriamiento;
         this.prepararSiguiente();
       }
     }
@@ -509,7 +518,7 @@ export class Feria extends Phaser.Scene {
       this.autoCaidaSeg += dt;
       if (this.autoCaidaSeg >= this.mod.autoCaidaCadaSeg) {
         this.autoCaidaSeg = 0;
-        const tier = tierDeCaida(cfg, this.mod, Math.random);
+        const tier = tierDeCaida({ pesosCaida: this.ef.pesosCaida }, this.mod, Math.random);
         const mitad = this.tamTier(tier) / 2;
         this.soltar(tier, Phaser.Math.FloatBetween(this.izq + mitad, this.der - mitad), true);
       }
@@ -548,7 +557,10 @@ export class Feria extends Phaser.Scene {
   private xCliente(i: number) {
     const n = this.pedidos.length;
     const W = this.scale.width;
-    return n === 1 ? W / 2 : 310 + (i * (W - 620 + 40)) / (n - 1);
+    // Los clientes ocupan de x≈36 a W−210: la columna derecha es del cuadro "Sigue".
+    const izq = 36 + 192;
+    const der = W - 210 - 194;
+    return n === 1 ? (izq + der) / 2 : izq + (i * (der - izq)) / (n - 1);
   }
 
   private actualizarClientes(dt: number) {
@@ -563,7 +575,7 @@ export class Feria extends Phaser.Scene {
     this.pedidos.forEach((p, i) => {
       if (!p || p.entregando) return;
       p.esperaSeg += dt;
-      const resto = 1 - p.esperaSeg / cfg.pedidos.pacienciaSeg;
+      const resto = 1 - p.esperaSeg / (cfg.pedidos.pacienciaSeg * this.ef.factorPaciencia);
       this.dibujarPaciencia(p.barra, resto);
       if (resto <= 0) this.seVaCliente(i, false);
     });
@@ -618,10 +630,10 @@ export class Feria extends Phaser.Scene {
       targets: volando, x: destinoX, y: destinoY, scale: 70 / tam, duration: 480, ease: 'Cubic.easeIn',
       onComplete: () => {
         volando.destroy();
-        const puntos = puntosPorPedido(tier, sol, cfg.pedidos, this.mod);
+        const puntos = Math.round(puntosPorPedido(tier, sol, cfg.pedidos, this.mod) * this.ef.factorPuntosPedido);
         this.puntos += puntos;
         this.pedidosCumplidos++;
-        this.piloncilloPedidos += piloncilloPorPedido(tier);
+        this.piloncilloPedidos += piloncilloPorPedido(tier) + this.ef.piloncilloExtraPedido;
         confeti(this, destinoX, destinoY - 40, 24, 160);
         textoFlotante(this, destinoX, destinoY - 110, this.tx.t('feria.gracias'), { tam: 52, color: CSS.nopal, titulo: true });
         textoFlotante(this, p.vista.x + 70, destinoY - 40, `+${puntos.toLocaleString('es-MX')}`, { tam: 44 });
@@ -689,16 +701,59 @@ export class Feria extends Phaser.Scene {
     }).setOrigin(0.5);
     capa.add([titulo, elige]);
 
-    const ofrecidas = ofrecerCartas(MAZO, datosCartas.probabilidadRareza, 3, Math.random);
-    const sep = ANCHO_CARTA + 36;
+    this.repartirCartas(capa);
+  }
+
+  /** Reparte las cartas ofrecidas (3, o 4 con el Recetario) y el botón de cambiar si hay. */
+  private repartirCartas(capa: Phaser.GameObjects.Container) {
+    const { width: W, height: H } = this.scale;
+    capa.getByName('mano')?.destroy();
+    const mano = this.add.container(0, 0).setName('mano');
+    capa.add(mano);
+    const ofrecidas = ofrecerCartas(MAZO, datosCartas.probabilidadRareza, this.ef.cartasOfrecidas, Math.random);
+    const escala = Math.min(1, (W - 40) / (ofrecidas.length * (ANCHO_CARTA + 36) - 36));
+    const sep = (ANCHO_CARTA + 36) * escala;
     const x0 = W / 2 - ((ofrecidas.length - 1) * sep) / 2;
+    const yCartas = H * 0.27 + 160 + (ALTO_CARTA * escala) / 2 + 30;
     ofrecidas.forEach((carta, i) => {
-      const c = cartaLoteria(this, x0 + i * sep, H * 0.27 + 160 + ALTO_CARTA / 2 + 30, carta);
-      c.setAngle((i - 1) * 3).setScale(0.6).setAlpha(0);
-      this.tweens.add({ targets: c, scale: 1, alpha: 1, duration: 260, delay: i * 90, ease: 'Back.easeOut' });
-      c.setInteractive({ useHandCursor: true }).on('pointerup', () => this.elegirCarta(carta, c));
-      capa.add(c);
+      const c = cartaLoteria(this, x0 + i * sep, yCartas, carta);
+      c.setAngle((i - (ofrecidas.length - 1) / 2) * 3).setScale(0.6 * escala).setAlpha(0);
+      this.tweens.add({ targets: c, scale: escala, alpha: 1, duration: 260, delay: i * 90, ease: 'Back.easeOut' });
+      // Contra toques accidentales (spam en la charola): las cartas se activan tras un momento
+      // y solo cuenta un toque que empezó y terminó sobre la misma carta.
+      c.setInteractive({ useHandCursor: true });
+      c.disableInteractive();
+      let presionada = false;
+      c.on('pointerdown', () => (presionada = true));
+      c.on('pointerout', () => (presionada = false));
+      c.on('pointerup', () => {
+        if (presionada) this.elegirCarta(carta, c);
+        presionada = false;
+      });
+      this.time.delayedCall(cfg.bloqueoCartasMs, () => c.active && c.setInteractive());
+      mano.add(c);
     });
+    if (this.rerollsRestantes > 0) {
+      const b = botonSecundario(this, W / 2, yCartas + (ALTO_CARTA * escala) / 2 + 130,
+        `${this.tx.t('feria.cambiar')} (${this.rerollsRestantes})`, { ancho: 520, alto: 100, tamTexto: 38 }, () => {
+          if (this.estado !== 'cartas' || this.rerollsRestantes <= 0) return;
+          this.rerollsRestantes--;
+          this.repartirCartas(capa);
+        });
+      mano.add(b);
+    }
+  }
+
+  /** Recetario "Carta de regalo": empieza la feria con una carta común al azar. */
+  private darCartaDeRegalo() {
+    const comunes = MAZO.filter((c) => c.rareza === 'comun');
+    const carta = comunes[Math.floor(Math.random() * comunes.length)];
+    this.elegidas.push(carta);
+    this.mod = modificadores(this.elegidas);
+    this.duraciones = this.calcularDuraciones();
+    this.actualizarHud();
+    this.time.delayedCall(600, () =>
+      textoFlotante(this, this.scale.width / 2, this.lineaY + 200, `${this.tx.t('feria.regalo')} ${carta.nombre}`, { tam: 56, color: CSS.rosa, titulo: true }));
   }
 
   private elegirCarta(carta: Carta, vista: Phaser.GameObjects.Container) {
