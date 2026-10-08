@@ -189,7 +189,7 @@
   "mapa.jefe": "Jefe",
   "mapa.completa": "¡Villa Piloncillo está a salvo! Próximamente: la Gira a Cajetalá.",
   "objetivo.puntos": "Haz {v} puntos",
-  "objetivo.tier": "Crea un {nombre}",
+  "objetivo.tier": "Crea un {nombre} (nivel {v})",
   "objetivo.pedidos": "Cumple {v} pedidos",
   "modificador.tormenta": "Tormenta: la charola está resbalosa",
   "modificador.sabotaje": "Sabotaje: Dulcibot tira gomitas que no se pegan",
@@ -201,5 +201,6 @@
   "nav.mapa": "Mapa",
   "sonido.todo": "Sí",
   "sonido.efectos": "Efectos",
-  "sonido.silencio": "No"
+  "sonido.silencio": "No",
+  "feria.meta": "META"
 }

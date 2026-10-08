@@ -22,6 +22,14 @@ Lista viva de pendientes e ideas. Lo hecho se marca con ✅ y la fecha.
 - ⬜ **Energía para entrar a la feria:** 100 de energía, 10–15 por feria, recarga con el tiempo y con
   anuncios. Detalle y dudas en [03 · Mecánicas §7](gdd/03-mecanicas.md#7-ideas-pendientes-anotadas-para-después).
 
+- ⬜ **Charola fácil de desbordar al inicio** (para que valga la pena juntar piloncillo): empezar con
+  una charola más chica (angosta y/o chaparra) y que las recetas de la rama *Charola* la agranden poco a
+  poco hasta el tamaño actual. Hacerlo junto con el balance del dinero.
+- ✅ (2026-10-08) **¿Cuál es el "Muégano Familiar"?** La tira de abajo marca la meta del objetivo con aro
+  dorado y "META" (se ve aunque no se haya descubierto) y el objetivo dice el nivel; los niveles que
+  piden los clientes llevan una marca rosa.
+- ✅ (2026-10-08) **Las cartas activas se encimaban con el botón de pausa:** ahora van a su derecha.
+
 ## Siguientes pasos (orden sugerido)
 1. ✅ (2026-10-08) **Recetario de la Abuela:** 13 recetas en 4 ramas (Charola, Feria, Dulcería, Pueblo).
 2. ✅ (2026-10-08) **Mapa de la región y pagaré de la plaza:** 10 ferias con objetivo, historia y

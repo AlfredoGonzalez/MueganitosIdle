@@ -105,7 +105,10 @@ export class Feria extends Phaser.Scene {
   private alarmaSeg = 0;
   private rerollsRestantes = 0;
   private instruccion?: Phaser.GameObjects.Text;
-  private familia: { m: Mueganito; numero: Phaser.GameObjects.Text; incognita: Phaser.GameObjects.Text }[] = [];
+  private familia: {
+    m: Mueganito; numero: Phaser.GameObjects.Text; incognita: Phaser.GameObjects.Text;
+    meta: Phaser.GameObjects.Container; pedido: Phaser.GameObjects.Graphics;
+  }[] = [];
 
   constructor() {
     super({
@@ -258,25 +261,47 @@ export class Feria extends Phaser.Scene {
       const incognita = this.add.text(cx, suelo - tam / 2, '?', {
         fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: `${Math.round(tam * 0.55)}px`, color: '#FFF3DC',
       }).setOrigin(0.5).setDepth(9);
+      // Aro dorado + "META" para el mueganito que pide el objetivo de la feria
+      const anillo = this.add.graphics();
+      anillo.lineStyle(6, COLOR.cempasuchil, 1).strokeCircle(0, 0, tam * 0.78);
+      const etiqueta = this.add.text(0, -tam * 0.78 - 22, this.tx.t('feria.meta'), {
+        fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '22px', color: '#FFFFFF', backgroundColor: '#C8812A', padding: { x: 8, y: 2 },
+      }).setOrigin(0.5).setLetterSpacing(2);
+      const meta = this.add.container(cx, suelo - tam / 2, [anillo, etiqueta]).setDepth(7).setVisible(false);
+      this.tweens.add({ targets: anillo, alpha: 0.25, scale: 1.12, duration: 520, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      // Marca rosa para los mueganitos que piden los clientes
+      const pedido = this.add.graphics().setDepth(9).setVisible(false);
+      pedido.fillStyle(COLOR.rosa, 1).fillCircle(cx + tam / 2 - 4, suelo - tam + 4, 11);
+      pedido.lineStyle(3, 0xffffff, 1).strokeCircle(cx + tam / 2 - 4, suelo - tam + 4, 11);
       if (i < TIER_MAXIMO - 1) {
         this.add.text(x + tam + hueco / 2, suelo - 26, '›', {
           fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '34px', color: CSS.piloncillo,
         }).setOrigin(0.5).setDepth(8).setAlpha(0.7);
       }
-      this.familia.push({ m, numero, incognita });
+      this.familia.push({ m, numero, incognita, meta, pedido });
       x += tam + hueco;
     });
     this.actualizarFamilia(false);
   }
 
   private actualizarFamilia(celebrar: boolean) {
-    this.familia.forEach(({ m, numero, incognita }, i) => {
-      const conocido = i + 1 <= this.tierMaximo;
+    const metas = (this.nodo?.objetivos ?? []).filter((o) => o.tipo === 'tier').map((o) => o.valor);
+    const pedidos = this.pedidos.filter((p): p is Pedido => p !== null).map((p) => p.tier);
+    this.familia.forEach(({ m, numero, incognita, meta, pedido }, i) => {
+      const tier = i + 1;
+      const conocido = tier <= this.tierMaximo;
+      const esMeta = metas.includes(tier);
+      const esPedido = pedidos.includes(tier);
+      // La meta y lo que piden los clientes se muestran aunque no se hayan descubierto, para saber qué buscar
+      const visible = conocido || esMeta || esPedido;
       const eraOculto = incognita.visible;
-      m.cuerpo.setTint(conocido ? 0xffffff : 0x3a2214);
-      m.ojos.setVisible(conocido);
-      incognita.setVisible(!conocido);
-      numero.setAlpha(conocido ? 1 : 0.5);
+      m.cuerpo.setTint(visible ? 0xffffff : 0x3a2214);
+      m.setAlpha(conocido || !visible ? 1 : 0.75);
+      m.ojos.setVisible(visible);
+      incognita.setVisible(!visible);
+      numero.setAlpha(visible ? 1 : 0.5);
+      meta.setVisible(esMeta && tier > this.tierMaximo);
+      pedido.setVisible(esPedido);
       if (celebrar && conocido && eraOculto) {
         m.saltar(40);
         textoFlotante(this, m.x, m.y - 110, this.tx.t('feria.nuevo'), { tam: 40, color: CSS.rosa, titulo: true });
@@ -321,9 +346,10 @@ export class Feria extends Phaser.Scene {
       }).setOrigin(0.5).setDepth(21);
     }
     const yBajo = this.nodo ? 40 : 0; // con objetivo, lo demás baja un poco
-    this.txtCartas = this.add.text(40, y + 72 + yBajo, '', {
-      fontFamily: FUENTE_TEXTO, fontStyle: '800', fontSize: '28px', color: CSS.crema, wordWrap: { width: 700 },
-    }).setDepth(21);
+    // Cartas activas: a la derecha del botón de pausa (sin encimarse con él ni con "Sigue")
+    this.txtCartas = this.add.text(172, y + 150 + yBajo, '', {
+      fontFamily: FUENTE_TEXTO, fontStyle: '800', fontSize: '28px', color: CSS.crema, wordWrap: { width: W - 172 - 230 },
+    }).setOrigin(0, 0.5).setDepth(21);
 
     // Siguiente caída
     const xs = W - 110;
@@ -365,7 +391,7 @@ export class Feria extends Phaser.Scene {
       const listo = avanceObjetivo(o, r) >= 1 ? ' ✓' : '';
       if (o.tipo === 'puntos') return `${Math.min(r.puntos, o.valor).toLocaleString('es-MX')} / ${o.valor.toLocaleString('es-MX')}${listo}`;
       if (o.tipo === 'pedidos') return `${this.tx.t('feria.pedidos')}: ${Math.min(r.pedidos, o.valor)}/${o.valor}${listo}`;
-      return `${this.tx.t(`tier.${o.valor}`)}${listo}`;
+      return `${this.tx.t(`tier.${o.valor}`)} (${o.valor})${listo}`;
     });
     this.txtObjetivo.setText(`${this.tx.t('mapa.objetivo')}: ${partes.join(' · ')}`);
     const cumplido = objetivosCumplidos(this.nodo, r);
@@ -711,6 +737,7 @@ export class Feria extends Phaser.Scene {
     const vista = this.add.container(this.xCliente(i), this.yClientes + 30, [avatar, g, dulce, nombre, barra]).setDepth(15).setAlpha(0);
     this.tweens.add({ targets: vista, y: this.yClientes, alpha: 1, duration: 320, ease: 'Back.easeOut' });
     this.pedidos[i] = { tier, esperaSeg: 0, vista, avatar, barra, entregando: false };
+    this.actualizarFamilia(false);
   }
 
   private dibujarPaciencia(g: Phaser.GameObjects.Graphics, resto: number) {
@@ -724,6 +751,7 @@ export class Feria extends Phaser.Scene {
     const p = this.pedidos[i];
     if (!p) return;
     this.pedidos[i] = null;
+    this.actualizarFamilia(false);
     this.tweens.add({
       targets: p.vista, y: p.vista.y - (contento ? 60 : -30), alpha: 0, delay: contento ? 450 : 0, duration: 380,
       onComplete: () => p.vista.destroy(),
