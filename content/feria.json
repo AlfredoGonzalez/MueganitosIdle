@@ -23,7 +23,7 @@
   "redondeo": 0.38,
   "charola": {
     "ancho": 900,
-    "alto": 1250,
+    "alto": 1050,
     "pared": 28
   },
   "desbordeSegundos": 2,
@@ -74,5 +74,6 @@
       ]
     ],
     "multiplicadorPuntos": 3
-  }
+  },
+  "retrasoBotonesFinMs": 1400
 }

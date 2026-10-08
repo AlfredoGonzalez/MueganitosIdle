@@ -25,18 +25,18 @@ export const CSS = {
   tinta: '#3A2214',
 } as const;
 
-/** Colores de pan/glaseado de cada tier (provisionales, del mock). */
+/** Colores de pan/glaseado de cada tier (provisionales). Bien distintos entre sí para reconocerlos rápido. */
 export const TIERS: Record<number, [string, string]> = {
-  1: ['#F7D59A', '#D9A05A'],
-  2: ['#F0B565', '#B4622A'],
-  3: ['#F3A35E', '#B8501F'],
-  4: ['#F7B8C8', '#D0547E'],
-  5: ['#FFC56B', '#D9821B'],
-  6: ['#9FD08A', '#4E9A2E'],
-  7: ['#9DB8F0', '#2E5BB0'],
-  8: ['#FF8FC4', '#C8006B'],
-  9: ['#C9A4F0', '#6B3FB0'],
-  10: ['#FFE07A', '#C8812A'],
+  1: ['#F7E3B5', '#D9A860'], // crema
+  2: ['#F0B565', '#B4622A'], // caramelo (Pegui)
+  3: ['#FF9F8A', '#D9483B'], // coral
+  4: ['#F7B8D8', '#D0549E'], // rosa
+  5: ['#FFE27A', '#E0A31B'], // amarillo
+  6: ['#A8DC8A', '#4E9A2E'], // verde nopal
+  7: ['#9DC8F5', '#2E6BC0'], // azul talavera
+  8: ['#C7A4F0', '#7A45C0'], // morado (con confeti)
+  9: ['#FF7FBF', '#C8006B'], // rosa mexicano (con gorrito de fiesta)
+  10: ['#FFE07A', '#C8812A'], // dorado (con corona)
 };
 
 export const FUENTE_TITULO = 'Chicle, "Cooper Black", Georgia, serif';

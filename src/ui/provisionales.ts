@@ -68,7 +68,61 @@ function cuerpoMueganito(tier: number): Dibujo {
     ctx.beginPath();
     ctx.arc(s / 2, s * 0.6, s * 0.07, Math.PI * 0.15, Math.PI * 0.85);
     ctx.stroke();
+    accesorio(ctx, s, tier);
   };
+}
+
+/** Accesorios de los tiers altos (GDD 07): 8 confeti, 9 gorrito de fiesta, 10 corona de papel picado. */
+function accesorio(ctx: CanvasRenderingContext2D, s: number, tier: number) {
+  const colores = ['#FFA400', '#1F4E9E', '#4E9A2E', '#FFFFFF', '#E4007C'];
+  if (tier === 8) {
+    const puntos = [[0.2, 0.22], [0.36, 0.12], [0.62, 0.15], [0.8, 0.26], [0.15, 0.78], [0.84, 0.8], [0.5, 0.86], [0.3, 0.86], [0.7, 0.86]];
+    puntos.forEach(([x, y], i) => {
+      ctx.save();
+      ctx.translate(s * x, s * y);
+      ctx.rotate(i * 0.9);
+      ctx.fillStyle = colores[i % colores.length];
+      ctx.fillRect(-s * 0.03, -s * 0.015, s * 0.06, s * 0.03);
+      ctx.restore();
+    });
+  } else if (tier === 9) {
+    ctx.save();
+    ctx.translate(s * 0.7, s * 0.2);
+    ctx.rotate(0.35);
+    const g = ctx.createLinearGradient(-s * 0.12, 0, s * 0.12, 0);
+    g.addColorStop(0, '#FFA400'); g.addColorStop(0.5, '#1F4E9E'); g.addColorStop(1, '#4E9A2E');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 0.2);
+    ctx.lineTo(s * 0.12, s * 0.06);
+    ctx.lineTo(-s * 0.12, s * 0.06);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#3A2214'; ctx.lineWidth = s * 0.012; ctx.stroke();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath(); ctx.arc(0, -s * 0.2, s * 0.035, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  } else if (tier === 10) {
+    const y0 = s * 0.2;
+    ctx.fillStyle = '#FFD84A';
+    ctx.strokeStyle = '#8B4A1F';
+    ctx.lineWidth = s * 0.014;
+    ctx.beginPath();
+    ctx.moveTo(s * 0.3, y0);
+    ctx.lineTo(s * 0.3, s * 0.06);
+    ctx.lineTo(s * 0.4, s * 0.13);
+    ctx.lineTo(s * 0.5, s * 0.02);
+    ctx.lineTo(s * 0.6, s * 0.13);
+    ctx.lineTo(s * 0.7, s * 0.06);
+    ctx.lineTo(s * 0.7, y0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    for (const [x, c] of [[0.4, '#E4007C'], [0.5, '#1F4E9E'], [0.6, '#4E9A2E']] as const) {
+      ctx.fillStyle = c;
+      ctx.beginPath(); ctx.arc(s * x, s * 0.165, s * 0.022, 0, Math.PI * 2); ctx.fill();
+    }
+  }
 }
 
 const ojos: Dibujo = (ctx, w, h) => {

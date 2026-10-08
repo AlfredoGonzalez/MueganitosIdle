@@ -87,6 +87,8 @@ export class Feria extends Phaser.Scene {
   private guia!: Phaser.GameObjects.Graphics;
   private linea!: Phaser.GameObjects.Graphics;
   private capa?: Phaser.GameObjects.Container;
+  private instruccion?: Phaser.GameObjects.Text;
+  private familia: { m: Mueganito; numero: Phaser.GameObjects.Text; incognita: Phaser.GameObjects.Text }[] = [];
 
   constructor() {
     super({
@@ -188,16 +190,65 @@ export class Feria extends Phaser.Scene {
     // Línea de desborde
     this.linea = this.add.graphics().setDepth(5);
     this.dibujarLinea(0);
-    this.add.text(this.der - 10, this.lineaY - 34, 'línea de desborde', {
+    this.add.text(this.der - 10, this.lineaY - 34, this.tx.t('feria.lineaDesborde'), {
       fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '24px', color: CSS.rosa,
     }).setOrigin(1, 0.5).setAlpha(0.85);
 
     // Guía y mueganito "en la mano"
     this.guia = this.add.graphics().setDepth(4);
     this.fantasma = this.add.container(this.xSoltar, this.soltarY).setDepth(6);
-    this.add.text(W / 2, this.fondo + pared + 70, this.tx.t('feria.instruccion'), {
-      fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '40px', color: CSS.tinta,
-    }).setOrigin(0.5);
+    // Instrucción dentro de la charola: se desvanece con el primer mueganito.
+    this.instruccion = this.add.text(W / 2, (this.lineaY + this.fondo) / 2, this.tx.t('feria.instruccion'), {
+      fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '44px', color: CSS.piloncillo,
+    }).setOrigin(0.5).setAlpha(0.8);
+    this.tweens.add({ targets: this.instruccion, scale: 1.05, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+
+    this.construirFamilia(this.fondo + pared + 20);
+  }
+
+  /** Tira con los 10 mueganitos en orden: lo no descubierto en la partida se ve como silueta con "?". */
+  private construirFamilia(yArriba: number) {
+    const W = this.scale.width;
+    const tams = Array.from({ length: TIER_MAXIMO }, (_, i) => 46 + i * 4.5);
+    const hueco = 26;
+    const total = tams.reduce((a, b) => a + b, 0) + hueco * (TIER_MAXIMO - 1);
+    let x = (W - total) / 2;
+    const suelo = yArriba + 96;
+    this.familia = [];
+    tams.forEach((tam, i) => {
+      const tier = i + 1;
+      const cx = x + tam / 2;
+      const m = new Mueganito(this, cx, suelo, tier, tam).setDepth(8);
+      const numero = this.add.text(cx, suelo + 24, String(tier), {
+        fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '26px', color: CSS.tinta,
+      }).setOrigin(0.5).setDepth(8);
+      const incognita = this.add.text(cx, suelo - tam / 2, '?', {
+        fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: `${Math.round(tam * 0.55)}px`, color: '#FFF3DC',
+      }).setOrigin(0.5).setDepth(9);
+      if (i < TIER_MAXIMO - 1) {
+        this.add.text(x + tam + hueco / 2, suelo - 26, '›', {
+          fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '34px', color: CSS.piloncillo,
+        }).setOrigin(0.5).setDepth(8).setAlpha(0.7);
+      }
+      this.familia.push({ m, numero, incognita });
+      x += tam + hueco;
+    });
+    this.actualizarFamilia(false);
+  }
+
+  private actualizarFamilia(celebrar: boolean) {
+    this.familia.forEach(({ m, numero, incognita }, i) => {
+      const conocido = i + 1 <= this.tierMaximo;
+      const eraOculto = incognita.visible;
+      m.cuerpo.setTint(conocido ? 0xffffff : 0x3a2214);
+      m.ojos.setVisible(conocido);
+      incognita.setVisible(!conocido);
+      numero.setAlpha(conocido ? 1 : 0.5);
+      if (celebrar && conocido && eraOculto) {
+        m.saltar(40);
+        textoFlotante(this, m.x, m.y - 110, this.tx.t('feria.nuevo'), { tam: 40, color: CSS.rosa, titulo: true });
+      }
+    });
   }
 
   private dibujarLinea(alerta: number) {
@@ -340,8 +391,14 @@ export class Feria extends Phaser.Scene {
     const ojos = this.add.image(x, y, ATLAS, FRAME_OJOS).setDisplaySize(tam * 0.7, tam * 0.35).setDepth(3);
     const pieza: Pieza = { tier, tam, cuerpo, img, ojos, nacio: this.time.now, pop: { v: 1 }, pegando: false };
     this.piezas.set(cuerpo.id, pieza);
-    this.tierMaximo = Math.max(this.tierMaximo, tier);
+    this.registrarTier(tier);
     return pieza;
+  }
+
+  private registrarTier(tier: number) {
+    if (tier <= this.tierMaximo) return;
+    this.tierMaximo = tier;
+    this.actualizarFamilia(true);
   }
 
   private quitarPieza(p: Pieza) {
@@ -395,7 +452,7 @@ export class Feria extends Phaser.Scene {
       }
 
       const tam = this.tamTier(tier + 1);
-      this.tierMaximo = Math.max(this.tierMaximo, tier + 1);
+      this.registrarTier(tier + 1);
       const ganados = puntosPorMerge(tier + 1, this.cadena, sol, cfg, this.mod);
       this.puntos += ganados;
       confeti(this, x, y, 10 + tier * 3, tam * 0.9);
@@ -434,6 +491,11 @@ export class Feria extends Phaser.Scene {
     if (this.pendienteSoltar && this.time.now >= this.listoParaSoltar) {
       this.pendienteSoltar = false;
       const tier = this.fantasma.getData('tier') as number;
+      if (this.instruccion) {
+        const t = this.instruccion;
+        this.instruccion = undefined;
+        this.tweens.add({ targets: t, alpha: 0, duration: 400, onComplete: () => t.destroy() });
+      }
       if (this.soltar(tier, this.xSoltar)) {
         this.listoParaSoltar = this.time.now + enfriamientoMs(cfg, this.mod);
         this.prepararSiguiente();
@@ -726,8 +788,18 @@ export class Feria extends Phaser.Scene {
       }
     });
 
-    capa.add(boton(this, W / 2, py + ph - 250, this.tx.t('feria.otra'), {}, () => this.salir('Feria')));
-    capa.add(botonSecundario(this, W / 2, py + ph - 100, this.tx.t('feria.inicio'), { ancho: 520, alto: 100, tamTexto: 38 }, () => this.salir('Carga')));
+    // Los botones aparecen después del conteo, para evitar toques accidentales.
+    const botones = [
+      boton(this, W / 2, py + ph - 250, this.tx.t('feria.otra'), {}, () => this.salir('Feria')),
+      botonSecundario(this, W / 2, py + ph - 100, this.tx.t('feria.inicio'), { ancho: 520, alto: 100, tamTexto: 38 }, () => this.salir('Carga')),
+    ];
+    for (const b of botones) {
+      b.disableInteractive().setAlpha(0);
+      capa.add(b);
+    }
+    this.time.delayedCall(cfg.retrasoBotonesFinMs, () => {
+      this.tweens.add({ targets: botones, alpha: 1, duration: 250, onComplete: () => botones.forEach((b) => b.setInteractive()) });
+    });
   }
 
   private salir(escena: 'Feria' | 'Carga') {
