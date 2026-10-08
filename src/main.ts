@@ -8,6 +8,8 @@ import { crearTextos } from './core/textos';
 import { Arranque } from './escenas/Arranque';
 import { Carga } from './escenas/Carga';
 import { Sotano } from './escenas/Sotano';
+import { Tutorial } from './escenas/Tutorial';
+import { Presentacion } from './escenas/Presentacion';
 import { Feria } from './escenas/Feria';
 import { Dulceria } from './escenas/Dulceria';
 import { Mundo } from './escenas/Mundo';
@@ -53,7 +55,9 @@ async function iniciar() {
     // Una textura por lote: con varias, algunos WebGL dejaron de dibujar triángulos (probado en Chromium por software).
     // El costo es mínimo para este juego; se puede revisar al probar en celulares reales.
     render: { maxTextures: 1 },
-    scene: [Arranque, Mundo, Carga, Sotano, Feria, Dulceria, Recetario, Mapa],
+    // Elementos HTML encima del lienzo (los <input> del onboarding).
+    dom: { createContainer: true },
+    scene: [Arranque, Mundo, Carga, Sotano, Tutorial, Presentacion, Feria, Dulceria, Recetario, Mapa],
     callbacks: {
       preBoot: (juego) => {
         juego.registry.set('textos', crearTextos(es));

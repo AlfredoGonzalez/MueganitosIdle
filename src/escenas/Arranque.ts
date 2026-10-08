@@ -10,7 +10,7 @@ export class Arranque extends Phaser.Scene {
 
   preload() {
     // Con el atajo #feria se carga todo aquí; si no, solo lo que usa la pantalla de carga.
-    if (['#feria', '#dulceria', '#recetario', '#mapa'].includes(window.location.hash)) encolarImagenes(this);
+    if (['#feria', '#dulceria', '#recetario', '#mapa', '#sotano', '#tutorial', '#presentacion'].includes(window.location.hash)) encolarImagenes(this);
     else encolarImagenes(this, ['fondo_splash', 'logo_mueganitos', 'pegui_grande', 'mueganito_ojos_normal', 'mueganito_ojos_cerrados']);
   }
 
@@ -18,7 +18,10 @@ export class Arranque extends Phaser.Scene {
     generarProvisionales(this, this.scale.height);
     this.scene.launch('Mundo'); // la dulcería vende en paralelo a cualquier pantalla
     // Atajos para probar: #feria entra directo a la feria; #dulceria a la dulcería.
-    const atajos: Record<string, string> = { '#feria': 'Feria', '#dulceria': 'Dulceria', '#recetario': 'Recetario', '#mapa': 'Mapa' };
+    const atajos: Record<string, string> = {
+      '#feria': 'Feria', '#dulceria': 'Dulceria', '#recetario': 'Recetario', '#mapa': 'Mapa',
+      '#sotano': 'Sotano', '#tutorial': 'Tutorial', '#presentacion': 'Presentacion',
+    };
     this.scene.start(atajos[window.location.hash] ?? 'Carga');
   }
 }

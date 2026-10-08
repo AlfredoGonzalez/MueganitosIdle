@@ -1,5 +1,8 @@
 /** Estado guardado de la partida, con versión y migraciones (nunca perder el progreso de nadie). */
 import type { Niveles, Puesto } from './economia';
+import { leerPerfil, perfilInicial, type Perfil } from './perfil';
+
+export const DULCERIA_POR_DEFECTO = 'Los Pegaditos';
 
 export const VERSION_GUARDADO = 1;
 
@@ -13,6 +16,8 @@ export interface Partida {
   recetario: Record<string, number>;
   listones: Record<string, number>; // feria del mapa → mejores listones (0–3)
   pagado: number; // abonado al pagaré de la plaza
+  perfil: Perfil;
+  onboardingCompleto: boolean;
   feriasJugadas: number;
   mejorPuntaje: number;
   ultimaVez: number; // ms (Date.now) del último guardado
@@ -34,6 +39,8 @@ export function partidaNueva(puestos: Puesto[], pesitosIniciales: number, ahora:
     recetario: {},
     listones: {},
     pagado: 0,
+    perfil: perfilInicial(DULCERIA_POR_DEFECTO),
+    onboardingCompleto: false,
     feriasJugadas: 0,
     mejorPuntaje: 0,
     ultimaVez: ahora,
@@ -88,6 +95,9 @@ export function leerPartida(texto: string | null, puestos: Puesto[], pesitosInic
     recetario,
     listones,
     pagado: numero(datos.pagado, 0),
+    perfil: leerPerfil(datos.perfil, DULCERIA_POR_DEFECTO),
+    // Guardados de antes del onboarding: si ya jugó ferias, no se le vuelve a pedir todo.
+    onboardingCompleto: datos.onboardingCompleto === true || (datos.onboardingCompleto === undefined && numero(datos.feriasJugadas, 0) > 0),
     feriasJugadas: Math.floor(numero(datos.feriasJugadas, 0)),
     mejorPuntaje: numero(datos.mejorPuntaje, 0),
     ultimaVez: numero(datos.ultimaVez, ahora),

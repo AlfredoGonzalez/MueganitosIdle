@@ -64,8 +64,17 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
 - El audio se desbloquea con el primer toque (regla de los navegadores). `botonSonido()` cambia
   todo → solo efectos → silencio y lo recuerda.
 
+## Onboarding y perfil
+- Flujo: `Carga` → `Sotano` → `Tutorial` (primer pegado guiado) → `Presentacion` (nombre, trato, dulcería,
+  color y símbolo) → `Feria` nodo 1. Se muestra mientras `partida.onboardingCompleto` sea `false`.
+- Perfil puro en `src/core/perfil.ts` (`partida.perfil`). En los textos usa `{nombre}`, `{mijo}` (mijo/mija/
+  corazón) y `{dulceria}`, y pásalos por `personalizar(texto, perfil)`.
+- `letrero()` en `src/ui/letrero.ts` dibuja el letrero del jugador. Los nombres se escriben en un `<input>`
+  real (Phaser DOM, `dom.createContainer` en `main.ts`) para que salga el teclado del celular.
+- Atajos: `#sotano`, `#tutorial`, `#presentacion`.
+
 ## Estado
-- Hecho: pantalla de carga, sótano provisional, Feria (soltar, pegar, combos, desborde, cartas de Lotería,
+- Hecho: pantalla de carga, onboarding completo, Feria (soltar, pegar, combos, desborde, cartas de Lotería,
   pedidos, tira de la familia), Dulcería idle con 6 puestos, ayudantes, ganancias offline y guardado, y
   Recetario de la Abuela (13 recetas), mapa de Villa Piloncillo con pagaré de la plaza.
 - Pendientes y orden sugerido: `docs/backlog.md`.

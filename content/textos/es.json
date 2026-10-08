@@ -10,7 +10,6 @@
   ],
   "carga.listo": "¡Toca para empezar!",
   "carga.pie": "Hecho con cariño en México",
-  "sotano.hola": "…¿Hola?",
   "sotano.volver": "Volver al inicio",
   "sotano.hornear": "¡Sí, a hornear!",
   "feria.instruccion": "Toca o arrastra para soltar",
@@ -54,7 +53,6 @@
   "puesto.mesa": "Mesa en la plaza",
   "puesto.kiosko": "Kiosko del jardín",
   "puesto.taller": "Taller de cajeta",
-  "dulceria.letrero": "Los Pegaditos",
   "dulceria.porSegundo": "/s",
   "dulceria.nivel": "Nv",
   "dulceria.maximo": "Máx",
@@ -121,13 +119,13 @@
   "region1.feria1.titulo": "El cazo despierta",
   "region1.feria1.historia": [
     "Pegui: ¡Hay más como yo en el cazo!",
-    "Abuela: Junta a los iguales, mijo. Así crecen.",
+    "Abuela: Junta a los iguales, {mijo}. Así crecen.",
     "Pegui: ¡Quiero ver un Muégano Familiar!"
   ],
   "region1.feria2.titulo": "Harina y amistad",
   "region1.feria2.historia": [
     "Don Chuy: ¡Chonita! Te presto mi comal viejito.",
-    "Abuela: Gracias, Chuy. A ver si estos chamacos lo calientan."
+    "Abuela: Gracias, Chuy. A ver si {nombre} lo calienta."
   ],
   "region1.feria3.titulo": "Llega DulciMax",
   "region1.feria3.historia": [
@@ -202,5 +200,54 @@
   "sonido.todo": "Sí",
   "sonido.efectos": "Efectos",
   "sonido.silencio": "No",
-  "feria.meta": "META"
+  "feria.meta": "META",
+  "sotano.burbujas": [
+    "…¿Hola?",
+    "Está oscurito aquí abajo.",
+    "Creo que… estoy pegajoso.",
+    "Y muy solito."
+  ],
+  "sotano.pregunta": "¿Me ayudas a encontrar a los demás?",
+  "sotano.masTarde": "Quizá más tarde",
+  "sotano.puchero": "Bueno… ¿y si solo uno?",
+  "sotano.tocaParaSeguir": "Toca para seguir",
+  "tutorial.toca": "Toca para soltar",
+  "tutorial.otroMas": "¡Uno más!",
+  "tutorial.hermanito": "¡Un hermanito!",
+  "tutorial.ahoraOtro": "Ahora otro par…",
+  "tutorial.parejita": "¡Una Parejita! ¡Juntos crecemos!",
+  "tutorial.seguir": "¡Seguir!",
+  "presentacion.pegui": "Antes de seguir… ¿cómo te llamo?",
+  "presentacion.placeholder": "Tu nombre",
+  "presentacion.trato": "¿Cómo te dice la abuela?",
+  "presentacion.nieto": "nieto",
+  "presentacion.nieta": "nieta",
+  "presentacion.neutro": "prefiero no decir",
+  "presentacion.gusto": "¡Mucho gusto, {nombre}! La abuela habla de ti todo el tiempo.",
+  "presentacion.nombreInvalido": "Escribe un nombre de 2 a 16 letras",
+  "presentacion.abuelaDulceria": "Tu abuelo le puso «Los Pegaditos», {mijo}. ¿Le ponemos nombre nuevo?",
+  "presentacion.aleatorio": "Aleatorio",
+  "presentacion.abuelaLetrero": "¿De qué color pintamos el letrero?",
+  "presentacion.color": "1 · Color",
+  "presentacion.simbolo": "2 · Símbolo",
+  "presentacion.vistaPrevia": "Vista previa",
+  "presentacion.desde": "Dulcería · desde 1962",
+  "presentacion.continuar": "Continuar",
+  "presentacion.abrir": "¡Abrir la dulcería!",
+  "color.rosa": "Rosa mexicano",
+  "color.talavera": "Azul talavera",
+  "color.nopal": "Verde nopal",
+  "color.cempasuchil": "Cempasúchil",
+  "presentacion.nombresDulceria": [
+    "Los Pegaditos",
+    "Dulcería La Esperanza",
+    "El Rincón del Piloncillo",
+    "Dulces Doña Chonita",
+    "La Casa del Muégano",
+    "Dulcería El Cazo de Cobre",
+    "Dulces del Jardín",
+    "La Dulce Plaza"
+  ],
+  "presentacion.dulceriaInvalida": "Escribe un nombre de 3 a 22 letras",
+  "presentacion.atras": "‹ Atrás"
 }

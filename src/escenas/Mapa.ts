@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { personalizar } from '../core/perfil';
 import { formatoCorto } from '../core/numeros';
 import { feriaActual, feriaDesbloqueada, regionCompleta, totalListones, type FeriaMapa, type Objetivo } from '../core/region';
 import type { Textos } from '../core/textos';
@@ -208,7 +209,8 @@ export class Mapa extends Phaser.Scene {
     const { width: W, height: H } = this.scale;
     const velo = this.add.rectangle(W / 2, H / 2, W, H, 0x1b0f18, 0.6).setInteractive();
     const pw = W - 80;
-    const historia = this.tx.lista(`region1.feria${f.n}.historia`);
+    const perfil = (this.registry.get('sesion') as Sesion).partida.perfil;
+    const historia = this.tx.lista(`region1.feria${f.n}.historia`).map((l) => personalizar(l, perfil));
     const ph = 640 + historia.length * 96 + f.objetivos.length * 54 + (f.modificador ? 60 : 0);
     const px = 40;
     const py = H / 2 - ph / 2;

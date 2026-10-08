@@ -35,7 +35,11 @@ Lista viva de pendientes e ideas. Lo hecho se marca con ✅ y la fecha.
 2. ✅ (2026-10-08) **Mapa de la región y pagaré de la plaza:** 10 ferias con objetivo, historia y
    listones; tormenta (feria 7) y sabotaje de DulciMax (feria 9); jefe en la 10; abonos al pagaré.
 2b. ⬜ **La Gira (prestigio)** al completar la región: Estrellas de Fama y región 2 (Cajetalá).
-3. ⬜ **Onboarding completo:** primer merge guiado, nombre del jugador, nombre y colores del letrero.
+3. ✅ (2026-10-08) **Onboarding completo:** sótano con burbujas de Pegui → primer pegado guiado en una
+   charola chiquita (hasta la Parejita) → nombre y trato (nieto/nieta/prefiero no decir) → nombre de la
+   dulcería (con «Aleatorio») → color y símbolo del letrero con vista previa → Feria 1. El letrero de la
+   plaza y la historia del mapa usan lo elegido.
+3b. ⬜ Cambiar nombre, dulcería y letrero después (pantalla de Ajustes).
 4. ✅ (2026-10-08) **Sonido y música** sintetizados: 15 efectos (squish que sube por tier, monedas,
    fiesta, pedidos, alarma de desborde…) y 3 pistas originales (vals de dulcería, polka de feria, cajita
    del sótano), con botón de sonido. Pendiente: grabaciones reales (ver idea abajo).

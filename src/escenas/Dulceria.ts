@@ -9,6 +9,7 @@ import { confeti, iconoMoneda, iconoPiloncillo, textoFlotante } from '../ui/efec
 import { Mueganito } from '../ui/mueganito';
 import { barraNavegacion } from '../ui/navegacion';
 import { botonSonido } from '../ui/botonSonido';
+import { letrero } from '../ui/letrero';
 import { papelPicado } from '../ui/papelPicado';
 import { COLOR, CSS, FUENTE_TEXTO, FUENTE_TITULO } from '../ui/paleta';
 import { ATLAS_CLIENTES, ATLAS_PUESTOS } from '../ui/provisionales';
@@ -134,18 +135,12 @@ export class Dulceria extends Phaser.Scene {
       fontFamily: FUENTE_TEXTO, fontStyle: '900', fontSize: '48px', color: CSS.crema,
     }).setOrigin(1, 0.5).setDepth(31);
 
-    // Letrero colgado sobre las casas
+    // Letrero colgado sobre las casas, con el nombre, color y símbolo que eligió el jugador
     const yl = arriba + 310;
     const l = this.add.graphics().setDepth(30);
     l.lineStyle(6, 0x5a2c10, 1).lineBetween(W / 2 - 200, yl - 90, W / 2 - 200, yl - 50).lineBetween(W / 2 + 200, yl - 90, W / 2 + 200, yl - 50);
-    l.fillStyle(0x5a2c10, 1).fillRoundedRect(W / 2 - 290, yl - 52 + 10, 580, 104, 20);
-    l.fillStyle(COLOR.piloncillo, 1).fillRoundedRect(W / 2 - 290, yl - 52, 580, 104, 20);
-    l.lineStyle(6, 0x5a2c10, 1).strokeRoundedRect(W / 2 - 290, yl - 52, 580, 104, 20);
+    letrero(this, W / 2, yl + 22, this.sesion.partida.perfil, 580).setDepth(31);
     botonSonido(this, W - 110, yl + 110);
-    this.add.text(W / 2, yl + 4, this.tx.t('dulceria.letrero'), {
-      fontFamily: FUENTE_TITULO, fontSize: '72px', color: CSS.crema,
-      shadow: { offsetX: 0, offsetY: 5, color: CSS.rosa, fill: true },
-    }).setOrigin(0.5).setDepth(31);
   }
 
   // ───────────────────────── Puestos en la plaza ─────────────────────────

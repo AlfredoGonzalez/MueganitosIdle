@@ -128,3 +128,17 @@ describe('guardado del mapa', () => {
     expect(partidaNueva(puestos, 10, 0)).toMatchObject({ listones: {}, pagado: 0 });
   });
 });
+
+describe('guardado del onboarding', () => {
+  it('partida nueva pide onboarding; guardados viejos con ferias no', () => {
+    expect(partidaNueva(puestos, 10, 0).onboardingCompleto).toBe(false);
+    expect(leerPartida('{"version":1,"feriasJugadas":3}', puestos, 10, 0)!.onboardingCompleto).toBe(true);
+    expect(leerPartida('{"version":1}', puestos, 10, 0)!.onboardingCompleto).toBe(false);
+    const p = partidaNueva(puestos, 10, 0);
+    p.perfil.nombre = 'Andrea';
+    p.onboardingCompleto = true;
+    const l = leerPartida(escribirPartida(p, 0), puestos, 10, 0)!;
+    expect(l.perfil.nombre).toBe('Andrea');
+    expect(l.onboardingCompleto).toBe(true);
+  });
+});

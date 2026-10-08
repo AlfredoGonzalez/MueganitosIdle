@@ -147,7 +147,7 @@ export class Carga extends Phaser.Scene {
       this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
         // Primera vez: el sótano (onboarding). Después: directo a la dulcería.
         const sesion = this.registry.get('sesion') as Sesion;
-        this.scene.start(sesion.partida.feriasJugadas === 0 ? 'Sotano' : 'Dulceria');
+        this.scene.start(sesion.partida.onboardingCompleto ? 'Dulceria' : 'Sotano');
       });
     });
   }

@@ -300,7 +300,7 @@ export function construirAtlasMueganitos(escena: Phaser.Scene) {
 export const ATLAS_CLIENTES = 'clientes';
 export const CLIENTES = ['donchuy', 'lupita', 'tono', 'doniacleo', 'profememo', 'tiarosy'] as const;
 
-interface Cara { fondo: string; piel: string; pelo: string; ropa: string; extra: 'gorro' | 'mono' | 'gorra' | 'rizos' | 'lentes' }
+interface Cara { fondo: string; piel: string; pelo: string; ropa: string; extra: 'gorro' | 'mono' | 'gorra' | 'rizos' | 'lentes' | 'chongo' }
 const CARAS: Record<(typeof CLIENTES)[number], Cara> = {
   donchuy: { fondo: '#FFE0B0', piel: '#C68A5E', pelo: '#3A2214', ropa: '#FFFFFF', extra: 'gorro' },
   lupita: { fondo: '#FFD3E6', piel: '#B97A52', pelo: '#2A160A', ropa: '#FFA400', extra: 'mono' },
@@ -309,6 +309,12 @@ const CARAS: Record<(typeof CLIENTES)[number], Cara> = {
   profememo: { fondo: '#DDEFD3', piel: '#B9825A', pelo: '#E8E2DA', ropa: '#4E9A2E', extra: 'lentes' },
   tiarosy: { fondo: '#FFE7A8', piel: '#C98E62', pelo: '#5A2C10', ropa: '#C8812A', extra: 'mono' },
 };
+/** La abuela Chonita vive en el mismo atlas (cuadro 'abuela'), pero no sale como cliente. */
+const ABUELA: Cara = { fondo: '#FFE3EE', piel: '#D29A72', pelo: '#EEE8E0', ropa: '#E4007C', extra: 'chongo' };
+const RETRATOS: [string, string, Cara][] = [
+  ...CLIENTES.map((n) => [n, `cliente_${n}`, CARAS[n]] as [string, string, Cara]),
+  ['abuela', 'abuela_chonita', ABUELA],
+];
 
 function cara(c: Cara): Dibujo {
   return (ctx, w) => {
@@ -358,7 +364,15 @@ function cara(c: Cara): Dibujo {
       ctx.fillStyle = '#E4007C';
       ctx.beginPath(); ctx.ellipse(r, w * 0.32, w * 0.24, w * 0.12, 0, Math.PI, 0); ctx.fill();
       ctx.fillRect(r, w * 0.3, w * 0.3, w * 0.05);
-    } else if (c.extra === 'lentes') {
+    } else if (c.extra === 'lentes' || c.extra === 'chongo') {
+      if (c.extra === 'chongo') {
+        ctx.fillStyle = c.pelo;
+        ctx.beginPath(); ctx.arc(r, w * 0.17, w * 0.1, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#E4007C';
+        ctx.fillRect(w * 0.42, w * 0.24, w * 0.16, w * 0.035);
+        ctx.fillStyle = '#FFFFFF';
+        for (const x of [0.32, 0.5, 0.68]) { ctx.beginPath(); ctx.arc(w * x, w * 0.9, w * 0.03, 0, Math.PI * 2); ctx.fill(); }
+      }
       ctx.strokeStyle = '#3A2214'; ctx.lineWidth = w * 0.018;
       for (const x of [0.42, 0.58]) { ctx.strokeRect(w * (x - 0.06), w * 0.46, w * 0.12, w * 0.08); }
     }
@@ -373,11 +387,11 @@ export function construirAtlasClientes(escena: Phaser.Scene) {
   const lado = 256;
   let tex = escena.textures.exists(ATLAS_CLIENTES) ? (escena.textures.get(ATLAS_CLIENTES) as Phaser.Textures.CanvasTexture) : null;
   const nuevo = !tex;
-  if (!tex) tex = escena.textures.createCanvas(ATLAS_CLIENTES, lado * CLIENTES.length, lado);
+  if (!tex) tex = escena.textures.createCanvas(ATLAS_CLIENTES, lado * RETRATOS.length, lado);
   if (!tex) return;
   const ctx = tex.getContext();
-  CLIENTES.forEach((nombre, i) => {
-    pintarCelda(escena, ctx, i * lado, 0, lado, lado, `cliente_${nombre}`, cara(CARAS[nombre]));
+  RETRATOS.forEach(([nombre, clave, c], i) => {
+    pintarCelda(escena, ctx, i * lado, 0, lado, lado, clave, cara(c));
     if (nuevo) tex!.add(nombre, 0, i * lado, 0, lado, lado);
   });
   tex.refresh();

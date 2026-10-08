@@ -203,6 +203,13 @@
       "ancho": 256,
       "alto": 256,
       "uso": "Gomita industrial de DulciMax (sabotaje): no se pega a nada. Plástica, gris azulada, cara enojada."
+    },
+    {
+      "clave": "abuela_chonita",
+      "archivo": "personajes/abuela_chonita.png",
+      "ancho": 256,
+      "alto": 256,
+      "uso": "Abuela Chonita en el onboarding y la historia. Busto dentro de un círculo, como los clientes: chongo canoso, lentes, rebozo rosa."
     }
   ]
 }
