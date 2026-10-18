@@ -23,7 +23,7 @@ TypeScript + Vite + **Phaser 4**. Capacitor (iOS/Android), AdMob y RevenueCat ll
 
 ## Arte (flujo de la artista)
 - El juego espera las imágenes listadas en `content/assets.json` (clave, archivo, tamaño).
-- Si un PNG existe en `assets/<carpeta>/<archivo>.png`, se usa; si no, `src/ui/provisionales.ts` dibuja uno
+- Si un PNG existe en `assets/<carpeta>/<archivo>.png` (o el mismo nombre en `.jpg`/`.webp`, que gana sobre el PNG), se usa; si no, `src/ui/provisionales.ts` dibuja uno
   provisional **con la misma clave**. No hay que registrar archivos a mano (`import.meta.glob`).
 - Nombres: minúsculas, sin acentos ni espacios, `categoria_nombre_variante.png` (lo valida una prueba).
 - Los mueganitos tienen cuerpo y ojos en capas separadas (`Mueganito` en `src/ui/mueganito.ts`).

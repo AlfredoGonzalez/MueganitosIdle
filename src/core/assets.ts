@@ -19,7 +19,10 @@ export interface PlanDeCarga {
 export function planDeCarga(esperados: AssetEsperado[], disponibles: Record<string, string>): PlanDeCarga {
   const plan: PlanDeCarga = { cargar: [], faltan: [] };
   for (const a of esperados) {
-    const url = disponibles[a.archivo];
+    // Se acepta el mismo nombre en JPG o WebP (mejor para fondos: pesan menos). Si conviven, gana el
+    // JPG/WebP: el PNG suele ser el arte base exportado por `npm run arte`.
+    const base = a.archivo.replace(/\.png$/, '');
+    const url = disponibles[`${base}.jpg`] ?? disponibles[`${base}.jpeg`] ?? disponibles[`${base}.webp`] ?? disponibles[a.archivo];
     if (url) plan.cargar.push({ clave: a.clave, url });
     else plan.faltan.push(a);
   }

@@ -44,7 +44,8 @@
 
 ## Especificaciones técnicas
 - **Lienzo base:** 1080 × 1920 px (zona segura); fondos a **1080 × 2400 px**.
-- **Formato de entrega:** PNG con transparencia, sRGB. Exportar **al tamaño indicado** (ya es alta resolución).
+- **Formato de entrega:** PNG con transparencia, sRGB. Los **fondos** también pueden ir en **JPG** (pesan
+  mucho menos) con el mismo nombre: `fondo_splash.jpg` en lugar de `fondo_splash.png`. Exportar **al tamaño indicado** (ya es alta resolución).
 - **Tamaño máximo por imagen:** 2048 × 2048 px.
 - **Archivos fuente** (PSD/Procreate/Krita) en la carpeta compartida `arte_fuente/`, no en el juego.
 - **Margen:** dejar 4 px transparentes alrededor de cada recorte.

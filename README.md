@@ -22,7 +22,8 @@ npm run demo     # genera dist-demo/mueganitos-demo.html (el juego en un solo ar
 1. Revisa la lista de imágenes que espera el juego en [`content/assets.json`](content/assets.json)
    (nombre de archivo y tamaño) y la guía en [07 · Arte y audio](docs/gdd/07-arte-audio.md).
 2. Guarda el PNG con **ese nombre exacto** en la carpeta indicada dentro de `assets/`
-   (por ejemplo `assets/personajes/pegui_grande.png`).
+   (por ejemplo `assets/personajes/pegui_grande.png`). Los fondos pueden ir en JPG con el mismo nombre
+   (por ejemplo `assets/fondos/fondo_splash.jpg`).
 3. Súbelo al repositorio. Mientras una imagen no exista, el juego muestra un dibujo provisional en su lugar.
 4. En unos minutos tu arte aparece en el enlace de **Jugar en el navegador** (arriba).
 

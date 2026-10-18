@@ -3,7 +3,7 @@ import manifiesto from '../../content/assets.json';
 import { planDeCarga, rutaRelativaAssets } from '../core/assets';
 
 /** Todo lo que existe en assets/ (Vite lo encuentra al compilar; no hay que registrar nada a mano). */
-const archivos = import.meta.glob('../../assets/**/*.{png,webp,jpg}', {
+const archivos = import.meta.glob('../../assets/**/*.{png,webp,jpg,jpeg}', {
   eager: true,
   query: '?url',
   import: 'default',

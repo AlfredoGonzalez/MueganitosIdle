@@ -49,6 +49,15 @@ describe('assets', () => {
     expect(plan.cargar).toEqual([{ clave: 'logo_mueganitos', url: '/x/logo.png' }]);
     expect(plan.faltan.length).toBe(manifiesto.imagenes.length - 1);
   });
+  it('acepta el mismo nombre en JPG o WebP, y prefiere ese sobre el PNG', () => {
+    const plan = planDeCarga(manifiesto.imagenes, {
+      'fondos/fondo_splash.png': '/x/base.png',
+      'fondos/fondo_splash.jpg': '/x/artista.jpg',
+      'fondos/fondo_sotano.webp': '/x/sotano.webp',
+    });
+    expect(plan.cargar).toContainEqual({ clave: 'fondo_splash', url: '/x/artista.jpg' });
+    expect(plan.cargar).toContainEqual({ clave: 'fondo_sotano', url: '/x/sotano.webp' });
+  });
   it('normaliza rutas de import.meta.glob', () => {
     expect(rutaRelativaAssets('../../assets/ui/logo.png')).toBe('ui/logo.png');
     expect(rutaRelativaAssets('/assets/fondos/a.png')).toBe('fondos/a.png');
